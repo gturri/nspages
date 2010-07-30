@@ -1,3 +1,4 @@
+base nspages
 author Guillaume Turri
 email guillaume.turri@gmail.com
 date 2010-06-07
