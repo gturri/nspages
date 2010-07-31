@@ -31,10 +31,6 @@ require_once(DOKU_INC . 'inc/pageutils.php');//to use the noNS() function
  */
 class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
-  function getInfo() {
-    return confToHash(dirname(__FILE__).'/plugin.info.txt');
-  } // getInfo()
-
   function connectTo($aMode) {
     $this->Lexer->addSpecialPattern('<nspages[^>]*>', $aMode, 'plugin_nspages');
   } // connectTo()
