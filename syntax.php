@@ -22,7 +22,8 @@ if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../')
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
 require_once(DOKU_INC . 'inc/search.php');//to use the search() functions
-require_once(DOKU_INC . 'inc/pageutils.php');//to use the noNS() function
+require_once(DOKU_INC . 'inc/pageutils.php');//to use the noNS() and resolve_pageid() functions
+require_once(DOKU_INC . 'inc/parserutils.php');//to use the p_get_first_heading function
 
 
 /**
@@ -45,11 +46,10 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
   function handle($match, $state, $pos, &$handler) {
     $return = array('subns' => false, 'nopages' => false, 'simpleList' =>
-		    false, 'excludedPages' => array(), 'excludedNS' => array(),
-		    'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
-		    'textNS' => '', 'textPages' => '',
-                    'pregPagesOn' => array(), 'pregPagesOff' => array(),
-                    'pregNSOn' => array(), 'pregNSOff' => array());
+            false, 'excludedPages' => array(), 'excludedNS' => array(),
+            'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
+            'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
+            'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array());
 
      $match = mb_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -94,7 +94,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       $match = str_replace($subns[0], '', $match);
     }
 
-      //--Checking if specified page have to be excluded
+      //--Checking if specified pages have to be excluded
     preg_match_all("/-exclude:([^[ <>]*) /", $match, $found, PREG_SET_ORDER);
     foreach ( $found as $page ){
       $return['excludedPages'][] = $page[1];
@@ -212,6 +212,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       foreach ( $files as $item ){
           if ( $item['type'] == 'd' ){
             if ( $this->_wantedFile($data['excludedNS'], $data['pregNSOn'], $data['pregNSOff'], $item) ){
+              $this->_prepareNS($item, $data['title']);
               $subnamespaces[] = $item;
             }
           } else {
@@ -266,6 +267,29 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       $wanted &= !preg_match($preg, $noNSId);
     }
     return $wanted;
+  }
+
+  /**
+   * When we display a namespace, we want to:
+   * - link to it's main page (if such a page exists)
+   * - get the id of this main page (if the option is active)
+   * @param $ns  A structure which represents a namespace
+   * @param boolean $useTitle Do we have to check the title of the ns?
+   */
+  function _prepareNS(&$ns, $useTitle){
+    $idMainPage = $ns['id'].':';
+    resolve_pageid('', $idMainPage, $exist);  //get the id of the main page of the ns
+    $ns['title'] = noNS($ns['id']);
+
+    if ( ! $exist ){ //if there is currently no main page for this namespace, then...
+      $ns['id'] .= ':'; //...we'll link directly to the namespace
+    } else { //if there is a main page, then...
+      $title = p_get_first_heading($idMainPage, true); //...we adapt the title to use
+      if ( !is_null($title) && $useTitle ){
+        $ns['title'] = $title;
+      }
+      $ns['id'] = $idMainPage; //... and we'll link directly to this page
+    }
   }
 
   function _printNicely(&$renderer, $tab, $type, $text){
@@ -335,19 +359,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } // _sort
 
   static function _order($p1, $p2){
-    if ( $p1['type'] == 'd' ){
-      return strcasecmp(mb_strtoupper($p1['id']), mb_strtoupper($p2['id']));
-    } else {
-      return strcasecmp(mb_strtoupper($p1['title']), mb_strtoupper($p2['title']));
-    }
+    return strcasecmp(mb_strtoupper($p1['title']), mb_strtoupper($p2['title']));
   } //_order
 
   function _firstChar($item){
-    if ( $item['type'] == 'd' ){
-      return mb_strtoupper(utf8_substr(noNS($item['id']),0,1));
-    } else {
-      return mb_strtoupper(utf8_substr($item['title'],0,1));
-    }
+    return mb_strtoupper(utf8_substr($item['title'], 0, 1));
   } // _firstChar
 
   function _print(&$renderer, $tab, $type, $text){
@@ -378,7 +394,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         .'</div></li>';
     } else{  //Case of a subnamespace
       $renderer->doc .= '<li class="closed"><div class="li">'
-        .$renderer->internallink(':'.$item['id'].':', noNS($item['id']), NULL,true)
+        .$renderer->internallink(':'.$item['id'], $item['title'], NULL,true)
         .'</div></li>';
     }
   } // _printElement()
