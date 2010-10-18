@@ -192,58 +192,63 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
   function render($mode, &$renderer, $data) {
     global $conf; //to get $conf['savedir']
-    if($mode == 'xhtml'){
-      // Make sure the namespace exists
-      if ( @opendir($conf['savedir'].'/pages/'.$data['wantedDir']) === false || !$data['safe'] ){
-        $renderer->doc .= '<div>'.$this->getLang('doesntexist').$data['wantedNS'].'</div>';
-        return TRUE;
-      }
+    // Make sure the namespace exists
+    if ( @opendir($conf['savedir'].'/pages/'.$data['wantedDir']) === false || !$data['safe'] ){
+      $renderer->section_open(1);
+      $renderer->cdata($this->getLang('doesntexist').$data['wantedNS']);
+      $renderer->section_close();
+      return TRUE;
+    }
 
-      // Getting the files
-      $opt = array( 'depth'=>1, 'keeptxt'=>false, 'listfiles'=>!$data['nopages'],
+    // Getting the files
+    $opt = array( 'depth'=>1, 'keeptxt'=>false, 'listfiles'=>!$data['nopages'],
         'listdirs'=>$data['subns'], 'pageonly'=>true, 'skipacl'=>false,
         'sneakyacl'=>false, 'hash'=>false, 'meta'=>false, 'showmsg'=>false,
         'showhidden'=>false, 'firsthead'=>true);
-      $files = array();
-      search($files, $conf['savedir'].'/pages/', 'search_universal', $opt, $data['wantedDir']);
+    $files = array();
+    search($files, $conf['savedir'].'/pages/', 'search_universal', $opt, $data['wantedDir']);
 
-      $pages = array();
-      $subnamespaces = array();
-      foreach ( $files as $item ){
-          if ( $item['type'] == 'd' ){
-            if ( $this->_wantedFile($data['excludedNS'], $data['pregNSOn'], $data['pregNSOff'], $item) ){
-              $this->_prepareNS($item, $data['title']);
-              $subnamespaces[] = $item;
-            }
-          } else {
-            if ( $this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item) ){
-              if ( !$data['title'] || $item['title'] === null ){
-                $item['title'] = noNS($item['id']);
-              }
-              $pages[] = $item;
-            }
+    $pages = array();
+    $subnamespaces = array();
+    foreach ( $files as $item ){
+      if ( $item['type'] == 'd' ){
+        if ( $this->_wantedFile($data['excludedNS'], $data['pregNSOn'], $data['pregNSOff'], $item) ){
+          $this->_prepareNS($item, $data['title']);
+          $subnamespaces[] = $item;
+        }
+      } else {
+        if ( $this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item) ){
+          if ( !$data['title'] || $item['title'] === null ){
+            $item['title'] = noNS($item['id']);
           }
+          $pages[] = $item;
+        }
       }
-
-      //writting the output
-      $printFunc = $data['simpleList'] ? '_print' : '_printNicely';
-      //--listing the subnamespaces (if needed)
-      if( $data['subns'] ){
-	call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS']);
-      }
-
-      //--listing the pages
-      if( !$data['nopages'] ){
-	call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages']);
-      }
-
-      //this is needed to make sure everything after the plugin is written below the output
-      $renderer->doc .= '<br class="catpageeofidx">';
-      
-      return TRUE;
-    }  else {
-      return FALSE;
     }
+
+    //writting the output
+    $printFunc = '_print';
+    if ( $mode == 'xhtml' && !$data['simpleList'] ){
+      $printFunc = '_printNicely';
+    }
+    //--listing the subnamespaces (if needed)
+    if( $data['subns'] ){
+      call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode);
+    }
+
+    //--listing the pages
+    if( !$data['nopages'] ){
+      call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode);
+    }
+
+    //this is needed to make sure everything after the plugin is written below the output
+    if ( $mode == 'xhtml' ){
+        $renderer->doc .= '<br class="catpageeofidx">';
+    } else {
+        $renderer->linebreak();
+    }
+
+    return TRUE;
 
   } // render()
 
@@ -292,7 +297,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
   }
 
-  function _printNicely(&$renderer, $tab, $type, $text){
+  function _printNicely(&$renderer, $tab, $type, $text, $mode){
     $this->_sort($tab);
 
     //calculate how many elements should be in the first and second column
@@ -343,7 +348,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
           $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
         }
 
-        $this->_printElement($renderer, $item);
+        $this->_printElement($renderer, $item, $mode);
         $actpage++;
       }
       $renderer->doc .= "</ul></div>\n";
@@ -366,20 +371,30 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     return mb_strtoupper(utf8_substr($item['title'], 0, 1));
   } // _firstChar
 
-  function _print(&$renderer, $tab, $type, $text){
+  function _print(&$renderer, $tab, $type, $text, $mode){
     $this->_sort($tab);
 
     if ( $text != '' ){
-      $renderer->doc .= '<p class="catpageheadline">'.$text."</p>";
-    }
-    if( sizeof($tab) == 0){
-      $renderer->doc .= '<p>'.$this->getLang( ($type=='page') ? 'nopages' : 'nosubns').'</p>';
-    } else {
-      $renderer->doc .= "<ul>\n";
-      foreach ( $tab as $item ){
-        $this->_printElement($renderer, $item);
+      if ( $mode == 'xhtml' ){
+        $renderer->doc .= '<p class="catpageheadline">'.$text."</p>";
+      } else {
+        $renderer->linebreak();
+        $renderer->p_open();
+        $renderer->cdata($text);
+        $renderer->p_close();
       }
-      $renderer->doc .= "</ul>\n";
+    }
+
+    if( sizeof($tab) == 0){
+      $renderer->p_open();
+      $renderer->cdata($this->getLang( ($type=='page') ? 'nopages' : 'nosubns'));
+      $renderer->p_close();
+    } else {
+      $renderer->listu_open();
+      foreach ( $tab as $item ){
+        $this->_printElement($renderer, $item, $mode);
+      }
+      $renderer->listu_close();
     }
   } // _print()
 
@@ -387,15 +402,23 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
    * @param Array  $item      Represents the file
    * @param string $type      Either 'page' of 'subns'
    */
-  function _printElement(&$renderer, $item){
+  function _printElement(&$renderer, $item, $mode){
     if( $item['type'] !== 'd' ){
-      $renderer->doc .= '<li class="level1"><div class="li">'
-        .$renderer->internallink(':'.$item['id'], $item['title'], NULL,true)
-        .'</div></li>';
+      $renderer->listitem_open(1);
+      $renderer->listcontent_open();
+      $renderer->internallink(':'.$item['id'], $item['title']);
+      $renderer->listcontent_close();
+      $renderer->listitem_close();
     } else{  //Case of a subnamespace
-      $renderer->doc .= '<li class="closed"><div class="li">'
-        .$renderer->internallink(':'.$item['id'], $item['title'], NULL,true)
-        .'</div></li>';
+      if ( $mode == 'xhtml' ){
+        $renderer->doc .= '<li class="closed">';
+      } else {
+        $renderer->listitem_open(1);
+      }
+      $renderer->listcontent_open();
+      $renderer->internallink(':'.$item['id'], $item['title']);
+      $renderer->listcontent_close();
+      $renderer->listitem_close();
     }
   } // _printElement()
   
