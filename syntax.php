@@ -51,7 +51,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array());
 
-     $match = mb_substr($match, 9, -1); //9 = strlen("<nspages ")
+     $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
   
     //Looking the first options
@@ -114,8 +114,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       $found = str_replace('@', '', $found[1]); //for retrocompatibility
       $found = explode(' ', $found);
       foreach ( $found as $item ){
-        if ( $item[strlen($item)-1] == ':' ){ //not mb_strlen() on purpose
-          $return['excludedNS'][] = utf8_substr($item, 0, -1); //idem for mb_substr
+        if ( $item[strlen($item)-1] == ':' ){ //not utf8_strlen() on purpose
+          $return['excludedNS'][] = utf8_substr($item, 0, -1);
         } else {
           $return['excludedPages'][] = $item;
         }
@@ -363,11 +363,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } // _sort
 
   static function _order($p1, $p2){
-    return strcasecmp(mb_strtoupper($p1['title']), mb_strtoupper($p2['title']));
+    return strcasecmp(utf8_strtoupper($p1['title']), utf8_strtoupper($p2['title']));
   } //_order
 
   function _firstChar($item){
-    return mb_strtoupper(utf8_substr($item['title'], 0, 1));
+    return utf8_strtoupper(utf8_substr($item['title'], 0, 1));
   } // _firstChar
 
   function _print(&$renderer, $tab, $type, $text, $mode){
