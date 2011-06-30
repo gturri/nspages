@@ -49,7 +49,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             false, 'excludedPages' => array(), 'excludedNS' => array(),
             'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
-            'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array());
+            'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
+            'maxDepth' => (int) 1);
 
      $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -60,6 +61,16 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
     $this->_checkOption($match, "/-title/i", $return['title'], true);
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
+
+    //Looking for the -r option
+    if ( preg_match("/-r *([[:digit:]]*)/i", $match, $found) ){
+      if ( $found[1] != '' ){
+        $return['maxDepth'] = (int) $found[1];
+      } else {
+        $return['maxDepth'] = 0; //no limit
+      }
+      $match = str_replace($found[0], '', $match);
+    }
 
     //Looking for the -textPages option
     if ( preg_match("/-textPages? *= *\"([^\"]*)\"/i", $match, $found) ){
@@ -200,7 +211,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
 
     // Getting the files
-    $opt = array( 'depth'=>1, 'keeptxt'=>false, 'listfiles'=>!$data['nopages'],
+    $opt = array( 'depth'=>$data['maxDepth'], 'keeptxt'=>false, 'listfiles'=>!$data['nopages'],
         'listdirs'=>$data['subns'], 'pageonly'=>true, 'skipacl'=>false,
         'sneakyacl'=>false, 'hash'=>false, 'meta'=>false, 'showmsg'=>false,
         'showhidden'=>false, 'firsthead'=>true);
