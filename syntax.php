@@ -50,7 +50,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
-            'maxDepth' => (int) 1);
+            'maxDepth' => (int) 1, 'nbCol' => 3);
 
      $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -68,6 +68,14 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $return['maxDepth'] = (int) $found[1];
       } else {
         $return['maxDepth'] = 0; //no limit
+      }
+      $match = str_replace($found[0], '', $match);
+    }
+
+    //Looking for the number of columns
+    if ( preg_match("/-nbCols? *([[:digit:]]*)/i", $match, $found) ){
+      if ( $found[1] != '' ){
+        $return['nbCol'] = max((int) $found[1], 1);
       }
       $match = str_replace($found[0], '', $match);
     }
@@ -243,12 +251,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
     //--listing the subnamespaces (if needed)
     if( $data['subns'] ){
-      call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode);
+      call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol']);
     }
 
     //--listing the pages
     if( !$data['nopages'] ){
-      call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode);
+      call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol']);
     }
 
     //this is needed to make sure everything after the plugin is written below the output
@@ -307,17 +315,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
   }
 
-  function _printNicely(&$renderer, $tab, $type, $text, $mode){
+  function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol){
     $this->_sort($tab);
-
-    //calculate how many elements should be in the first and second column
-    $collength = ceil( sizeof($tab) / 3 );
-    $dblcollength = ceil( sizeof($tab) / 3 ) * 2;
-    //if there are less than three elements keep them in one column (just for beauty-issues)
-    if ( sizeof($tab) < 3 ){
-      $collength = 10;
-      $dblcollength = 10;
-    }
 
     //use actpage to count how many pages we have already processed
     $actpage=0;
@@ -330,17 +329,24 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       $renderer->doc .= '<p>'.$this->getLang( ($type=='page') ? 'nopages' : 'nosubns').'</p>';
     }
     else{
-      $renderer->doc .= "\n".'<div class="catpagecol"><ul>';
+      $nbItemPerColumns = $this->computeNbItemPerColumns(sizeof($tab), $nbCol);
+
+      $percentWidth = 100/sizeof($nbItemPerColumns);
+      $percentWidth .= '%';
+
+      $renderer->doc .= "\n".'<div class="catpagecol" style="width: ' . $percentWidth . '" ><ul>';
       //firstchar stores the first character of the last added page
       $firstchar = $this->_firstChar($tab[0]);
       
       //write the first index-letter
       $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
 
+      $idxCol = 0;
       foreach( $tab as $item ){
         //change to the next column if necessary
-        if ($actpage == $collength || $actpage == $dblcollength) {
-          $renderer->doc .= "</ul></div>\n".'<div class="catpagecol"><ul>'."\n";
+        if ($actpage == $nbItemPerColumns[$idxCol]) {
+            $idxCol++;
+          $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: ' . $percentWidth . '"><ul>'."\n";
 
           $newLetter = $this->_firstChar($item);
           if ( $newLetter != $firstchar ) {
@@ -381,7 +387,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     return utf8_strtoupper(utf8_substr($item['title'], 0, 1));
   } // _firstChar
 
-  function _print(&$renderer, $tab, $type, $text, $mode){
+  function _print(&$renderer, $tab, $type, $text, $mode, $nbCol){
     $this->_sort($tab);
 
     if ( $text != '' ){
@@ -431,5 +437,44 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       $renderer->listitem_close();
     }
   } // _printElement()
+
+  /**
+   * Compute the number of element to display per column
+   * When $nbItems / $nbCols isn't an int, we make sure that, for aesthetic reasons,
+   * that the first are the ones which have the more items
+   * Moreover, if we don't have enought items to display, we may choose to display less than the number of columns wanted
+   * @param int $nbItems The total number of items to display
+   * @param int $nbCols the number of columns to consider
+   * @return an array which contains $nbCols int.
+   */
+  function computeNbItemPerColumns($nbItems, $nbCols){
+    $result = array();
+
+    //We make sure this value is correct (it may be 'null' if we upgrade the plugin, and don't run "handle" because of the cache
+    if ( !isset($nbCols) || is_null($nbCols) || $nbCols < 1 ){
+        $nbCols = 3;
+    }
+
+    if ( $nbItems < $nbCols ){
+        for ( $idx=0 ; $idx < $nbItems ; $idx++ ){
+            $result[] = $idx + 1;
+        }
+        return $result;
+    }
+
+    $collength = $nbItems / $nbCols;
+    $nbItemPerCol = array();
+    for ( $idx=0 ; $idx < $nbCols ; $idx++ ){
+        $nbItemPerCol[] = ceil(($idx+1) * $collength) - ceil($idx * $collength);
+    }
+    rsort($nbItemPerCol);
+
+    $result[] = $nbItemPerCol[0];
+    for ( $idx=1 ; $idx < $nbCols ; $idx++ ){
+        $result[] = end($result) + $nbItemPerCol[$idx];
+    }
+
+    return $result;
+  }
   
 } // class syntax_plugin_nspages
