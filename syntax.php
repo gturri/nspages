@@ -63,7 +63,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
 
     //Looking for the -r option
-    if ( preg_match("/-r *([[:digit:]]*)/i", $match, $found) ){
+    if ( preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
       if ( $found[1] != '' ){
         $return['maxDepth'] = (int) $found[1];
       } else {
@@ -73,7 +73,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
 
     //Looking for the number of columns
-    if ( preg_match("/-nbCols? *([[:digit:]]*)/i", $match, $found) ){
+    if ( preg_match("/-nb?Cols? *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
       if ( $found[1] != '' ){
         $return['nbCol'] = max((int) $found[1], 1);
       }
