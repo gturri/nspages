@@ -221,7 +221,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     // Getting the files
     $opt = array( 'depth'=>$data['maxDepth'], 'keeptxt'=>false, 'listfiles'=>!$data['nopages'],
         'listdirs'=>$data['subns'], 'pageonly'=>true, 'skipacl'=>false,
-        'sneakyacl'=>false, 'hash'=>false, 'meta'=>false, 'showmsg'=>false,
+        'sneakyacl'=>true, 'hash'=>false, 'meta'=>false, 'showmsg'=>false,
         'showhidden'=>false, 'firsthead'=>true);
     $files = array();
     search($files, $conf['savedir'].'/pages/', 'search_universal', $opt, $data['wantedDir']);
