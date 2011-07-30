@@ -37,7 +37,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } // connectTo()
 
   function getSort() {
-    return 999;
+    //Execute before html mode
+    return 189;
   } // getSort()
 
   function getType() {
