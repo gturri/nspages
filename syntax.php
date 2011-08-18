@@ -51,7 +51,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
-            'maxDepth' => (int) 1, 'nbCol' => 3);
+            'maxDepth' => (int) 1, 'nbCol' => 3, 'simpleLine' => false);
 
      $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -62,6 +62,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
     $this->_checkOption($match, "/-title/i", $return['title'], true);
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
+    $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
 
     //Looking for the -r option
     if ( preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
@@ -246,13 +247,15 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
 
     //writting the output
-    $printFunc = '_print';
-    if ( $mode == 'xhtml' && !$data['simpleList'] ){
-      $printFunc = '_printNicely';
-    }
+    $printFunc = $this->selectPrintStrategy($data, $mode);
+
     //--listing the subnamespaces (if needed)
     if( $data['subns'] ){
       call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol']);
+    }
+
+    if ( $printFunc=='_printOneLine' && $data['textPages'] === '' && !$data['nopages'] ){
+        $renderer->cdata(', ');
     }
 
     //--listing the pages
@@ -270,6 +273,20 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     return TRUE;
 
   } // render()
+
+  function selectPrintStrategy($data, $mode){
+    $result_l = '_print'; //default
+
+    if ( $data['simpleList'] ){
+      $result_l = '_print';
+    } else if ( $data['simpleLine'] ){
+      $result_l = '_printOneLine';
+    } else if ( $mode == 'xhtml' ){
+      $result_l = '_printNicely';
+    }
+
+    return $result_l;
+  }
 
   /**
    * Check if the user wants a file to be displayed.
@@ -396,6 +413,21 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
     $renderer->listu_close();
   } // _print()
+
+  function _printOneLine(&$renderer, $tab, $type, $text, $mode, $nbCol){
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
+
+    if( empty($tab) ){
+      return;
+    }
+
+    $sep = '';
+    foreach ( $tab as $item ){
+      $renderer->cdata($sep);
+      $renderer->internallink(':'.$item['id'], $item['title']);
+      $sep = ', ';
+    }
+  } // _printOneLine
 
   function _beginPrint(&$renderer, &$tab, $type, $text, $mode){
     $this->_sort($tab);
