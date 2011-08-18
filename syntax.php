@@ -317,59 +317,54 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   }
 
   function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol){
-    $this->_sort($tab);
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
 
     //use actpage to count how many pages we have already processed
     $actpage=0;
 
-    //write this (localized) text as headline for the section
-    if ( $text != '' ){
-      $renderer->doc .= '<p class="catpageheadline">'.$text."</p>";
+    if( empty($tab)){
+      return;
     }
-    if( sizeof($tab) == 0){
-      $renderer->doc .= '<p>'.$this->getLang( ($type=='page') ? 'nopages' : 'nosubns').'</p>';
-    }
-    else{
-      $nbItemPerColumns = $this->computeNbItemPerColumns(sizeof($tab), $nbCol);
 
-      $percentWidth = 100/sizeof($nbItemPerColumns);
-      $percentWidth .= '%';
+    $nbItemPerColumns = $this->computeNbItemPerColumns(sizeof($tab), $nbCol);
 
-      $renderer->doc .= "\n".'<div class="catpagecol" style="width: ' . $percentWidth . '" ><ul>';
-      //firstchar stores the first character of the last added page
-      $firstchar = $this->_firstChar($tab[0]);
-      
-      //write the first index-letter
-      $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+    $percentWidth = 100/sizeof($nbItemPerColumns);
+    $percentWidth .= '%';
 
-      $idxCol = 0;
-      foreach( $tab as $item ){
-        //change to the next column if necessary
-        if ($actpage == $nbItemPerColumns[$idxCol]) {
-            $idxCol++;
-          $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: ' . $percentWidth . '"><ul>'."\n";
+    $renderer->doc .= "\n".'<div class="catpagecol" style="width: ' . $percentWidth . '" ><ul>';
+    //firstchar stores the first character of the last added page
+    $firstchar = $this->_firstChar($tab[0]);
 
-          $newLetter = $this->_firstChar($item);
-          if ( $newLetter != $firstchar ) {
-            $firstchar = $newLetter;
-            $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
-          }
-          else {
-            $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n";
-          }
-        }
-        //write the index-letters
+    //write the first index-letter
+    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+
+    $idxCol = 0;
+    foreach( $tab as $item ){
+      //change to the next column if necessary
+      if ($actpage == $nbItemPerColumns[$idxCol]) {
+        $idxCol++;
+        $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: ' . $percentWidth . '"><ul>'."\n";
+
         $newLetter = $this->_firstChar($item);
         if ( $newLetter != $firstchar ) {
           $firstchar = $newLetter;
           $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
         }
-
-        $this->_printElement($renderer, $item, $mode);
-        $actpage++;
+        else {
+          $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n";
+        }
       }
-      $renderer->doc .= "</ul></div>\n";
+      //write the index-letters
+      $newLetter = $this->_firstChar($item);
+      if ( $newLetter != $firstchar ) {
+        $firstchar = $newLetter;
+        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+      }
+
+      $this->_printElement($renderer, $item, $mode);
+      $actpage++;
     }
+    $renderer->doc .= "</ul></div>\n";
   } // _printNicely()
 
   /**
@@ -389,11 +384,25 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } // _firstChar
 
   function _print(&$renderer, $tab, $type, $text, $mode, $nbCol){
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
+
+    if( empty($tab)){
+      return;
+    }
+
+    $renderer->listu_open();
+    foreach ( $tab as $item ){
+      $this->_printElement($renderer, $item, $mode);
+    }
+    $renderer->listu_close();
+  } // _print()
+
+  function _beginPrint(&$renderer, &$tab, $type, $text, $mode){
     $this->_sort($tab);
 
     if ( $text != '' ){
       if ( $mode == 'xhtml' ){
-        $renderer->doc .= '<p class="catpageheadline">'.$text."</p>";
+        $renderer->doc .= '<p class="catpageheadline">'.$text.'</p>';
       } else {
         $renderer->linebreak();
         $renderer->p_open();
@@ -402,18 +411,14 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       }
     }
 
-    if( sizeof($tab) == 0){
+    if ( empty($tab) ){
       $renderer->p_open();
       $renderer->cdata($this->getLang( ($type=='page') ? 'nopages' : 'nosubns'));
       $renderer->p_close();
-    } else {
-      $renderer->listu_open();
-      foreach ( $tab as $item ){
-        $this->_printElement($renderer, $item, $mode);
-      }
-      $renderer->listu_close();
     }
-  } // _print()
+  }
+
+
 
   /**
    * @param Array  $item      Represents the file
