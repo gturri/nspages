@@ -51,7 +51,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'title' => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
-            'maxDepth' => (int) 1, 'nbCol' => 3, 'simpleLine' => false);
+            'maxDepth' => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
+            'sortid' => false);
 
      $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -63,6 +64,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-title/i", $return['title'], true);
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
     $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
+    $this->_checkOption($match, "/-sortid/i", $return['sortid'], true);
 
     //Looking for the -r option
     if ( preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
@@ -238,9 +240,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         }
       } else {
         if ( $this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item) ){
-          if ( !$data['title'] || $item['title'] === null ){
-            $item['title'] = noNS($item['id']);
-          }
+          $this->_preparePage($item, $data);
           $pages[] = $item;
         }
       }
@@ -311,6 +311,21 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   }
 
   /**
+   * Fix or build attributes a page should have
+   */
+  function _preparePage(&$page, $data){
+    if ( !$data['title'] || $page['title'] === null ){
+      $page['title'] = noNS($page['id']);
+    }
+
+    if($data['sortid']) {
+      $page['sort'] = noNS($page['id']);
+    }else {
+      $page['sort'] =  $page['title'];
+    }
+  }
+
+  /**
    * When we display a namespace, we want to:
    * - link to it's main page (if such a page exists)
    * - get the id of this main page (if the option is active)
@@ -331,6 +346,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
       }
       $ns['id'] = $idMainPage; //... and we'll link directly to this page
     }
+    $ns['sort'] = $ns['title'];
   }
 
   function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol){
@@ -393,7 +409,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } // _sort
 
   static function _order($p1, $p2){
-    return strcasecmp(utf8_strtoupper($p1['title']), utf8_strtoupper($p2['title']));
+    return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
   } //_order
 
   function _firstChar($item){
