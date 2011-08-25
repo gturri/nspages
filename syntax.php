@@ -412,7 +412,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   } //_order
 
   function _firstChar($item){
-    return utf8_strtoupper(utf8_substr($item['title'], 0, 1));
+    return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
   } // _firstChar
 
   function _print(&$renderer, $tab, $type, $text, $mode, $nbCol){
