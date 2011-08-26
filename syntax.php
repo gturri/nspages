@@ -64,7 +64,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-title/i", $return['title'], true);
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
     $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
-    $this->_checkOption($match, "/-sortById/i", $return['sortid'], true);
+    $this->_checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
 
     //Looking for the -r option
     if ( preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
