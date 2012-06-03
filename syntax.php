@@ -52,7 +52,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'textNS' => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff' => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'maxDepth' => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
-            'sortid' => false);
+            'sortid' => false, 'reverse' => false);
 
      $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
      $match .= ' ';
@@ -65,6 +65,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $this->_checkOption($match, "/-h1/i", $return['title'], true);
     $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
     $this->_checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
+    $this->_checkOption($match, "/-reverse/i", $return['reverse'], true);
 
     //Looking for the -r option
     if ( preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found) ){
@@ -251,7 +252,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     //--listing the subnamespaces (if needed)
     if( $data['subns'] ){
-      call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol']);
+      call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol'], $data['reverse']);
     }
 
     if ( $printFunc=='_printOneLine' && $data['textPages'] === '' && !$data['nopages'] ){
@@ -260,7 +261,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     //--listing the pages
     if( !$data['nopages'] ){
-      call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol']);
+      call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol'], $data['reverse']);
     }
 
     //this is needed to make sure everything after the plugin is written below the output
@@ -349,8 +350,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $ns['sort'] = $ns['title'];
   }
 
-  function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol){
-    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
+  function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse){
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
 
     //use actpage to count how many pages we have already processed
     $actpage=0;
@@ -403,20 +404,28 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
   /**
    * Sort the $tab according to the ['sort'] key 
    */
-  function _sort(&$tab){
-    usort($tab, array("syntax_plugin_nspages", "_order"));
+  function _sort(&$tab, $reverse){
+    if ( ! $reverse ){
+      usort($tab, array("syntax_plugin_nspages", "_order"));
+    } else {
+      usort($tab, array("syntax_plugin_nspages", "_orderReverse"));
+    }
   } // _sort
 
   static function _order($p1, $p2){
     return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
   } //_order
 
+  static function _orderReverse($p1, $p2){
+    return - strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
+  }
+
   function _firstChar($item){
     return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
   } // _firstChar
 
-  function _print(&$renderer, $tab, $type, $text, $mode, $nbCol){
-    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
+  function _print(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse){
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
 
     if( empty($tab)){
       return;
@@ -429,8 +438,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $renderer->listu_close();
   } // _print()
 
-  function _printOneLine(&$renderer, $tab, $type, $text, $mode, $nbCol){
-    $this->_beginPrint($renderer, $tab, $type, $text, $mode);
+  function _printOneLine(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse){
+    $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
 
     if( empty($tab) ){
       return;
@@ -444,8 +453,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
   } // _printOneLine
 
-  function _beginPrint(&$renderer, &$tab, $type, $text, $mode){
-    $this->_sort($tab);
+  function _beginPrint(&$renderer, &$tab, $type, $text, $mode, $reverse){
+    $this->_sort($tab, $reverse);
 
     if ( $text != '' ){
       if ( $mode == 'xhtml' ){
