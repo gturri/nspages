@@ -365,34 +365,34 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     $percentWidth = 100/sizeof($nbItemPerColumns);
     $percentWidth .= '%';
 
-    $renderer->doc .= "\n".'<div class="catpagecol" style="width: ' . $percentWidth . '" ><ul>';
+    $renderer->doc .= "\n".'<div class="catpagecol" style="width: ' . $percentWidth . '" >';
     //firstchar stores the first character of the last added page
     $firstchar = $this->_firstChar($tab[0]);
 
     //write the first index-letter
-    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
 
     $idxCol = 0;
     foreach( $tab as $item ){
       //change to the next column if necessary
       if ($actpage == $nbItemPerColumns[$idxCol]) {
         $idxCol++;
-        $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: ' . $percentWidth . '"><ul>'."\n";
+        $renderer->doc .= "</div>\n".'<div class="catpagecol" style="width: ' . $percentWidth . '">'."\n";
 
         $newLetter = $this->_firstChar($item);
         if ( $newLetter != $firstchar ) {
           $firstchar = $newLetter;
-          $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+          $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
         }
         else {
-          $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n";
+          $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul>\n";
         }
       }
       //write the index-letters
       $newLetter = $this->_firstChar($item);
       if ( $newLetter != $firstchar ) {
         $firstchar = $newLetter;
-        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n";
+        $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
       }
 
       $this->_printElement($renderer, $item, $mode);
