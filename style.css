@@ -1,29 +1,29 @@
 /**
  * style.css for Plugin nspages
- * 
+ *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Daniel Schranz <xla@gmx.at>
  *
  */
 
 /* the headlines (categories and pages in this category) */
-.catpageheadline { 
-	text-decoration: underline;
-	font-size: x-large;
-	clear: left;
+.catpageheadline {
+    text-decoration: underline;
+    font-size: x-large;
+    clear: left;
 }
 
 /* the letters to indicate the following pages start with a new letter */
 .catpagechars {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .catpagecol {
-	position: relative;
-	float: left;
+    position: relative;
+    float: left;
 }
 
 /* to make sure anything after the index will be written beneath */
 .catpageeofidx {
-	clear: left;
+    clear: left;
 }
