@@ -361,7 +361,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $firstchar = $this->_firstChar($tab[0]);
 
         //write the first index-letter
-        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
+        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
 
         $idxCol = 0;
         foreach($tab as $item) {
@@ -373,16 +373,16 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
                 $newLetter = $this->_firstChar($item);
                 if($newLetter != $firstchar) {
                     $firstchar = $newLetter;
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
+                    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
                 } else {
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul>\n";
+                    $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul class=\"nspagesul\">\n";
                 }
             }
             //write the index-letters
             $newLetter = $this->_firstChar($item);
             if($newLetter != $firstchar) {
                 $firstchar = $newLetter;
-                $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
+                $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
             }
 
             $this->_printElement($renderer, $item, $mode);
