@@ -368,14 +368,14 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             //change to the next column if necessary
             if($actpage == $nbItemPerColumns[$idxCol]) {
                 $idxCol++;
-                $renderer->doc .= "</div>\n".'<div class="catpagecol" style="width: '.$percentWidth.'">'."\n";
+                $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: '.$percentWidth.'">'."\n";
 
                 $newLetter = $this->_firstChar($item);
                 if($newLetter != $firstchar) {
                     $firstchar = $newLetter;
-                    $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
+                    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul>\n";
                 } else {
-                    $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul>\n";
+                    $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul>\n";
                 }
             }
             //write the index-letters
