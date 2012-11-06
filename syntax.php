@@ -37,7 +37,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'textNS'               => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
-            'sortid'               => false, 'reverse' => false
+            'sortid'               => false, 'reverse' => false,
+            'pagesinns'              => false,
         );
 
         $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
@@ -52,6 +53,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
         $this->_checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
         $this->_checkOption($match, "/-reverse/i", $return['reverse'], true);
+        $this->_checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
 
         //Looking for the -r option
         if(preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
@@ -230,7 +232,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             } else {
                 if($this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item)) {
                     $this->_preparePage($item, $data);
-                    $pages[] = $item;
+                    if($data['pagesinns']) {
+                        $subnamespaces[] = $item;
+                    } else {
+                        $pages[] = $item;
+                    }
                 }
             }
         }
@@ -243,13 +249,17 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol'], $data['reverse']);
         }
 
-        if($printFunc == '_printOneLine' && $data['textPages'] === '' && !$data['nopages']) {
-            $renderer->cdata(', ');
-        }
+        if(!$data['pagesinns']) {
 
-        //--listing the pages
-        if(!$data['nopages']) {
-            call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol'], $data['reverse']);
+            if($printFunc == '_printOneLine' && $data['textPages'] === '' && !$data['nopages']) {
+                $renderer->cdata(', ');
+            }
+
+            //--listing the pages
+            if(!$data['nopages']) {
+                call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol'], $data['reverse']);
+            }
+
         }
 
         //this is needed to make sure everything after the plugin is written below the output
