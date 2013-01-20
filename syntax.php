@@ -202,9 +202,9 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
 
     function render($mode, &$renderer, $data) {
-        global $conf; //to get $conf['savedir']
+        global $conf;
         // Make sure the namespace exists
-        if(@opendir($conf['savedir'].'/pages/'.$data['wantedDir']) === false || !$data['safe']) {
+        if(@opendir($conf['datadir'] . '/' . $data['wantedDir']) === false || !$data['safe']) {
             $renderer->section_open(1);
             $renderer->cdata($this->getLang('doesntexist').$data['wantedNS']);
             $renderer->section_close();
@@ -219,7 +219,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'showhidden'=> false, 'firsthead'=> true
         );
         $files = array();
-        search($files, $conf['savedir'].'/pages/', 'search_universal', $opt, $data['wantedDir']);
+        search($files, $conf['datadir'], 'search_universal', $opt, $data['wantedDir']);
 
         $pages         = array();
         $subnamespaces = array();
