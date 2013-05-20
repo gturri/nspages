@@ -9,6 +9,9 @@
  * @author  Andreas Gohr <gohr@cosmocode.de>
  */
 if(!defined('DOKU_INC')) die();
+require_once 'printers/printerOneLine.php';
+require_once 'printers/printerSimpleList.php';
+require_once 'printers/printerNice.php';
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
@@ -203,11 +206,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     function render($mode, &$renderer, $data) {
         global $conf;
+        $printer = $this->selectPrinter($mode, $renderer, $data);
+
         // Make sure the namespace exists
         if(@opendir($conf['datadir'] . '/' . $data['wantedDir']) === false || !$data['safe']) {
-            $renderer->section_open(1);
-            $renderer->cdata($this->getLang('doesntexist').$data['wantedNS']);
-            $renderer->section_close();
+            $printer->printUnusableNamespace($data['wantedNS']);
             return TRUE;
         }
 
@@ -241,50 +244,38 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        //writting the output
-        $printFunc = $this->selectPrintStrategy($data, $mode);
-
         //--listing the subnamespaces (if needed)
         if($data['subns']) {
-            call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol'], $data['reverse']);
+            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
         }
 
         if(!$data['pagesinns']) {
 
-            if($printFunc == '_printOneLine' && $data['textPages'] === '' && !$data['nopages']) {
-                $renderer->cdata(', ');
+            if($data['textPages'] === '' && !$data['nopages']) {
+              $printer->printTransition();
             }
 
             //--listing the pages
             if(!$data['nopages']) {
-                call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol'], $data['reverse']);
+                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse']);
             }
 
         }
 
-        //this is needed to make sure everything after the plugin is written below the output
-        if($mode == 'xhtml') {
-            $renderer->doc .= '<br class="catpageeofidx">';
-        } else {
-            $renderer->linebreak();
-        }
+        $printer->printEnd();
 
         return TRUE;
-
     } // render()
 
-    function selectPrintStrategy($data, $mode) {
-        $result_l = '_print'; //default
-
+    function selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
-            $result_l = '_print';
+            return new nspages_printerSimpleList($this, $mode, $renderer);
         } else if($data['simpleLine']) {
-            $result_l = '_printOneLine';
+            return new nspages_printerOneLine($this, $mode, $renderer);
         } else if($mode == 'xhtml') {
-            $result_l = '_printNicely';
+            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol']);
         }
-
-        return $result_l;
+        return new nspages_printerSimpleList($this, $mode, $renderer);
     }
 
     /**
@@ -351,192 +342,5 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $ns['sort'] = $ns['title'];
     }
 
-    function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        //use actpage to count how many pages we have already processed
-        $actpage = 0;
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $nbItemPerColumns = $this->computeNbItemPerColumns(sizeof($tab), $nbCol);
-
-        $percentWidth = 100 / sizeof($nbItemPerColumns);
-        $percentWidth .= '%';
-
-        $renderer->doc .= "\n".'<div class="catpagecol" style="width: '.$percentWidth.'" >';
-        //firstchar stores the first character of the last added page
-        $firstchar = $this->_firstChar($tab[0]);
-
-        //write the first index-letter
-        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-
-        $idxCol = 0;
-        foreach($tab as $item) {
-            //change to the next column if necessary
-            if($actpage == $nbItemPerColumns[$idxCol]) {
-                $idxCol++;
-                $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: '.$percentWidth.'">'."\n";
-
-                $newLetter = $this->_firstChar($item);
-                if($newLetter != $firstchar) {
-                    $firstchar = $newLetter;
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-                } else {
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul class=\"nspagesul\">\n";
-                }
-            }
-            //write the index-letters
-            $newLetter = $this->_firstChar($item);
-            if($newLetter != $firstchar) {
-                $firstchar = $newLetter;
-                $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-            }
-
-            $this->_printElement($renderer, $item, $mode);
-            $actpage++;
-        }
-        $renderer->doc .= "</ul></div>\n";
-    } // _printNicely()
-
-    /**
-     * Sort the $tab according to the ['sort'] key
-     */
-    function _sort(&$tab, $reverse) {
-        if(!$reverse) {
-            usort($tab, array("syntax_plugin_nspages", "_order"));
-        } else {
-            usort($tab, array("syntax_plugin_nspages", "_orderReverse"));
-        }
-    } // _sort
-
-    static function _order($p1, $p2) {
-        return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
-    } //_order
-
-    static function _orderReverse($p1, $p2) {
-        return -strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
-    }
-
-    function _firstChar($item) {
-        return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
-    } // _firstChar
-
-    function _print(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $renderer->listu_open();
-        foreach($tab as $item) {
-            $this->_printElement($renderer, $item, $mode);
-        }
-        $renderer->listu_close();
-    } // _print()
-
-    function _printOneLine(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $sep = '';
-        foreach($tab as $item) {
-            $renderer->cdata($sep);
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $sep = ', ';
-        }
-    } // _printOneLine
-
-    function _beginPrint(&$renderer, &$tab, $type, $text, $mode, $reverse) {
-        $this->_sort($tab, $reverse);
-
-        if($text != '') {
-            if($mode == 'xhtml') {
-                $renderer->doc .= '<p class="catpageheadline">'.$text.'</p>';
-            } else {
-                $renderer->linebreak();
-                $renderer->p_open();
-                $renderer->cdata($text);
-                $renderer->p_close();
-            }
-        }
-
-        if(empty($tab)) {
-            $renderer->p_open();
-            $renderer->cdata($this->getLang(($type == 'page') ? 'nopages' : 'nosubns'));
-            $renderer->p_close();
-        }
-    }
-
-    /**
-     * @param DokuRenderer $renderer
-     * @param Array        $item      Represents the file
-     * @param string       $mode      Either 'page' of 'subns'
-     */
-    function _printElement(&$renderer, $item, $mode) {
-        if($item['type'] !== 'd') {
-            $renderer->listitem_open(1);
-            $renderer->listcontent_open();
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $renderer->listcontent_close();
-            $renderer->listitem_close();
-        } else { //Case of a subnamespace
-            if($mode == 'xhtml') {
-                $renderer->doc .= '<li class="closed">';
-            } else {
-                $renderer->listitem_open(1);
-            }
-            $renderer->listcontent_open();
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $renderer->listcontent_close();
-            $renderer->listitem_close();
-        }
-    } // _printElement()
-
-    /**
-     * Compute the number of element to display per column
-     * When $nbItems / $nbCols isn't an int, we make sure that, for aesthetic reasons,
-     * that the first are the ones which have the more items
-     * Moreover, if we don't have enought items to display, we may choose to display less than the number of columns wanted
-     *
-     * @param int $nbItems The total number of items to display
-     * @param int $nbCols the number of columns to consider
-     * @return an array which contains $nbCols int.
-     */
-    function computeNbItemPerColumns($nbItems, $nbCols) {
-        $result = array();
-
-        //We make sure this value is correct (it may be 'null' if we upgrade the plugin, and don't run "handle" because of the cache
-        if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
-            $nbCols = 3;
-        }
-
-        if($nbItems < $nbCols) {
-            for($idx = 0; $idx < $nbItems; $idx++) {
-                $result[] = $idx + 1;
-            }
-            return $result;
-        }
-
-        $collength    = $nbItems / $nbCols;
-        $nbItemPerCol = array();
-        for($idx = 0; $idx < $nbCols; $idx++) {
-            $nbItemPerCol[] = ceil(($idx + 1) * $collength) - ceil($idx * $collength);
-        }
-        rsort($nbItemPerCol);
-
-        $result[] = $nbItemPerCol[0];
-        for($idx = 1; $idx < $nbCols; $idx++) {
-            $result[] = end($result) + $nbItemPerCol[$idx];
-        }
-
-        return $result;
-    }
 
 } // class syntax_plugin_nspages
