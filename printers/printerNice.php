@@ -7,57 +7,64 @@
 
 if(!defined('DOKU_INC')) die();
 require_once 'printer.php';
+require_once 'rendererXhtmlHelper.php';
 
 class nspages_printerNice extends nspages_printer {
     private $nbCols;
 
     function __construct($plugin, $mode, $renderer, $nbCols){
         parent::__construct($plugin, $mode, $renderer);
+        if ( $this->mode !== 'xhtml' ){
+          throw Exception('nspages_printerNice can only work in xhtml mode');
+        }
         $this->nbCols = $this->_computeActualNbCols($nbCols);
     }
 
     function _print($tab, $type, $text, $reverse) {
-        //use actpage to count how many pages we have already processed
-        $actpage = 0;
+        $nbItemsPrinted = 0;
 
         $nbItemPerColumns = $this->_computeNbItemPerColumns(sizeof($tab));
+        $actualNbCols = count($nbItemPerColumns);
+        $helper = new rendererXhtmlHelper($this->renderer, $actualNbCols, $this->plugin);
 
-        $percentWidth = 100 / sizeof($nbItemPerColumns);
-        $percentWidth .= '%';
+        $helper->openColumn();
+        $firstCharOfLastAddedPage = $this->_firstChar($tab[0]);
 
-        $this->renderer->doc .= "\n".'<div class="catpagecol" style="width: '.$percentWidth.'" >';
-        //firstchar stores the first character of the last added page
-        $firstchar = $this->_firstChar($tab[0]);
-
-        //write the first index-letter
-        $this->renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
+        $helper->printHeaderChar($firstCharOfLastAddedPage);
+        $helper->openListOfItems();
 
         $idxCol = 0;
         foreach($tab as $item) {
             //change to the next column if necessary
-            if($actpage == $nbItemPerColumns[$idxCol]) {
+            if($nbItemsPrinted == $nbItemPerColumns[$idxCol]) {
                 $idxCol++;
-                $this->renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: '.$percentWidth.'">'."\n";
+                $helper->closeListOfItems();
+                $helper->closeColumn();
+                $helper->openColumn();
 
                 $newLetter = $this->_firstChar($item);
-                if($newLetter != $firstchar) {
-                    $firstchar = $newLetter;
-                    $this->renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
+                if($newLetter != $firstCharOfLastAddedPage) {
+                    $firstCharOfLastAddedPage = $newLetter;
+                    $helper->printHeaderChar($firstCharOfLastAddedPage);
                 } else {
-                    $this->renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->plugin->getLang('continued')."</div>\n<ul class=\"nspagesul\">\n";
+                    $helper->printHeaderChar($firstCharOfLastAddedPage, true);
                 }
+                $helper->openListOfItems();
             }
-            //write the index-letters
+
             $newLetter = $this->_firstChar($item);
-            if($newLetter != $firstchar) {
-                $firstchar = $newLetter;
-                $this->renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
+            if($newLetter != $firstCharOfLastAddedPage) {
+                $firstCharOfLastAddedPage = $newLetter;
+                $helper->closeListOfItems();
+                $helper->printHeaderChar($firstCharOfLastAddedPage);
+                $helper->openListOfItems();
             }
 
             $this->_printElement($item);
-            $actpage++;
+            $nbItemsPrinted++;
         }
-        $this->renderer->doc .= "</ul></div>\n";
+        $helper->closeListOfItems();
+        $helper->closeColumn();
     }
 
     private function _firstChar($item) {
