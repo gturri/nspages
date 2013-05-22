@@ -12,6 +12,7 @@ if(!defined('DOKU_INC')) die();
 require_once 'printers/printerOneLine.php';
 require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
+require_once 'fileHelper.php';
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
@@ -208,64 +209,49 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         global $conf;
         $printer = $this->selectPrinter($mode, $renderer, $data);
 
-        // Make sure the namespace exists
-        if(@opendir($conf['datadir'] . '/' . $data['wantedDir']) === false || !$data['safe']) {
+        if( ! $this->_namespaceExists($data)){
             $printer->printUnusableNamespace($data['wantedNS']);
             return TRUE;
         }
 
-        // Getting the files
-        $opt   = array(
-            'depth'     => $data['maxDepth'], 'keeptxt'=> false, 'listfiles'=> !$data['nopages'],
-            'listdirs'  => $data['subns'], 'pageonly'=> true, 'skipacl'=> false,
-            'sneakyacl' => true, 'hash'=> false, 'meta'=> false, 'showmsg'=> false,
-            'showhidden'=> false, 'firsthead'=> true
-        );
-        $files = array();
-        search($files, $conf['datadir'], 'search_universal', $opt, $data['wantedDir']);
-
-        $pages         = array();
-        $subnamespaces = array();
-        foreach($files as $item) {
-            if($item['type'] == 'd') {
-                if($this->_wantedFile($data['excludedNS'], $data['pregNSOn'], $data['pregNSOff'], $item)) {
-                    $this->_prepareNS($item, $data['title']);
-                    $subnamespaces[] = $item;
-                }
-            } else {
-                if($this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item)) {
-                    $this->_preparePage($item, $data);
-                    if($data['pagesinns']) {
-                        $subnamespaces[] = $item;
-                    } else {
-                        $pages[] = $item;
-                    }
-                }
-            }
+        $fileHelper = new fileHelper($data);
+        $pages = $fileHelper->getPages();
+        $subnamespaces = $fileHelper->getSubnamespaces();
+        if ( $data['pagesinns'] ){
+            $subnamespaces = array_merge($subnamespaces, $pages);
         }
 
-        //--listing the subnamespaces (if needed)
+        $this->_print($printer, $data, $subnamespaces, $pages);
+        $printer->printEnd();
+
+        return TRUE;
+    }
+
+    private function _print($printer, $data, $subnamespaces, $pages){
         if($data['subns']) {
             $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
         }
 
         if(!$data['pagesinns']) {
 
-            if($data['textPages'] === '' && !$data['nopages']) {
+            if ( $this->_shouldPrintTransition($data) ){
               $printer->printTransition();
             }
 
-            //--listing the pages
             if(!$data['nopages']) {
                 $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse']);
             }
-
         }
+    }
 
-        $printer->printEnd();
+    private function _shouldPrintTransition($data){
+        return $data['textPages'] === '' && !$data['nopages'] && $data['subns'];
+    }
 
-        return TRUE;
-    } // render()
+    private function _namespaceExists($data){
+        global $conf;
+        return @opendir($conf['datadir'] . '/' . $data['wantedDir']) !== false && $data['safe'];
+    }
 
     function selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
@@ -277,70 +263,4 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         }
         return new nspages_printerSimpleList($this, $mode, $renderer);
     }
-
-    /**
-     * Check if the user wants a file to be displayed.
-     * Filters consider the "id" and not the "title". Therefore, the treatment is the same for files and for subnamespace.
-     * Moreover, filters remain valid even if the title of a page is changed.
-     *
-     * @param Array  $excludedFiles  A list of files that shouldn't be displayed
-     * @param Array  $pregOn       RegEx that a file should match to be displayed
-     * @param Array  $pregOff      RegEx that a file shouldn't match to be displayed
-     * @param string $file
-     * @return bool
-     */
-    function _wantedFile($excludedFiles, $pregOn, $pregOff, $file) {
-        $wanted = true;
-        $noNSId = noNS($file['id']);
-        $wanted &= (!in_array($noNSId, $excludedFiles));
-        foreach($pregOn as $preg) {
-            $wanted &= preg_match($preg, $noNSId);
-        }
-        foreach($pregOff as $preg) {
-            $wanted &= !preg_match($preg, $noNSId);
-        }
-        return $wanted;
-    }
-
-    /**
-     * Fix or build attributes a page should have
-     */
-    function _preparePage(&$page, $data) {
-        if(!$data['title'] || $page['title'] === null) {
-            $page['title'] = noNS($page['id']);
-        }
-
-        if($data['sortid']) {
-            $page['sort'] = noNS($page['id']);
-        } else {
-            $page['sort'] = $page['title'];
-        }
-    }
-
-    /**
-     * When we display a namespace, we want to:
-     * - link to it's main page (if such a page exists)
-     * - get the id of this main page (if the option is active)
-     *
-     * @param         $ns  A structure which represents a namespace
-     * @param boolean $useTitle Do we have to check the title of the ns?
-     */
-    function _prepareNS(&$ns, $useTitle) {
-        $idMainPage = $ns['id'].':';
-        resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
-        $ns['title'] = noNS($ns['id']);
-
-        if(!$exist) { //if there is currently no main page for this namespace, then...
-            $ns['id'] .= ':'; //...we'll link directly to the namespace
-        } else { //if there is a main page, then...
-            $title = p_get_first_heading($idMainPage, true); //...we adapt the title to use
-            if(!is_null($title) && $useTitle) {
-                $ns['title'] = $title;
-            }
-            $ns['id'] = $idMainPage; //... and we'll link directly to this page
-        }
-        $ns['sort'] = $ns['title'];
-    }
-
-
 } // class syntax_plugin_nspages
