@@ -13,6 +13,7 @@ require_once 'printers/printerOneLine.php';
 require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
 require_once 'fileHelper.php';
+require_once 'optionParser.php';
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
@@ -34,111 +35,33 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     } // getType()
 
     function handle($match, $state, $pos, &$handler) {
-        $return = array(
-            'subns'                => false, 'nopages' => false, 'simpleList' =>
-            false, 'excludedPages' => array(), 'excludedNS' => array(),
-            'title'                => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
-            'textNS'               => '', 'textPages' => '', 'pregPagesOn' => array(),
-            'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
-            'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
-            'sortid'               => false, 'reverse' => false,
-            'pagesinns'              => false,
-        );
+        $return = $this->_getDefaultOptions();
 
         $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
         $match .= ' ';
 
-        //Looking the first options
-        $this->_checkOption($match, "/-subns/i", $return['subns'], true);
-        $this->_checkOption($match, "/-nopages/i", $return['nopages'], true);
-        $this->_checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
-        $this->_checkOption($match, "/-title/i", $return['title'], true);
-        $this->_checkOption($match, "/-h1/i", $return['title'], true);
-        $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
-        $this->_checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
-        $this->_checkOption($match, "/-reverse/i", $return['reverse'], true);
-        $this->_checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
-
-        //Looking for the -r option
-        if(preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
-            if($found[1] != '') {
-                $return['maxDepth'] = (int) $found[1];
-            } else {
-                $return['maxDepth'] = 0; //no limit
-            }
-            $match = str_replace($found[0], '', $match);
-        }
-
-        //Looking for the number of columns
-        if(preg_match("/-nb?Cols? *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
-            if($found[1] != '') {
-                $return['nbCol'] = max((int) $found[1], 1);
-            }
-            $match = str_replace($found[0], '', $match);
-        }
-
-        //Looking for the -textPages option
-        if(preg_match("/-textPages? *= *\"([^\"]*)\"/i", $match, $found)) {
-            $return['textPages'] = $found[1];
-            $match               = str_replace($found[0], '', $match);
-        } else {
-            $return['textPages'] = $this->getLang('pagesinthiscat');
-        }
-        $return['textPages'] = htmlspecialchars($return['textPages']);
-
-        //Looking for the -textNS option
-        if(preg_match("/-textNS *= *\"([^\"]*)\"/i", $match, $found)) {
-            $return['textNS'] = $found[1];
-            $match            = str_replace($found[0], '', $match);
-        } else {
-            $return['textNS'] = $this->getLang('subcats');
-        }
-        $return['textNS'] = htmlspecialchars($return['textNS']);
-
-        //Looking for preg options
-        $this->_checkRegEx($match, "/-pregPages?On=\"([^\"]*)\"/i", $return['pregPagesOn']);
-        $this->_checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
-        $this->_checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
-        $this->_checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
-
-        //Looking for excluded pages and subnamespaces
-        //--Checking if specified subnamespaces have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*):/", $match, $found, PREG_SET_ORDER);
-        foreach($found as $subns) {
-            $return['excludedNS'][] = $subns[1];
-            $match                  = str_replace($subns[0], '', $match);
-        }
-
-        //--Checking if specified pages have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*) /", $match, $found, PREG_SET_ORDER);
-        foreach($found as $page) {
-            $return['excludedPages'][] = $page[1];
-            $match                     = str_replace($page[0], '', $match);
-        }
-
-        //--Looking if the current page has to be excluded
-        global $ID;
-        if(preg_match("/-exclude /", $match, $found)) {
-            $return['excludedPages'][] = noNS($ID);
-            $match                     = str_replace($found[0], '', $match);
-        }
-
-        //--Looking if the syntax -exclude[item1 item2] has been used
-        if(preg_match("/-exclude:\[(.*)\]/", $match, $found)) {
-            $match = str_replace($found[0], '', $match);
-            $found = str_replace('@', '', $found[1]); //for retrocompatibility
-            $found = explode(' ', $found);
-            foreach($found as $item) {
-                if($item[strlen($item) - 1] == ':') { //not utf8_strlen() on purpose
-                    $return['excludedNS'][] = utf8_substr($item, 0, -1);
-                } else {
-                    $return['excludedPages'][] = $item;
-                }
-            }
-        }
+        optionParser::checkOption($match, "/-subns/i", $return['subns'], true);
+        optionParser::checkOption($match, "/-nopages/i", $return['nopages'], true);
+        optionParser::checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
+        optionParser::checkOption($match, "/-title/i", $return['title'], true);
+        optionParser::checkOption($match, "/-h1/i", $return['title'], true);
+        optionParser::checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
+        optionParser::checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
+        optionParser::checkOption($match, "/-reverse/i", $return['reverse'], true);
+        optionParser::checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
+        optionParser::checkRecurse($match, $return['maxDepth']);
+        optionParser::checkNbColumns($match, $return['nbCol']);
+        optionParser::checkTextPages($match, $return['textPages'], $this);
+        optionParser::checkTextNs($match, $return['textNS'], $this);
+        optionParser::checkRegEx($match, "/-pregPages?On=\"([^\"]*)\"/i", $return['pregPagesOn']);
+        optionParser::checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
+        optionParser::checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
+        optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
+        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
 
         //Looking for the wanted namespace
         //Now, only the wanted namespace remains in $match
+        global $ID;
         $wantedNS = trim($match);
         if($wantedNS == '') {
             //If there is nothing, we take the current namespace
@@ -182,27 +105,17 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         return $return;
     } // handle()
 
-    /**
-     * Check if a given option has been given, and remove it from the initial string
-     *
-     * @param string $match The string match by the plugin
-     * @param string $pattern The pattern which activate the option
-     * @param        $varAffected The variable which will memorise the option
-     * @param        $valIfFound the value affected to the previous variable if the option is found
-     */
-    function _checkOption(&$match, $pattern, &$varAffected, $valIfFound) {
-        if(preg_match($pattern, $match, $found)) {
-            $varAffected = $valIfFound;
-            $match       = str_replace($found[0], '', $match);
-        }
-    } // _checkOption
-
-    function _checkRegEx(&$match, $pattern, &$arrayAffected) {
-        preg_match_all($pattern, $match, $found, PREG_SET_ORDER);
-        foreach($found as $regex) {
-            $arrayAffected[] = $regex[1];
-            $match           = str_replace($regex[0], '', $match);
-        }
+    private function _getDefaultOptions(){
+        return array(
+            'subns'                => false, 'nopages' => false, 'simpleList' =>
+            false, 'excludedPages' => array(), 'excludedNS' => array(),
+            'title'                => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
+            'textNS'               => '', 'textPages' => '', 'pregPagesOn' => array(),
+            'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
+            'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
+            'sortid'               => false, 'reverse' => false,
+            'pagesinns'              => false,
+        );
     }
 
     function render($mode, &$renderer, $data) {
