@@ -14,6 +14,7 @@ require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
 require_once 'fileHelper.php';
 require_once 'optionParser.php';
+require_once 'namespaceFinder.php';
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
@@ -59,48 +60,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
 
-        //Looking for the wanted namespace
         //Now, only the wanted namespace remains in $match
-        global $ID;
-        $wantedNS = trim($match);
-        if($wantedNS == '') {
-            //If there is nothing, we take the current namespace
-            $wantedNS = '.';
-        }
-        if($wantedNS[0] == '.') {
-            //if it start with a '.', it is a relative path
-            $return['wantedNS'] = getNS($ID);
-        }
-        $return['wantedNS'] .= ':'.$wantedNS.':';
-
-        //For security reasons, and to pass the cleanid() function, get rid of '..'
-        $return['wantedNS'] = explode(':', $return['wantedNS']);
-
-        for($i = 0; $i < count($return['wantedNS']); $i++) {
-            if($return['wantedNS'][$i] === '' || $return['wantedNS'][$i] === '.') {
-                array_splice($return['wantedNS'], $i, 1);
-                $i--;
-            } else if($return['wantedNS'][$i] == '..') {
-                if($i == 0) {
-                    //The first can't be '..', to stay inside 'data/pages'
-                    break;
-                } else {
-                    //simplify the path, getting rid of 'ns:..'
-                    array_splice($return['wantedNS'], $i - 1, 2);
-                    $i -= 2;
-                }
-            }
-        }
-
-        if($return['wantedNS'][0] == '..') {
-            //path would be outside the 'pages' directory
-            $return['safe'] = false;
-        }
-
-        $return['wantedNS'] = implode(':', $return['wantedNS']);
-
-        //Deduce the wanted directory
-        $return['wantedDir'] = utf8_encodeFN(str_replace(':', '/', $return['wantedNS']));
+        $nsFinder = new namespaceFinder($match);
+        $return['wantedNS'] = $nsFinder->getWantedNs();
+        $return['safe'] = $nsFinder->isNsSafe();
+        $return['wantedDir'] = $nsFinder->getWantedDirectory();
 
         return $return;
     } // handle()
