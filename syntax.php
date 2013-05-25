@@ -12,7 +12,7 @@ if(!defined('DOKU_INC')) die();
 require_once 'printers/printerOneLine.php';
 require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
-require_once 'fileHelper.php';
+require_once 'fileHelper/fileHelper.php';
 require_once 'optionParser.php';
 require_once 'namespaceFinder.php';
 
