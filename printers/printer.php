@@ -18,6 +18,24 @@ abstract class nspages_printer {
       $this->mode = $mode;
     }
 
+    function printTOC($tab, $type, $text, $reverse){
+        $this->_printHeader($tab, $type, $text, $reverse);
+
+        if(empty($tab)) {
+            return;
+        }
+
+        $this->_print($tab, $type, $text, $reverse);
+    }
+
+    abstract function _print($tab, $type, $text, $reverse);
+
+    function printUnusableNamespace($wantedNS){
+         $this->renderer->section_open(1);
+         $this->renderer->cdata($this->plugin->getLang('doesntexist').$wantedNS);
+         $this->renderer->section_close();
+    }
+
     protected function _printHeader(&$tab, $type, $text, $reverse) {
         $this->_sort($tab, $reverse);
 
@@ -58,7 +76,7 @@ abstract class nspages_printer {
     /**
      * @param Array        $item      Represents the file
      */
-    function _printElement($item) {
+    protected function _printElement($item) {
         if($item['type'] !== 'd') {
             $this->renderer->listitem_open(1);
             $this->renderer->listcontent_open();
@@ -78,23 +96,6 @@ abstract class nspages_printer {
         }
     }
 
-    function printTOC($tab, $type, $text, $reverse){
-        $this->_printHeader($tab, $type, $text, $reverse);
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $this->_print($tab, $type, $text, $reverse);
-    }
-
-    abstract function _print($tab, $type, $text, $reverse);
-
-    function printUnusableNamespace($wantedNS){
-         $this->renderer->section_open(1);
-         $this->renderer->cdata($this->plugin->getLang('doesntexist').$wantedNS);
-         $this->renderer->section_close();
-    }
 
     function printEnd(){
         //this is needed to make sure everything after the plugin is written below the output

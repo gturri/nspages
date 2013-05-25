@@ -21,19 +21,18 @@ require_once 'namespaceFinder.php';
  * need to inherit from this class
  */
 class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
-
     function connectTo($aMode) {
         $this->Lexer->addSpecialPattern('<nspages[^>]*>', $aMode, 'plugin_nspages');
-    } // connectTo()
+    }
 
     function getSort() {
         //Execute before html mode
         return 189;
-    } // getSort()
+    }
 
     function getType() {
         return 'substition';
-    } // getType()
+    }
 
     function handle($match, $state, $pos, &$handler) {
         $return = $this->_getDefaultOptions();
@@ -67,7 +66,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $return['wantedDir'] = $nsFinder->getWantedDirectory();
 
         return $return;
-    } // handle()
+    }
 
     private function _getDefaultOptions(){
         return array(
@@ -84,9 +83,9 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     function render($mode, &$renderer, $data) {
         global $conf;
-        $printer = $this->selectPrinter($mode, $renderer, $data);
+        $printer = $this->_selectPrinter($mode, $renderer, $data);
 
-        if( ! $this->_namespaceExists($data)){
+        if( ! $this->_isNamespaceUsable($data)){
             $printer->printUnusableNamespace($data['wantedNS']);
             return TRUE;
         }
@@ -94,7 +93,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $fileHelper = new fileHelper($data);
         $pages = $fileHelper->getPages();
         $subnamespaces = $fileHelper->getSubnamespaces();
-        if ( $data['pagesinns'] ){
+        if ( $this->_shouldPrintPagesAmongNamespaces($data) ){
             $subnamespaces = array_merge($subnamespaces, $pages);
         }
 
@@ -104,12 +103,16 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         return TRUE;
     }
 
+    private function _shouldPrintPagesAmongNamespaces($data){
+        return $data['pagesinns'];
+    }
+
     private function _print($printer, $data, $subnamespaces, $pages){
         if($data['subns']) {
             $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
         }
 
-        if(!$data['pagesinns']) {
+        if(!$this->_shouldPrintPagesAmongNamespaces($data)) {
 
             if ( $this->_shouldPrintTransition($data) ){
               $printer->printTransition();
@@ -125,12 +128,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         return $data['textPages'] === '' && !$data['nopages'] && $data['subns'];
     }
 
-    private function _namespaceExists($data){
+    private function _isNamespaceUsable($data){
         global $conf;
         return @opendir($conf['datadir'] . '/' . $data['wantedDir']) !== false && $data['safe'];
     }
 
-    function selectPrinter($mode, &$renderer, $data){
+    private function _selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
             return new nspages_printerSimpleList($this, $mode, $renderer);
         } else if($data['simpleLine']) {
@@ -140,4 +143,4 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         }
         return new nspages_printerSimpleList($this, $mode, $renderer);
     }
-} // class syntax_plugin_nspages
+}

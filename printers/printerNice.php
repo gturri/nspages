@@ -20,6 +20,14 @@ class nspages_printerNice extends nspages_printer {
         $this->nbCols = $this->_computeActualNbCols($nbCols);
     }
 
+    private function _computeActualNbCols($nbCols){
+        $nbCols = (int) $nbCols;
+        if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
+            $nbCols = 3;
+        }
+        return $nbCols;
+    }
+
     function _print($tab, $type, $text, $reverse) {
         $nbItemsPrinted = 0;
 
@@ -69,14 +77,6 @@ class nspages_printerNice extends nspages_printer {
 
     private function _firstChar($item) {
         return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
-    }
-
-    private function _computeActualNbCols($nbCols){
-        $nbCols = (int) $nbCols;
-        if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
-            $nbCols = 3;
-        }
-        return $nbCols;
     }
 
     /**

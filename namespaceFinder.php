@@ -21,20 +21,26 @@ class namespaceFinder {
         $result = '';
         $wantedNS = trim($path);
         if($wantedNS == '') {
-            //If there is nothing, we take the current namespace
-            $wantedNS = '.';
+            $wantedNS = $this->getCurrentNamespace();
         }
-        if($wantedNS[0] == '.') {
-            //if it start with a '.', it is a relative path
+        if( $this->isRelativePath($wantedNS) ) {
             $result = getNS($ID);
         }
         $result .= ':'.$wantedNS.':';
         return $result;
     }
 
+    private function getCurrentNamespace(){
+        return '.';
+    }
+
+    private function isRelativePath($path){
+        return $path[0] == '.';
+    }
+
     /**
      * Get rid of '..'.
-     * Therefore, provides a ns which pass the cleanid() function,
+     * Therefore, provides a ns which passes the cleanid() function,
      */
     private function sanitizeNs(){
         $ns = explode(':', $this->wantedNs);
