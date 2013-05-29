@@ -9,28 +9,67 @@
  * @author  Andreas Gohr <gohr@cosmocode.de>
  */
 if(!defined('DOKU_INC')) die();
+require_once 'printers/printerOneLine.php';
+require_once 'printers/printerSimpleList.php';
+require_once 'printers/printerNice.php';
+require_once 'fileHelper/fileHelper.php';
+require_once 'optionParser.php';
+require_once 'namespaceFinder.php';
 
 /**
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
 class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
-
     function connectTo($aMode) {
         $this->Lexer->addSpecialPattern('<nspages[^>]*>', $aMode, 'plugin_nspages');
-    } // connectTo()
+    }
 
     function getSort() {
         //Execute before html mode
         return 189;
-    } // getSort()
+    }
 
     function getType() {
         return 'substition';
-    } // getType()
+    }
 
     function handle($match, $state, $pos, &$handler) {
-        $return = array(
+        $return = $this->_getDefaultOptions();
+
+        $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
+        $match .= ' ';
+
+        optionParser::checkOption($match, "/-subns/i", $return['subns'], true);
+        optionParser::checkOption($match, "/-nopages/i", $return['nopages'], true);
+        optionParser::checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
+        optionParser::checkOption($match, "/-title/i", $return['title'], true);
+        optionParser::checkOption($match, "/-h1/i", $return['title'], true);
+        optionParser::checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
+        optionParser::checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
+        optionParser::checkOption($match, "/-reverse/i", $return['reverse'], true);
+        optionParser::checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
+        optionParser::checkRecurse($match, $return['maxDepth']);
+        optionParser::checkNbColumns($match, $return['nbCol']);
+        optionParser::checkTextPages($match, $return['textPages'], $this);
+        optionParser::checkTextNs($match, $return['textNS'], $this);
+        optionParser::checkRegEx($match, "/-pregPages?On=\"([^\"]*)\"/i", $return['pregPagesOn']);
+        optionParser::checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
+        optionParser::checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
+        optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
+        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
+
+        //Now, only the wanted namespace remains in $match
+        $nsFinder = new namespaceFinder($match);
+        $return['wantedNS'] = $nsFinder->getWantedNs();
+        $return['safe'] = $nsFinder->isNsSafe();
+        $return['wantedDir'] = $nsFinder->getWantedDirectory();
+
+        return $return;
+    }
+
+    private function _getDefaultOptions(){
+        return array(
             'subns'                => false, 'nopages' => false, 'simpleList' =>
             false, 'excludedPages' => array(), 'excludedNS' => array(),
             'title'                => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
@@ -40,503 +79,68 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'sortid'               => false, 'reverse' => false,
             'pagesinns'              => false,
         );
-
-        $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
-        $match .= ' ';
-
-        //Looking the first options
-        $this->_checkOption($match, "/-subns/i", $return['subns'], true);
-        $this->_checkOption($match, "/-nopages/i", $return['nopages'], true);
-        $this->_checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
-        $this->_checkOption($match, "/-title/i", $return['title'], true);
-        $this->_checkOption($match, "/-h1/i", $return['title'], true);
-        $this->_checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
-        $this->_checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
-        $this->_checkOption($match, "/-reverse/i", $return['reverse'], true);
-        $this->_checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
-
-        //Looking for the -r option
-        if(preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
-            if($found[1] != '') {
-                $return['maxDepth'] = (int) $found[1];
-            } else {
-                $return['maxDepth'] = 0; //no limit
-            }
-            $match = str_replace($found[0], '', $match);
-        }
-
-        //Looking for the number of columns
-        if(preg_match("/-nb?Cols? *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
-            if($found[1] != '') {
-                $return['nbCol'] = max((int) $found[1], 1);
-            }
-            $match = str_replace($found[0], '', $match);
-        }
-
-        //Looking for the -textPages option
-        if(preg_match("/-textPages? *= *\"([^\"]*)\"/i", $match, $found)) {
-            $return['textPages'] = $found[1];
-            $match               = str_replace($found[0], '', $match);
-        } else {
-            $return['textPages'] = $this->getLang('pagesinthiscat');
-        }
-        $return['textPages'] = htmlspecialchars($return['textPages']);
-
-        //Looking for the -textNS option
-        if(preg_match("/-textNS *= *\"([^\"]*)\"/i", $match, $found)) {
-            $return['textNS'] = $found[1];
-            $match            = str_replace($found[0], '', $match);
-        } else {
-            $return['textNS'] = $this->getLang('subcats');
-        }
-        $return['textNS'] = htmlspecialchars($return['textNS']);
-
-        //Looking for preg options
-        $this->_checkRegEx($match, "/-pregPages?On=\"([^\"]*)\"/i", $return['pregPagesOn']);
-        $this->_checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
-        $this->_checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
-        $this->_checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
-
-        //Looking for excluded pages and subnamespaces
-        //--Checking if specified subnamespaces have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*):/", $match, $found, PREG_SET_ORDER);
-        foreach($found as $subns) {
-            $return['excludedNS'][] = $subns[1];
-            $match                  = str_replace($subns[0], '', $match);
-        }
-
-        //--Checking if specified pages have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*) /", $match, $found, PREG_SET_ORDER);
-        foreach($found as $page) {
-            $return['excludedPages'][] = $page[1];
-            $match                     = str_replace($page[0], '', $match);
-        }
-
-        //--Looking if the current page has to be excluded
-        global $ID;
-        if(preg_match("/-exclude /", $match, $found)) {
-            $return['excludedPages'][] = noNS($ID);
-            $match                     = str_replace($found[0], '', $match);
-        }
-
-        //--Looking if the syntax -exclude[item1 item2] has been used
-        if(preg_match("/-exclude:\[(.*)\]/", $match, $found)) {
-            $match = str_replace($found[0], '', $match);
-            $found = str_replace('@', '', $found[1]); //for retrocompatibility
-            $found = explode(' ', $found);
-            foreach($found as $item) {
-                if($item[strlen($item) - 1] == ':') { //not utf8_strlen() on purpose
-                    $return['excludedNS'][] = utf8_substr($item, 0, -1);
-                } else {
-                    $return['excludedPages'][] = $item;
-                }
-            }
-        }
-
-        //Looking for the wanted namespace
-        //Now, only the wanted namespace remains in $match
-        $wantedNS = trim($match);
-        if($wantedNS == '') {
-            //If there is nothing, we take the current namespace
-            $wantedNS = '.';
-        }
-        if($wantedNS[0] == '.') {
-            //if it start with a '.', it is a relative path
-            $return['wantedNS'] = getNS($ID);
-        }
-        $return['wantedNS'] .= ':'.$wantedNS.':';
-
-        //For security reasons, and to pass the cleanid() function, get rid of '..'
-        $return['wantedNS'] = explode(':', $return['wantedNS']);
-
-        for($i = 0; $i < count($return['wantedNS']); $i++) {
-            if($return['wantedNS'][$i] === '' || $return['wantedNS'][$i] === '.') {
-                array_splice($return['wantedNS'], $i, 1);
-                $i--;
-            } else if($return['wantedNS'][$i] == '..') {
-                if($i == 0) {
-                    //The first can't be '..', to stay inside 'data/pages'
-                    break;
-                } else {
-                    //simplify the path, getting rid of 'ns:..'
-                    array_splice($return['wantedNS'], $i - 1, 2);
-                    $i -= 2;
-                }
-            }
-        }
-
-        if($return['wantedNS'][0] == '..') {
-            //path would be outside the 'pages' directory
-            $return['safe'] = false;
-        }
-
-        $return['wantedNS'] = implode(':', $return['wantedNS']);
-
-        //Deduce the wanted directory
-        $return['wantedDir'] = utf8_encodeFN(str_replace(':', '/', $return['wantedNS']));
-
-        return $return;
-    } // handle()
-
-    /**
-     * Check if a given option has been given, and remove it from the initial string
-     *
-     * @param string $match The string match by the plugin
-     * @param string $pattern The pattern which activate the option
-     * @param        $varAffected The variable which will memorise the option
-     * @param        $valIfFound the value affected to the previous variable if the option is found
-     */
-    function _checkOption(&$match, $pattern, &$varAffected, $valIfFound) {
-        if(preg_match($pattern, $match, $found)) {
-            $varAffected = $valIfFound;
-            $match       = str_replace($found[0], '', $match);
-        }
-    } // _checkOption
-
-    function _checkRegEx(&$match, $pattern, &$arrayAffected) {
-        preg_match_all($pattern, $match, $found, PREG_SET_ORDER);
-        foreach($found as $regex) {
-            $arrayAffected[] = $regex[1];
-            $match           = str_replace($regex[0], '', $match);
-        }
     }
 
     function render($mode, &$renderer, $data) {
         global $conf;
-        // Make sure the namespace exists
-        if(@opendir($conf['datadir'] . '/' . $data['wantedDir']) === false || !$data['safe']) {
-            $renderer->section_open(1);
-            $renderer->cdata($this->getLang('doesntexist').$data['wantedNS']);
-            $renderer->section_close();
+        $printer = $this->_selectPrinter($mode, $renderer, $data);
+
+        if( ! $this->_isNamespaceUsable($data)){
+            $printer->printUnusableNamespace($data['wantedNS']);
             return TRUE;
         }
 
-        // Getting the files
-        $opt   = array(
-            'depth'     => $data['maxDepth'], 'keeptxt'=> false, 'listfiles'=> !$data['nopages'],
-            'listdirs'  => $data['subns'], 'pageonly'=> true, 'skipacl'=> false,
-            'sneakyacl' => true, 'hash'=> false, 'meta'=> false, 'showmsg'=> false,
-            'showhidden'=> false, 'firsthead'=> true
-        );
-        $files = array();
-        search($files, $conf['datadir'], 'search_universal', $opt, $data['wantedDir']);
-
-        $pages         = array();
-        $subnamespaces = array();
-        foreach($files as $item) {
-            if($item['type'] == 'd') {
-                if($this->_wantedFile($data['excludedNS'], $data['pregNSOn'], $data['pregNSOff'], $item)) {
-                    $this->_prepareNS($item, $data['title']);
-                    $subnamespaces[] = $item;
-                }
-            } else {
-                if($this->_wantedFile($data['excludedPages'], $data['pregPagesOn'], $data['pregPagesOff'], $item)) {
-                    $this->_preparePage($item, $data);
-                    if($data['pagesinns']) {
-                        $subnamespaces[] = $item;
-                    } else {
-                        $pages[] = $item;
-                    }
-                }
-            }
+        $fileHelper = new fileHelper($data);
+        $pages = $fileHelper->getPages();
+        $subnamespaces = $fileHelper->getSubnamespaces();
+        if ( $this->_shouldPrintPagesAmongNamespaces($data) ){
+            $subnamespaces = array_merge($subnamespaces, $pages);
         }
 
-        //writting the output
-        $printFunc = $this->selectPrintStrategy($data, $mode);
-
-        //--listing the subnamespaces (if needed)
-        if($data['subns']) {
-            call_user_func(array($this, $printFunc), $renderer, $subnamespaces, 'subns', $data['textNS'], $mode, $data['nbCol'], $data['reverse']);
-        }
-
-        if(!$data['pagesinns']) {
-
-            if($printFunc == '_printOneLine' && $data['textPages'] === '' && !$data['nopages']) {
-                $renderer->cdata(', ');
-            }
-
-            //--listing the pages
-            if(!$data['nopages']) {
-                call_user_func(array($this, $printFunc), $renderer, $pages, 'page', $data['textPages'], $mode, $data['nbCol'], $data['reverse']);
-            }
-
-        }
-
-        //this is needed to make sure everything after the plugin is written below the output
-        if($mode == 'xhtml') {
-            $renderer->doc .= '<br class="catpageeofidx">';
-        } else {
-            $renderer->linebreak();
-        }
+        $this->_print($printer, $data, $subnamespaces, $pages);
+        $printer->printEnd();
 
         return TRUE;
+    }
 
-    } // render()
+    private function _shouldPrintPagesAmongNamespaces($data){
+        return $data['pagesinns'];
+    }
 
-    function selectPrintStrategy($data, $mode) {
-        $result_l = '_print'; //default
+    private function _print($printer, $data, $subnamespaces, $pages){
+        if($data['subns']) {
+            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
+        }
 
+        if(!$this->_shouldPrintPagesAmongNamespaces($data)) {
+
+            if ( $this->_shouldPrintTransition($data) ){
+              $printer->printTransition();
+            }
+
+            if(!$data['nopages']) {
+                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse']);
+            }
+        }
+    }
+
+    private function _shouldPrintTransition($data){
+        return $data['textPages'] === '' && !$data['nopages'] && $data['subns'];
+    }
+
+    private function _isNamespaceUsable($data){
+        global $conf;
+        return @opendir($conf['datadir'] . '/' . $data['wantedDir']) !== false && $data['safe'];
+    }
+
+    private function _selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
-            $result_l = '_print';
+            return new nspages_printerSimpleList($this, $mode, $renderer);
         } else if($data['simpleLine']) {
-            $result_l = '_printOneLine';
+            return new nspages_printerOneLine($this, $mode, $renderer);
         } else if($mode == 'xhtml') {
-            $result_l = '_printNicely';
+            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol']);
         }
-
-        return $result_l;
+        return new nspages_printerSimpleList($this, $mode, $renderer);
     }
-
-    /**
-     * Check if the user wants a file to be displayed.
-     * Filters consider the "id" and not the "title". Therefore, the treatment is the same for files and for subnamespace.
-     * Moreover, filters remain valid even if the title of a page is changed.
-     *
-     * @param Array  $excludedFiles  A list of files that shouldn't be displayed
-     * @param Array  $pregOn       RegEx that a file should match to be displayed
-     * @param Array  $pregOff      RegEx that a file shouldn't match to be displayed
-     * @param string $file
-     * @return bool
-     */
-    function _wantedFile($excludedFiles, $pregOn, $pregOff, $file) {
-        $wanted = true;
-        $noNSId = noNS($file['id']);
-        $wanted &= (!in_array($noNSId, $excludedFiles));
-        foreach($pregOn as $preg) {
-            $wanted &= preg_match($preg, $noNSId);
-        }
-        foreach($pregOff as $preg) {
-            $wanted &= !preg_match($preg, $noNSId);
-        }
-        return $wanted;
-    }
-
-    /**
-     * Fix or build attributes a page should have
-     */
-    function _preparePage(&$page, $data) {
-        if(!$data['title'] || $page['title'] === null) {
-            $page['title'] = noNS($page['id']);
-        }
-
-        if($data['sortid']) {
-            $page['sort'] = noNS($page['id']);
-        } else {
-            $page['sort'] = $page['title'];
-        }
-    }
-
-    /**
-     * When we display a namespace, we want to:
-     * - link to it's main page (if such a page exists)
-     * - get the id of this main page (if the option is active)
-     *
-     * @param         $ns  A structure which represents a namespace
-     * @param boolean $useTitle Do we have to check the title of the ns?
-     */
-    function _prepareNS(&$ns, $useTitle) {
-        $idMainPage = $ns['id'].':';
-        resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
-        $ns['title'] = noNS($ns['id']);
-
-        if(!$exist) { //if there is currently no main page for this namespace, then...
-            $ns['id'] .= ':'; //...we'll link directly to the namespace
-        } else { //if there is a main page, then...
-            $title = p_get_first_heading($idMainPage, true); //...we adapt the title to use
-            if(!is_null($title) && $useTitle) {
-                $ns['title'] = $title;
-            }
-            $ns['id'] = $idMainPage; //... and we'll link directly to this page
-        }
-        $ns['sort'] = $ns['title'];
-    }
-
-    function _printNicely(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        //use actpage to count how many pages we have already processed
-        $actpage = 0;
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $nbItemPerColumns = $this->computeNbItemPerColumns(sizeof($tab), $nbCol);
-
-        $percentWidth = 100 / sizeof($nbItemPerColumns);
-        $percentWidth .= '%';
-
-        $renderer->doc .= "\n".'<div class="catpagecol" style="width: '.$percentWidth.'" >';
-        //firstchar stores the first character of the last added page
-        $firstchar = $this->_firstChar($tab[0]);
-
-        //write the first index-letter
-        $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-
-        $idxCol = 0;
-        foreach($tab as $item) {
-            //change to the next column if necessary
-            if($actpage == $nbItemPerColumns[$idxCol]) {
-                $idxCol++;
-                $renderer->doc .= "</ul></div>\n".'<div class="catpagecol" style="width: '.$percentWidth.'">'."\n";
-
-                $newLetter = $this->_firstChar($item);
-                if($newLetter != $firstchar) {
-                    $firstchar = $newLetter;
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-                } else {
-                    $renderer->doc .= '<div class="catpagechars">'.$firstchar.$this->getLang('continued')."</div>\n<ul class=\"nspagesul\">\n";
-                }
-            }
-            //write the index-letters
-            $newLetter = $this->_firstChar($item);
-            if($newLetter != $firstchar) {
-                $firstchar = $newLetter;
-                $renderer->doc .= '</ul><div class="catpagechars">'.$firstchar."</div>\n<ul class=\"nspagesul\">\n";
-            }
-
-            $this->_printElement($renderer, $item, $mode);
-            $actpage++;
-        }
-        $renderer->doc .= "</ul></div>\n";
-    } // _printNicely()
-
-    /**
-     * Sort the $tab according to the ['sort'] key
-     */
-    function _sort(&$tab, $reverse) {
-        if(!$reverse) {
-            usort($tab, array("syntax_plugin_nspages", "_order"));
-        } else {
-            usort($tab, array("syntax_plugin_nspages", "_orderReverse"));
-        }
-    } // _sort
-
-    static function _order($p1, $p2) {
-        return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
-    } //_order
-
-    static function _orderReverse($p1, $p2) {
-        return -strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
-    }
-
-    function _firstChar($item) {
-        return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
-    } // _firstChar
-
-    function _print(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $renderer->listu_open();
-        foreach($tab as $item) {
-            $this->_printElement($renderer, $item, $mode);
-        }
-        $renderer->listu_close();
-    } // _print()
-
-    function _printOneLine(&$renderer, $tab, $type, $text, $mode, $nbCol, $reverse) {
-        $this->_beginPrint($renderer, $tab, $type, $text, $mode, $reverse);
-
-        if(empty($tab)) {
-            return;
-        }
-
-        $sep = '';
-        foreach($tab as $item) {
-            $renderer->cdata($sep);
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $sep = ', ';
-        }
-    } // _printOneLine
-
-    function _beginPrint(&$renderer, &$tab, $type, $text, $mode, $reverse) {
-        $this->_sort($tab, $reverse);
-
-        if($text != '') {
-            if($mode == 'xhtml') {
-                $renderer->doc .= '<p class="catpageheadline">'.$text.'</p>';
-            } else {
-                $renderer->linebreak();
-                $renderer->p_open();
-                $renderer->cdata($text);
-                $renderer->p_close();
-            }
-        }
-
-        if(empty($tab)) {
-            $renderer->p_open();
-            $renderer->cdata($this->getLang(($type == 'page') ? 'nopages' : 'nosubns'));
-            $renderer->p_close();
-        }
-    }
-
-    /**
-     * @param DokuRenderer $renderer
-     * @param Array        $item      Represents the file
-     * @param string       $mode      Either 'page' of 'subns'
-     */
-    function _printElement(&$renderer, $item, $mode) {
-        if($item['type'] !== 'd') {
-            $renderer->listitem_open(1);
-            $renderer->listcontent_open();
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $renderer->listcontent_close();
-            $renderer->listitem_close();
-        } else { //Case of a subnamespace
-            if($mode == 'xhtml') {
-                $renderer->doc .= '<li class="closed">';
-            } else {
-                $renderer->listitem_open(1);
-            }
-            $renderer->listcontent_open();
-            $renderer->internallink(':'.$item['id'], $item['title']);
-            $renderer->listcontent_close();
-            $renderer->listitem_close();
-        }
-    } // _printElement()
-
-    /**
-     * Compute the number of element to display per column
-     * When $nbItems / $nbCols isn't an int, we make sure that, for aesthetic reasons,
-     * that the first are the ones which have the more items
-     * Moreover, if we don't have enought items to display, we may choose to display less than the number of columns wanted
-     *
-     * @param int $nbItems The total number of items to display
-     * @param int $nbCols the number of columns to consider
-     * @return an array which contains $nbCols int.
-     */
-    function computeNbItemPerColumns($nbItems, $nbCols) {
-        $result = array();
-
-        //We make sure this value is correct (it may be 'null' if we upgrade the plugin, and don't run "handle" because of the cache
-        if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
-            $nbCols = 3;
-        }
-
-        if($nbItems < $nbCols) {
-            for($idx = 0; $idx < $nbItems; $idx++) {
-                $result[] = $idx + 1;
-            }
-            return $result;
-        }
-
-        $collength    = $nbItems / $nbCols;
-        $nbItemPerCol = array();
-        for($idx = 0; $idx < $nbCols; $idx++) {
-            $nbItemPerCol[] = ceil(($idx + 1) * $collength) - ceil($idx * $collength);
-        }
-        rsort($nbItemPerCol);
-
-        $result[] = $nbItemPerCol[0];
-        for($idx = 1; $idx < $nbCols; $idx++) {
-            $result[] = end($result) + $nbItemPerCol[$idx];
-        }
-
-        return $result;
-    }
-
-} // class syntax_plugin_nspages
+}
