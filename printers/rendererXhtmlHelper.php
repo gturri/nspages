@@ -11,11 +11,13 @@ class rendererXhtmlHelper {
     private $renderer;
     private $percentWidth;
     private $plugin;
+    private $anchorName;
 
-    function __construct($renderer, $nbCols, $plugin){
+    function __construct($renderer, $nbCols, $plugin, $anchorName){
         $this->renderer =& $renderer;
         $this->percentWidth = $this->buildWidth($nbCols);
         $this->plugin = $plugin;
+        $this->anchorName = $anchorName;
     }
 
     private function buildWidth($nbCols){
@@ -28,7 +30,17 @@ class rendererXhtmlHelper {
             $text .= $this->plugin->getLang('continued');
         }
 
-        $this->renderer->doc .= '<div class="catpagechars">' . $text . "</div>\n";
+        $this->renderer->doc .= '<div '
+            . $this->fullAnchor($char, $continued)
+            . 'class="catpagechars">' . $text . "</div>\n";
+    }
+
+    private function fullAnchor($char, $continued){
+        if ( $continued === true || is_null($this->anchorName) ){
+            return '';
+        }
+
+        return 'id="nspages_' . $this->anchorName . '_' . $char . '" ';
     }
 
     function openColumn(){
