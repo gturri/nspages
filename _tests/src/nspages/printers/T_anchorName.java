@@ -17,14 +17,10 @@ public class T_anchorName extends Helper {
 		List<WebElement> headers = getDriver().findElements(By.className("catpagechars"));
 
 		assertEquals(4, headers.size());
-		assertEquals("A", headers.get(0).getAttribute("innerHTML"));
-		assertEquals("", headers.get(0).getAttribute("id"));
-		assertEquals("B", headers.get(1).getAttribute("innerHTML"));
-		assertEquals("", headers.get(1).getAttribute("id"));
-		assertEquals("B cont.", headers.get(2).getAttribute("innerHTML"));
-		assertEquals("", headers.get(2).getAttribute("id"));
-		assertEquals("C", headers.get(3).getAttribute("innerHTML"));
-		assertEquals("", headers.get(3).getAttribute("id"));
+		assertDoesntHaveAnchor(headers.get(0));
+		assertDoesntHaveAnchor(headers.get(1));
+		assertDoesntHaveAnchor(headers.get(2));
+		assertDoesntHaveAnchor(headers.get(3));
 	}
 
 	@Test
@@ -33,19 +29,23 @@ public class T_anchorName extends Helper {
 		List<WebElement> headers = getDriver().findElements(By.className("catpagechars"));
 
 		assertEquals(4, headers.size());
-		assertEquals("A", headers.get(0).getAttribute("innerHTML"));
-		assertEquals("nspages_toto_A", headers.get(0).getAttribute("id"));
-		assertEquals("B", headers.get(1).getAttribute("innerHTML"));
-		assertEquals("nspages_toto_B", headers.get(1).getAttribute("id"));
-		assertEquals("C", headers.get(3).getAttribute("innerHTML"));
-		assertEquals("nspages_toto_C", headers.get(3).getAttribute("id"));
+		assertHasAnchor("A", headers.get(0));
+		assertHasAnchor("B", headers.get(1));
+		assertHasAnchor("C", headers.get(3));
 	}
 
 	@Test
 	public void noAnchorInContinuedHeaders(){
 		generatePage("ns1:start", "<nspages -exclude -anchorName toto >");
 		List<WebElement> headers = getDriver().findElements(By.className("catpagechars"));
-		assertEquals("B cont.", headers.get(2).getAttribute("innerHTML"));
-		assertEquals("", headers.get(2).getAttribute("id"));
+		assertDoesntHaveAnchor(headers.get(2));
+	}
+
+	private void assertHasAnchor(String letter, WebElement header){
+		assertEquals("nspages_toto_" + letter, header.getAttribute("id"));
+	}
+
+	private void assertDoesntHaveAnchor(WebElement header){
+		assertEquals("", header.getAttribute("id"));
 	}
 }
