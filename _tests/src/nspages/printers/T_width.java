@@ -1,8 +1,10 @@
-package nspages;
+package nspages.printers;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
+
+import nspages.Helper;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
