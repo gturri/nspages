@@ -35,6 +35,18 @@ public class T_anchorName extends Helper {
 	}
 
 	@Test
+	public void permissiveSyntax(){
+		generatePage("ns1:start", "<nspages -exclude -anchorName = toto >");
+		assertHasAnchor("A", getDriver().findElements(By.className("catpagechars")).get(0));
+
+		generatePage("ns1:start", "<nspages -exclude -anchorName=\"toto\" >");
+		assertHasAnchor("A", getDriver().findElements(By.className("catpagechars")).get(0));
+
+		generatePage("ns1:start", "<nspages -exclude -anchorName \"toto\" >");
+		assertHasAnchor("A", getDriver().findElements(By.className("catpagechars")).get(0));
+	}
+
+	@Test
 	public void noAnchorInContinuedHeaders(){
 		generatePage("ns1:start", "<nspages -exclude -anchorName toto >");
 		List<WebElement> headers = getDriver().findElements(By.className("catpagechars"));
