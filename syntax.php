@@ -58,6 +58,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
         optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
+        optionParser::checkAnchorName($match, $return['anchorName']);
 
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);
@@ -77,7 +78,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'               => false, 'reverse' => false,
-            'pagesinns'              => false,
+            'pagesinns'            => false, 'anchorName' => null
         );
     }
 
@@ -139,7 +140,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         } else if($data['simpleLine']) {
             return new nspages_printerOneLine($this, $mode, $renderer);
         } else if($mode == 'xhtml') {
-            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol']);
+            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName']);
         }
         return new nspages_printerSimpleList($this, $mode, $renderer);
     }

@@ -52,6 +52,13 @@ class optionParser {
         }
     }
 
+    static function checkAnchorName(&$match, &$varAffected){
+        if(preg_match("/-anchorName *=? *\"?([[:alnum:]]+)\"?/i", $match, $found)) {
+            $varAffected = $found[1];
+            $match = str_replace($found[0], '', $match);
+        }
+    }
+
     static function checkTextPages(&$match, &$varAffected, $plugin){
         if(preg_match("/-textPages? *= *\"([^\"]*)\"/i", $match, $found)) {
             $varAffected = $found[1];
