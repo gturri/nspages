@@ -8,6 +8,7 @@ import nspages.Helper;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class T_anchorName extends Helper {
@@ -51,6 +52,21 @@ public class T_anchorName extends Helper {
 		generatePage("ns1:start", "<nspages -exclude -anchorName toto >");
 		List<WebElement> headers = getDriver().findElements(By.className("catpagechars"));
 		assertDoesntHaveAnchor(headers.get(2));
+	}
+
+	@Test
+	public void dangerousText(){
+		generatePage("ns1:start", "<nspages -anchorName <test >");
+		assertNoTOC(getDriver());
+		assertTrue(getDriver().getPageSource().contains("-anchorName &lt;test"));
+
+		generatePage("ns1:start", "<nspages -anchorName &test >");
+		assertNoTOC(getDriver());
+		assertTrue(getDriver().getPageSource().contains("-anchorName &amp;test"));
+	}
+
+	private void assertNoTOC(WebDriver driver){
+		assertEquals(0, driver.findElements(By.className("catpagechars")).size());
 	}
 
 	private void assertHasAnchor(String letter, WebElement header){
