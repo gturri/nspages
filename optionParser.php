@@ -66,7 +66,6 @@ class optionParser {
         } else {
             $varAffected = $plugin->getLang('pagesinthiscat');
         }
-        $varAffected = $varAffected;
     }
 
     static function checkTextNs(&$match, &$varAffected, $plugin){
@@ -76,7 +75,6 @@ class optionParser {
         } else {
             $varAffected = $plugin->getLang('subcats');
         }
-        $varAffected = $varAffected;
     }
 
     static function checkExclude(&$match, &$excludedPages, &$excludedNs){
