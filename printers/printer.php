@@ -41,7 +41,9 @@ abstract class nspages_printer {
 
         if($text != '') {
             if($this->mode == 'xhtml') {
-                $this->renderer->doc .= '<p class="catpageheadline">'.$text.'</p>';
+                $this->renderer->doc .= '<p class="catpageheadline">';
+                $this->renderer->cdata($text);
+                $this->renderer->doc .= '</p>';
             } else {
                 $this->renderer->linebreak();
                 $this->renderer->p_open();
