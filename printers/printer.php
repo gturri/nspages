@@ -25,10 +25,10 @@ abstract class nspages_printer {
             return;
         }
 
-        $this->_print($tab, $type, $text, $reverse);
+        $this->_print($tab, $type);
     }
 
-    abstract function _print($tab, $type, $text, $reverse);
+    abstract function _print($tab, $type);
 
     function printUnusableNamespace($wantedNS){
          $this->renderer->section_open(1);
@@ -41,7 +41,9 @@ abstract class nspages_printer {
 
         if($text != '') {
             if($this->mode == 'xhtml') {
-                $this->renderer->doc .= '<p class="catpageheadline">'.$text.'</p>';
+                $this->renderer->doc .= '<p class="catpageheadline">';
+                $this->renderer->cdata($text);
+                $this->renderer->doc .= '</p>';
             } else {
                 $this->renderer->linebreak();
                 $this->renderer->p_open();
