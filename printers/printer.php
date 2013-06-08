@@ -25,10 +25,10 @@ abstract class nspages_printer {
             return;
         }
 
-        $this->_print($tab, $type, $text, $reverse);
+        $this->_print($tab, $type);
     }
 
-    abstract function _print($tab, $type, $text, $reverse);
+    abstract function _print($tab, $type);
 
     function printUnusableNamespace($wantedNS){
          $this->renderer->section_open(1);

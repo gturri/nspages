@@ -30,7 +30,7 @@ class nspages_printerNice extends nspages_printer {
         return $nbCols;
     }
 
-    function _print($tab, $type, $text, $reverse) {
+    function _print($tab, $type) {
         $nbItemsPrinted = 0;
 
         $nbItemPerColumns = $this->_computeNbItemPerColumns(sizeof($tab));

@@ -13,7 +13,7 @@ class nspages_printerOneLine extends nspages_printer {
         parent::__construct($plugin, $mode, $renderer);
     }
 
-    function _print($tab, $type, $text, $reverse) {
+    function _print($tab, $type) {
         $sep = '';
         foreach($tab as $item) {
             $this->renderer->cdata($sep);

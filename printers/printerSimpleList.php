@@ -13,7 +13,7 @@ class nspages_printerSimpleList extends nspages_printer {
         parent::__construct($plugin, $mode, $renderer);
     }
 
-    function _print($tab, $type, $text, $reverse) {
+    function _print($tab, $type) {
         $this->renderer->listu_open();
         foreach($tab as $item) {
             $this->_printElement($item);
