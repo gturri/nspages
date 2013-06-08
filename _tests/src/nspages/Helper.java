@@ -1,6 +1,6 @@
 package nspages;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,11 @@ public class Helper {
 		WebElement wikiTextBox = getEditTextArea();
 		fillTextArea(wikiTextBox, wikiMarkup);
 		savePage();
+		assertNoPhpWarning();
+	}
+
+	private void assertNoPhpWarning(){
+		assertFalse(driver.getPageSource().contains("Warning"));
 	}
 
 	private void navigateToEditionPage(String page){
