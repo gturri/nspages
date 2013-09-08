@@ -6,7 +6,7 @@
     <property name="testresults.dir" value="${build.dir}/junitreport" />
     <property name="lib.dir" value="/usr/share/java" /> 
     <path id="classpath">
-       <pathelement location="${selenium.libs}/selenium-java-2.33.0.jar" />
+       <pathelement location="${selenium.libs}/selenium-java-2.35.0.jar" />
        <pathelement location="${selenium.libs}/libs/apache-mime4j-0.6.jar" />
        <pathelement location="${selenium.libs}/libs/bsh-1.3.0.jar" />
        <pathelement location="${selenium.libs}/libs/cglib-nodep-2.1_3.jar" />
