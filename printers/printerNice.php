@@ -13,8 +13,8 @@ class nspages_printerNice extends nspages_printer {
     private $nbCols;
     private $anchorName;
 
-    function __construct($plugin, $mode, $renderer, $nbCols, $anchorName){
-        parent::__construct($plugin, $mode, $renderer);
+    function __construct($plugin, $mode, $renderer, $nbCols, $anchorName, $data){
+        parent::__construct($plugin, $mode, $renderer, $data);
         if ( $this->mode !== 'xhtml' ){
           throw Exception('nspages_printerNice can only work in xhtml mode');
         }
