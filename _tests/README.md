@@ -7,7 +7,7 @@ Requirements
 To run the tests you'll need:
 
 * Java
-* To download and unzip [Selenium](http://selenium.googlecode.com/files/selenium-java-2.33.0.zip).
+* To download and unzip [Selenium](http://selenium.googlecode.com/files/selenium-java-2.35.0.zip).
 * To set up an environment variable to tell where Selenium is (see below). It should point to the directory containing the selenium-java-xxx.jar
 * Firefox
 * To install a fake wiki (see below)
