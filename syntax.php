@@ -80,7 +80,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'               => false, 'reverse' => false,
-            'pagesinns'            => false, 'anchorName' => null, 'actualTitleLeve' => false
+            'pagesinns'            => false, 'anchorName' => null, 'actualTitleLevel' => false
         );
     }
 
