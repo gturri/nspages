@@ -36,6 +36,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     function handle($match, $state, $pos, &$handler) {
         $return = $this->_getDefaultOptions();
+        $return['pos'] = $pos;
 
         $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
         $match .= ' ';
@@ -59,6 +60,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
+        optionParser::checkActualTitle($match, $return['actualTitleLevel']);
 
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);
@@ -78,7 +80,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'               => false, 'reverse' => false,
-            'pagesinns'            => false, 'anchorName' => null
+            'pagesinns'            => false, 'anchorName' => null, 'actualTitleLeve' => false
         );
     }
 
@@ -136,12 +138,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     private function _selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
-            return new nspages_printerSimpleList($this, $mode, $renderer);
+            return new nspages_printerSimpleList($this, $mode, $renderer, $data);
         } else if($data['simpleLine']) {
-            return new nspages_printerOneLine($this, $mode, $renderer);
+            return new nspages_printerOneLine($this, $mode, $renderer, $data);
         } else if($mode == 'xhtml') {
-            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName']);
+            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName'], $data);
         }
-        return new nspages_printerSimpleList($this, $mode, $renderer);
+        return new nspages_printerSimpleList($this, $mode, $renderer, $data);
     }
 }
