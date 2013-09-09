@@ -113,4 +113,13 @@ class optionParser {
             }
         }
     }
+
+    static function checkActualTitle(&$match, &$varAffected){
+        if ( preg_match("/-actualTitle *= *([[:digit:]])/i", $match, $found) ){
+            $varAffected = $found[1];
+        } else if ( preg_match("/-actualTitle/", $match, $found) ){
+            $varAffected = 2;
+        }
+        $match = str_replace($found[0], '', $match);
+    }
 }

@@ -11,11 +11,15 @@ abstract class nspages_printer {
     protected $plugin;
     protected $renderer;
     protected $mode;
+    private $pos;
+    private $acualLevelTitle;
 
-    function __construct($plugin, $mode, $renderer){
+    function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
       $this->renderer =& $renderer;
       $this->mode = $mode;
+      $this->pos = $data['pos'];
+      $this->actualTitleLevel = $data['actualTitleLevel'];
     }
 
     function printTOC($tab, $type, $text, $reverse){
@@ -36,11 +40,13 @@ abstract class nspages_printer {
          $this->renderer->section_close();
     }
 
-    protected function _printHeader(&$tab, $type, $text, $reverse) {
+    private function _printHeader(&$tab, $type, $text, $reverse) {
         $this->_sort($tab, $reverse);
 
         if($text != '') {
-            if($this->mode == 'xhtml') {
+            if($this->actualTitleLevel){
+                $this->renderer->header($text, $this->actualTitleLevel, $this->pos);
+            } else if($this->mode == 'xhtml') {
                 $this->renderer->doc .= '<p class="catpageheadline">';
                 $this->renderer->cdata($text);
                 $this->renderer->doc .= '</p>';
