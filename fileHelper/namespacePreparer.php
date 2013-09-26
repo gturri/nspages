@@ -8,6 +8,13 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
+    private $sortPageById;
+
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle);
+        $this->sortPageById = $sortPageById;
+    }
+
     function isFileWanted($file){
         return ($file['type'] == 'd') && parent::isFileWanted($file);
     }
@@ -33,6 +40,11 @@ class namespacePreparer extends filePreparer {
             }
             $ns['id'] = $idMainPage; //... and we'll link directly to this page
         }
-        $ns['sort'] = $ns['title'];
+
+        if ( $this->sortPageById ){
+            $ns['sort'] = curNS($ns['id']);
+        } else {
+            $ns['sort'] = $ns['title'];
+        }
     }
 }

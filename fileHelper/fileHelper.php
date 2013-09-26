@@ -36,7 +36,7 @@ class fileHelper {
     }
 
     function getSubnamespaces(){
-        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title']);
+        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid']);
         return $this->getFiles($preparer);
     }
 
