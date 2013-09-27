@@ -6,8 +6,44 @@
     <property name="testresults.dir" value="${build.dir}/junitreport" />
     <property name="lib.dir" value="/usr/share/java" /> 
     <path id="classpath">
-       <pathelement location="${selenium.libs}/*" />
-       <pathelement location="${selenium.libs}/libs/*" />
+       <pathelement location="${selenium.libs}/selenium-java-2.35.0.jar" />
+       <pathelement location="${selenium.libs}/libs/apache-mime4j-0.6.jar" />
+       <pathelement location="${selenium.libs}/libs/bsh-1.3.0.jar" />
+       <pathelement location="${selenium.libs}/libs/cglib-nodep-2.1_3.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-codec-1.6.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-collections-3.2.1.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-exec-1.1.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-io-2.2.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-jxpath-1.3.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-lang3-3.1.jar" />
+       <pathelement location="${selenium.libs}/libs/commons-logging-1.1.1.jar" />
+       <pathelement location="${selenium.libs}/libs/cssparser-0.9.9.jar" />
+       <pathelement location="${selenium.libs}/libs/guava-14.0.jar" />
+       <pathelement location="${selenium.libs}/libs/hamcrest-core-1.3.jar" />
+       <pathelement location="${selenium.libs}/libs/hamcrest-library-1.3.jar" />
+       <pathelement location="${selenium.libs}/libs/htmlunit-2.12.jar" />
+       <pathelement location="${selenium.libs}/libs/htmlunit-core-js-2.12.jar" />
+       <pathelement location="${selenium.libs}/libs/httpclient-4.2.1.jar" />
+       <pathelement location="${selenium.libs}/libs/httpcore-4.2.1.jar" />
+       <pathelement location="${selenium.libs}/libs/httpmime-4.2.1.jar" />
+       <pathelement location="${selenium.libs}/libs/ini4j-0.5.2.jar" />
+       <pathelement location="${selenium.libs}/libs/jcommander-1.29.jar" />
+       <pathelement location="${selenium.libs}/libs/jetty-websocket-8.1.8.jar" />
+       <pathelement location="${selenium.libs}/libs/jna-3.4.0.jar" />
+       <pathelement location="${selenium.libs}/libs/jna-platform-3.4.0.jar" />
+       <pathelement location="${selenium.libs}/libs/json-20080701.jar" />
+       <pathelement location="${selenium.libs}/libs/junit-dep-4.11.jar" />
+       <pathelement location="${selenium.libs}/libs/nekohtml-1.9.17.jar" />
+       <pathelement location="${selenium.libs}/libs/netty-3.5.7.Final.jar" />
+       <pathelement location="${selenium.libs}/libs/operadriver-1.3.jar" />
+       <pathelement location="${selenium.libs}/libs/phantomjsdriver-1.0.3.jar" />
+       <pathelement location="${selenium.libs}/libs/protobuf-java-2.4.1.jar" />
+       <pathelement location="${selenium.libs}/libs/sac-1.3.jar" />
+       <pathelement location="${selenium.libs}/libs/serializer-2.7.1.jar" />
+       <pathelement location="${selenium.libs}/libs/testng-6.8.jar" />
+       <pathelement location="${selenium.libs}/libs/xalan-2.7.1.jar" />
+       <pathelement location="${selenium.libs}/libs/xercesImpl-2.10.0.jar" />
+       <pathelement location="${selenium.libs}/libs/xml-apis-1.4.01.jar" />
        <pathelement location="${lib.dir}/junit4.jar" />
     </path>
 
