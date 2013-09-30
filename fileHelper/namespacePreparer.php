@@ -8,6 +8,10 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById);
+    }
+
     function isFileWanted($file){
         return ($file['type'] == 'd') && parent::isFileWanted($file);
     }
@@ -20,19 +24,43 @@ class namespacePreparer extends filePreparer {
      * @param         $ns  A structure which represents a namespace
      */
     function prepareFile(&$ns){
+        $idMainPage = $this->getMainPageId($ns);
+
+        $ns['title'] = $this->buildTitle($idMainPage, noNS($ns['id']));
+        $ns['id'] = $this->buildIdToLinkTo($idMainPage, $ns['id']);
+        $ns['sort'] = $this->buildSortAttribute($ns['title'], $ns['id']);
+    }
+
+    private function getMainPageId($ns){
         $idMainPage = $ns['id'].':';
         resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
-        $ns['title'] = noNS($ns['id']);
+        return $exist ? $idMainPage : null;
+    }
 
-        if(!$exist) { //if there is currently no main page for this namespace, then...
-            $ns['id'] .= ':'; //...we'll link directly to the namespace
-        } else { //if there is a main page, then...
-            $title = p_get_first_heading($idMainPage, true); //...we adapt the title to use
+    private function buildTitle($idMainPage, $defaultTitle){
+        if ( ! is_null($idMainPage) ){
+            $title = p_get_first_heading($idMainPage, true);
             if(!is_null($title) && $this->useTitle) {
-                $ns['title'] = $title;
+                return $title;
             }
-            $ns['id'] = $idMainPage; //... and we'll link directly to this page
         }
-        $ns['sort'] = $ns['title'];
+
+        return $defaultTitle;
+    }
+
+    private function buildIdToLinkTo($idMainPage, $currentNsId){
+        if(is_null($idMainPage)) {
+            return $currentNsId . ':';
+        } else {
+            return $idMainPage;
+        }
+    }
+
+    private function buildSortAttribute($nsTitle, $nsId){
+        if ( $this->sortPageById ){
+            return curNS($nsId);
+        } else {
+            return $nsTitle;
+        }
     }
 }

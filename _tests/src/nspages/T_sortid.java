@@ -29,4 +29,17 @@ public class T_sortid extends Helper {
 
 		assertSameLinks(expectedLinks, getDriver());
 	}
+
+	@Test
+	public void optionWithNs(){
+		generatePage("sortid:start", "<nspages -sortId -subns -h1 -pagesInNs>");
+		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
+		expectedLinks.add(new InternalLink("sortid:a", "Z"));
+		expectedLinks.add(new InternalLink("sortid:c:start", "c"));
+		expectedLinks.add(new InternalLink("sortid:start", "start"));
+		expectedLinks.add(new InternalLink("sortid:y", "B"));
+		expectedLinks.add(new InternalLink("sortid:z:start", "Subdir"));
+
+		assertSameLinks(expectedLinks, getDriver());
+	}
 }
