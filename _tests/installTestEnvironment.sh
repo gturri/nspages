@@ -8,7 +8,7 @@ serverFileSystemOwner=www-data
 baseUrl=http://localhost
 dirNamePrefix=dokuwikiITestsForNsPages
 
-dwVersions="dokuwiki-2013-05-10"
+dwVersions="dokuwiki-2013-12-08"
 installDir=tmpForInstallation
 relativeTestFileDir=testEnvironment
 
@@ -24,7 +24,7 @@ function installFakeWiki {
   #Avoid downloading the tarball again if we already have it
   if [ ! -e $dwVersion.tgz ]; then
     echo " Starting to download $dwVersion.tgz"
-    wget www.splitbrain.org/_media/projects/dokuwiki/$dwVersion.tgz
+    wget http://download.dokuwiki.org/src/dokuwiki/$dwVersion.tgz
   else
     echo " $dwVersion.tgz found. No need to download it again."
   fi
