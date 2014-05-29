@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById);
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle);
     }
 
     function isFileWanted($file){
@@ -40,8 +40,14 @@ class namespacePreparer extends filePreparer {
     private function buildTitle($idMainPage, $defaultTitle){
         if ( ! is_null($idMainPage) ){
             $title = p_get_first_heading($idMainPage, true);
-            if(!is_null($title) && $this->useTitle) {
+            if(!is_null($title)){
+              if($this->useIdAndTitle){
+                return $defaultTitle . " - " . $title;
+              }
+
+              if($this->useTitle) {
                 return $title;
+              }
             }
         }
 

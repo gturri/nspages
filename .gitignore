@@ -3,3 +3,5 @@ tmpForInstallation
 bin
 build
 target
+.classpath
+.project
