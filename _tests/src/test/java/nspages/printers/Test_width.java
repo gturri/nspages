@@ -11,7 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_width extends Helper {
+public class Test_width extends Helper {
 	@Test
 	public void implicitDefaultNbCols(){
 		generatePage("nbcols:start", "<nspages>");

@@ -12,7 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_simpleList extends Helper {
+public class Test_simpleList extends Helper {
 	@Test
 	public void nominalCase(){
 		generatePage("simpleline:start", "<nspages -simplelist>");

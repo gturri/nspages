@@ -11,7 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_anchorName extends Helper {
+public class Test_anchorName extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("ns1:start", "<nspages -exclude >");

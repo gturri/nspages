@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_pregPages extends Helper {
+public class Test_pregPages extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("pregpages:start", "<nspages>");

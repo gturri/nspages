@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_nbCols extends Helper {
+public class Test_nbCols extends Helper {
 	@Test
 	public void implicitDefaultNbCols(){
 		generatePage("nbcols:start", "<nspages>");

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_recursion extends Helper {
+public class Test_recursion extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("recursion:start", "<nspages -subns>");

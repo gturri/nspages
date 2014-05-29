@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-public class T_reverse extends Helper {
+public class Test_reverse extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("reverse:start", "<nspages .>");

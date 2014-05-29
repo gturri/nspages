@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_nsPath extends Helper {
+public class Test_nsPath extends Helper {
 	@Test
 	public void defaultPath(){
 		generatePage("autrens:start", "<nspages>");

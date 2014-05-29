@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_exclude extends Helper {
+public class Test_exclude extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("excludepage:start", "<nspages>");

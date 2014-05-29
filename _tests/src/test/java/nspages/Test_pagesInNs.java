@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class T_pagesInNs extends Helper {
+public class Test_pagesInNs extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("pagesinns:start", "<nspages -subns>");

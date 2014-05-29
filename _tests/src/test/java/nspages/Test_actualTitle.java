@@ -7,7 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_actualTitle extends Helper {
+public class Test_actualTitle extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("titlens:start", "<nspages -textPages=\"my title\">");

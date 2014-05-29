@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class T_ColumnHeaders extends Helper {
+public class Test_ColumnHeaders extends Helper {
 	@Test
 	public void newChar(){
 		generatePage("ns1:start", "<nspages>");

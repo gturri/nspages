@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 
 
 
-public class T_subns extends Helper {
+public class Test_subns extends Helper {
 	@Test
 	public void withOption(){
 		generatePage("subns:start", "<nspages -subns>");

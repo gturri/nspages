@@ -4,7 +4,7 @@ import nspages.Helper;
 
 import org.junit.Test;
 
-public class T_simpleline extends Helper {
+public class Test_simpleline extends Helper {
 	@Test
 	public void simpleLinePrinter(){
 		generatePage("simpleline:start", "<nspages -simpleLine -subns>");

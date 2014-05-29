@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class T_nopages extends Helper {
+public class Test_nopages extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("nopages:start", "<nspages>");

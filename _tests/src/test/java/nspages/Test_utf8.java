@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_utf8 extends Helper {
+public class Test_utf8 extends Helper {
 	@Test
 	public void nsWithSpecialChars(){
 		generatePage("utf8:start", "<nspages>");

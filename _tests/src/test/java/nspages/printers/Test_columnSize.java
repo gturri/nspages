@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 
 import nspages.Helper;
 
-public class T_columnSize extends Helper {
+public class Test_columnSize extends Helper {
 	@Test
 	public void longestColumnIsTheMostOnTheLeft(){
 		generatePage("ns1:start", "<nspages -exclude>");

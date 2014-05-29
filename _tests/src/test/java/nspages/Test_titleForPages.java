@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_titleForPages extends Helper {
+public class Test_titleForPages extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("sortid:start", "<nspages>");

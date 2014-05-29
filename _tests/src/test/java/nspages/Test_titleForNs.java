@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class T_titleForNs extends Helper {
+public class Test_titleForNs extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("titlens:start", "<nspages -subns -nopages>");

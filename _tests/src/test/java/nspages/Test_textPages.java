@@ -1,28 +1,28 @@
 package nspages;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class T_textNs extends Helper {
+public class Test_textPages extends Helper {
 	@Test
 	public void withoutOption(){
-		generatePage("textns:start", "<nspages -subns -nopages>");
-		assertNsText("Subnamespace:", getDriver());
+		generatePage("textpages:start", "<nspages>");
+		assertNsText("Pages in this namespace:", getDriver());
 	}
 
 	@Test
 	public void withOption(){
-		generatePage("textns:start", "<nspages -subns -nopages -textNS=\"List of namespaces\">");
-		assertNsText("List of namespaces", getDriver());
+		generatePage("textpages:start", "<nspages -textPages=\"Custom text\">");
+		assertNsText("Custom text", getDriver());
 	}
 
 	@Test
 	public void withUnsafeText(){
-		generatePage("textns:start", "<nspages -subns -nopages -textNS=\"<Danger\">");
+		generatePage("textpages:start", "<nspages -textPages=\"<Danger\">");
 		assertNsText("&lt;Danger", getDriver());
 	}
 
