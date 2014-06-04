@@ -31,12 +31,12 @@ class fileHelper {
     }
 
     function getPages(){
-        $preparer = new pagePreparer($this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid']);
+        $preparer = new pagePreparer($this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle']);
         return $this->getFiles($preparer);
     }
 
     function getSubnamespaces(){
-        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid']);
+        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle']);
         return $this->getFiles($preparer);
     }
 

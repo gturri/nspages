@@ -45,6 +45,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "/-nopages/i", $return['nopages'], true);
         optionParser::checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
         optionParser::checkOption($match, "/-title/i", $return['title'], true);
+        optionParser::checkOption($match, "/-idAndTitle/i", $return['idAndTitle'], true);
         optionParser::checkOption($match, "/-h1/i", $return['title'], true);
         optionParser::checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
         optionParser::checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
@@ -73,14 +74,15 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     private function _getDefaultOptions(){
         return array(
-            'subns'                => false, 'nopages' => false, 'simpleList' =>
-            false, 'excludedPages' => array(), 'excludedNS' => array(),
-            'title'                => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
-            'textNS'               => '', 'textPages' => '', 'pregPagesOn' => array(),
-            'pregPagesOff'         => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
-            'maxDepth'             => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
-            'sortid'               => false, 'reverse' => false,
-            'pagesinns'            => false, 'anchorName' => null, 'actualTitleLevel' => false
+            'subns'         => false, 'nopages' => false, 'simpleList' => false,
+            'excludedPages' => array(), 'excludedNS' => array(),
+            'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
+            'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
+            'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
+            'maxDepth'      => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
+            'sortid'        => false, 'reverse' => false,
+            'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
+            'idAndTitle'    => false
         );
     }
 

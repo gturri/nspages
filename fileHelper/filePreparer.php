@@ -23,18 +23,20 @@ abstract class filePreparer {
     private $pregOff;
 
     protected $useTitle;
+    protected $useIdAndTitle;
 
     /**
      * bool
      */
     protected $sortPageById;
 
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById){
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle){
         $this->excludedFiles = $excludedFiles;
         $this->pregOn = $pregOn;
         $this->pregOff = $pregOff;
         $this->useTitle = $useTitle;
         $this->sortPageById = $sortPageById;
+        $this->useIdAndTitle = $useIdAndTitle;
     }
 
     /**
