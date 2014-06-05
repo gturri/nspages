@@ -104,11 +104,17 @@ abstract class nspages_printer {
         }
     }
 
+    function printBeginning(){
+        if($this->mode == 'xhtml') {
+            $this->renderer->doc .= '<div class="plugin_nspages">';
+        }
+    }
 
     function printEnd(){
         //this is needed to make sure everything after the plugin is written below the output
         if($this->mode == 'xhtml') {
             $this->renderer->doc .= '<br class="catpageeofidx">';
+            $this->renderer->doc .= '</div>';
         } else {
             $this->renderer->linebreak();
         }

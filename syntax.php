@@ -102,6 +102,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             $subnamespaces = array_merge($subnamespaces, $pages);
         }
 
+        $printer->printBeginning();
         $this->_print($printer, $data, $subnamespaces, $pages);
         $printer->printEnd();
 
