@@ -6,7 +6,7 @@ Requirements
 
 To run the tests you'll need:
 
-* Java an maven
+* Java and maven
 * Firefox
 * To install a fake wiki (see below)
 
