@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #directory where Dokuwiki should be installed in order to be reachable at http://localhost
-serverFileSystemRoot=/var/www/
+serverFileSystemRoot=/var/www/html
 #Owner of the files (to make sure the instance of dokuwiki can ediable its pages)
 serverFileSystemOwner=www-data
 #Shouldn't be changed since itests try to connect to this url
