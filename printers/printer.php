@@ -12,7 +12,7 @@ abstract class nspages_printer {
     protected $renderer;
     protected $mode;
     private $pos;
-    private $acualLevelTitle;
+    private $actualTitleLevel;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
