@@ -46,9 +46,16 @@ class fileHelper {
            if($preparer->isFileWanted($item)) {
                $preparer->prepareFile($item);
                $files[] = $item;
+               if ($this->hasEnoughFiles($files)){
+                 break;
+               }
            }
         }
         return $files;
+    }
 
+    private function hasEnoughFiles($files){
+      $nbItemsMax = $this->data['nbItemsMax'];
+      return $nbItemsMax && count($files) >= $nbItemsMax;
     }
 }

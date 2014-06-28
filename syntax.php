@@ -59,6 +59,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
         optionParser::checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
         optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
+        optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
@@ -82,7 +83,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'maxDepth'      => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
-            'idAndTitle'    => false
+            'idAndTitle'    => false, 'nbItemsMax' => 0
         );
     }
 

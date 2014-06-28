@@ -52,6 +52,15 @@ class optionParser {
         }
     }
 
+    static function checkNbItemsMax(&$match, &$varAffected){
+        if(preg_match("/-nb?Items?Max *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
+            if($found[1] != '') {
+                $varAffected = max((int) $found[1], 1);
+            }
+            $match = str_replace($found[0], '', $match);
+        }
+    }
+
     static function checkAnchorName(&$match, &$varAffected){
         if(preg_match("/-anchorName *=? *\"?([[:alnum:]]+)\"?/i", $match, $found)) {
             $varAffected = $found[1];

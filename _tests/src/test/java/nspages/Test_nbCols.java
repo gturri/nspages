@@ -2,12 +2,8 @@ package nspages;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class Test_nbCols extends Helper {
 	@Test
@@ -47,7 +43,6 @@ public class Test_nbCols extends Helper {
 	}
 
 	private void assertNbCols(int expectedNbCols, WebDriver driver){
-		List<WebElement> columns = driver.findElements(By.className("catpagecol"));
-		assertEquals(expectedNbCols, columns.size());
+		assertEquals(expectedNbCols, getColumns(driver).size());
 	}
 }

@@ -109,6 +109,10 @@ public class Helper {
 		return driver.findElement(By.xpath(xpath));
 	}
 
+    public List<WebElement> getColumns(WebDriver driver){
+		return driver.findElements(By.className("catpagecol"));
+    }
+
 	public String getXPath(WebDriver driver, WebElement element){
 		String jscript = " function getElementXPath(elt) {" +
                          "  var path = \"\";" +
