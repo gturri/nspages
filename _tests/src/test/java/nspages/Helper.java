@@ -14,7 +14,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Helper {
 	private final static String protocol = "http://";
 	private final static String server = "localhost";
-	public  final static String wikiPath = "/dokuwikiITestsForNsPagesdokuwiki-2014-05-05";
+	public  final static String wikiPath = "/dokuwikiITestsForNsPagesdokuwiki-2014-09-29a";
 	public  final static String baseUrl = protocol + server + wikiPath + "/doku.php";
 	private final static WebDriver driver = new FirefoxDriver();
 

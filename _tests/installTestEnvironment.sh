@@ -8,7 +8,7 @@ serverFileSystemOwner=www-data
 baseUrl=http://localhost
 dirNamePrefix=dokuwikiITestsForNsPages
 
-dwVersions="dokuwiki-2014-05-05"
+dwVersions="dokuwiki-2014-09-29a"
 installDir=tmpForInstallation
 relativeTestFileDir=testEnvironment
 
