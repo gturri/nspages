@@ -9,6 +9,7 @@
  * @author  Andreas Gohr <gohr@cosmocode.de>
  */
 if(!defined('DOKU_INC')) die();
+require_once 'printers/printerLineBreak.php';
 require_once 'printers/printerOneLine.php';
 require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
@@ -44,6 +45,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "/-subns/i", $return['subns'], true);
         optionParser::checkOption($match, "/-nopages/i", $return['nopages'], true);
         optionParser::checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
+        optionParser::checkOption($match, "/-simpleLineBreak/i", $return['lineBreak'], true);
         optionParser::checkOption($match, "/-title/i", $return['title'], true);
         optionParser::checkOption($match, "/-idAndTitle/i", $return['idAndTitle'], true);
         optionParser::checkOption($match, "/-h1/i", $return['title'], true);
@@ -75,7 +77,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     private function _getDefaultOptions(){
         return array(
-            'subns'         => false, 'nopages' => false, 'simpleList' => false,
+            'subns'         => false, 'nopages' => false, 'simpleList' => false, 'lineBreak' => false,
             'excludedPages' => array(), 'excludedNS' => array(),
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
@@ -145,6 +147,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return new nspages_printerSimpleList($this, $mode, $renderer, $data);
         } else if($data['simpleLine']) {
             return new nspages_printerOneLine($this, $mode, $renderer, $data);
+        } else if ($data['lineBreak']){
+            return new nspages_printerLineBreak($this, $mode, $renderer, $data);
         } else if($mode == 'xhtml') {
             return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName'], $data);
         }
