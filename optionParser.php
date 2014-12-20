@@ -73,7 +73,7 @@ class optionParser {
             $varAffected = $found[1];
             $match       = str_replace($found[0], '', $match);
         } else {
-            $varAffected = $plugin->getLang('pagesinthiscat');
+            $varAffected = null;
         }
     }
 
@@ -82,7 +82,7 @@ class optionParser {
             $varAffected = $found[1];
             $match       = str_replace($found[0], '', $match);
         } else {
-            $varAffected = $plugin->getLang('subcats');
+            $varAffected = null;
         }
     }
 

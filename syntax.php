@@ -91,6 +91,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     function render($mode, &$renderer, $data) {
         global $conf;
+
+        //Load lang now rather than at handle-time, otherwise it doesn't
+        //behave well with the translation plugin (it seems like we cache strings
+        //even if the lang doesn't match)
+        $this->_denullifyLangOptions($data);
         $printer = $this->_selectPrinter($mode, $renderer, $data);
 
         if( ! $this->_isNamespaceUsable($data)){
@@ -110,6 +115,16 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $printer->printEnd();
 
         return TRUE;
+    }
+
+    function _denullifyLangOptions(&$data){
+        if ( is_null($data['textNS']) ){
+            $data['textNS'] = $this->getLang('subcats');
+        }
+
+        if ( is_null($data['textPages']) ){
+            $data['textPages'] = $this->getLang('pagesinthiscat');
+        }
     }
 
     private function _shouldPrintPagesAmongNamespaces($data){
