@@ -13,12 +13,14 @@ abstract class nspages_printer {
     protected $mode;
     private $pos;
     private $actualTitleLevel;
+    private $natOrder;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
       $this->renderer =& $renderer;
       $this->mode = $mode;
       $this->pos = $data['pos'];
+      $this->natOrder = $data['natOrder'];
       $this->actualTitleLevel = $data['actualTitleLevel'];
     }
 
@@ -66,19 +68,22 @@ abstract class nspages_printer {
     }
 
     private function _sort(&$tab, $reverse) {
-        if(!$reverse) {
-            usort($tab, array("nspages_printer", "_order"));
+        if ( $this->natOrder ){
+            usort($tab, array("nspages_printer", "_natOrder"));
         } else {
-            usort($tab, array("nspages_printer", "_orderReverse"));
+            usort($tab, array("nspages_printer", "_order"));
         }
-    } // _sort
+        if ($reverse) {
+          $tab = array_reverse($tab);
+        }
+    }
 
     private static function _order($p1, $p2) {
-        return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
-    } //_order
+        return strcasecmp($p1['sort'], $p2['sort']);
+    }
 
-    private static function _orderReverse($p1, $p2) {
-        return -strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
+    private static function _natOrder($p1, $p2) {
+        return strnatcasecmp($p1['sort'], $p2['sort']);
     }
 
     /**
