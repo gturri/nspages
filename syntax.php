@@ -39,28 +39,28 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $return = $this->_getDefaultOptions();
         $return['pos'] = $pos;
 
-        $match = utf8_substr($match, 9, -1); //9 = strlen("<nspages ")
+        $match = utf8_substr($match, 8, -1); //9 = strlen("<nspages")
         $match .= ' ';
 
-        optionParser::checkOption($match, "/-subns/i", $return['subns'], true);
-        optionParser::checkOption($match, "/-nopages/i", $return['nopages'], true);
-        optionParser::checkOption($match, "/-simpleListe?/i", $return['simpleList'], true);
-        optionParser::checkOption($match, "/-simpleLineBreak/i", $return['lineBreak'], true);
-        optionParser::checkOption($match, "/-title/i", $return['title'], true);
-        optionParser::checkOption($match, "/-idAndTitle/i", $return['idAndTitle'], true);
-        optionParser::checkOption($match, "/-h1/i", $return['title'], true);
-        optionParser::checkOption($match, "/-simpleLine/i", $return['simpleLine'], true);
-        optionParser::checkOption($match, "/-sort(By)?Id/i", $return['sortid'], true);
-        optionParser::checkOption($match, "/-reverse/i", $return['reverse'], true);
-        optionParser::checkOption($match, "/-pagesinns/i", $return['pagesinns'], true);
+        optionParser::checkOption($match, "subns", $return['subns'], true);
+        optionParser::checkOption($match, "nopages", $return['nopages'], true);
+        optionParser::checkOption($match, "simpleListe?", $return['simpleList'], true);
+        optionParser::checkOption($match, "simpleLineBreak", $return['lineBreak'], true);
+        optionParser::checkOption($match, "title", $return['title'], true);
+        optionParser::checkOption($match, "idAndTitle", $return['idAndTitle'], true);
+        optionParser::checkOption($match, "h1", $return['title'], true);
+        optionParser::checkOption($match, "simpleLine", $return['simpleLine'], true);
+        optionParser::checkOption($match, "sort(By)?Id", $return['sortid'], true);
+        optionParser::checkOption($match, "reverse", $return['reverse'], true);
+        optionParser::checkOption($match, "pagesinns", $return['pagesinns'], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
         optionParser::checkTextNs($match, $return['textNS'], $this);
-        optionParser::checkRegEx($match, "/-pregPages?On=\"([^\"]*)\"/i", $return['pregPagesOn']);
-        optionParser::checkRegEx($match, "/-pregPages?Off=\"([^\"]*)\"/i", $return['pregPagesOff']);
-        optionParser::checkRegEx($match, "/-pregNSOn=\"([^\"]*)\"/i", $return['pregNSOn']);
-        optionParser::checkRegEx($match, "/-pregNSOff=\"([^\"]*)\"/i", $return['pregNSOff']);
+        optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
+        optionParser::checkRegEx($match, "pregPages?Off=\"([^\"]*)\"", $return['pregPagesOff']);
+        optionParser::checkRegEx($match, "pregNSOn=\"([^\"]*)\"", $return['pregNSOn']);
+        optionParser::checkRegEx($match, "pregNSOff=\"([^\"]*)\"", $return['pregNSOff']);
         optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);

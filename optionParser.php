@@ -10,7 +10,7 @@ if(!defined('DOKU_INC')) die();
 class optionParser {
 
     function checkRegEx(&$match, $pattern, &$arrayAffected) {
-        preg_match_all($pattern, $match, $found, PREG_SET_ORDER);
+        preg_match_all('/\s-' . $pattern . '/i', $match, $found, PREG_SET_ORDER);
         foreach($found as $regex) {
             $arrayAffected[] = $regex[1];
             $match           = str_replace($regex[0], '', $match);
@@ -26,14 +26,14 @@ class optionParser {
      * @param        $valIfFound the value affected to the previous variable if the option is found
      */
     static function checkOption(&$match, $pattern, &$varAffected, $valIfFound) {
-        if(preg_match($pattern, $match, $found)) {
+        if(preg_match('/\s-' . $pattern . '/i', $match, $found)) {
             $varAffected = $valIfFound;
             $match       = str_replace($found[0], '', $match);
         }
     }
 
     static function checkRecurse(&$match, &$varAffected){
-        if(preg_match("/-r *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
+        if(preg_match('/\s-r *=? *\"?([[:digit:]]*)\"?/i', $match, $found)) {
             if($found[1] != '') {
                 $varAffected = (int) $found[1];
             } else {
