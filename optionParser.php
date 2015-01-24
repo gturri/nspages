@@ -10,7 +10,7 @@ if(!defined('DOKU_INC')) die();
 class optionParser {
 
     function checkRegEx(&$match, $pattern, &$arrayAffected) {
-        preg_match_all('/\s-' . $pattern . '/i', $match, $found, PREG_SET_ORDER);
+        optionParser::preg_match_all_wrapper($pattern, $match, $found);
         foreach($found as $regex) {
             $arrayAffected[] = $regex[1];
             $match           = str_replace($regex[0], '', $match);
@@ -26,14 +26,14 @@ class optionParser {
      * @param        $valIfFound the value affected to the previous variable if the option is found
      */
     static function checkOption(&$match, $pattern, &$varAffected, $valIfFound) {
-        if(preg_match('/\s-' . $pattern . '/i', $match, $found)) {
+        if(optionParser::preg_match_wrapper($pattern, $match, $found)) {
             $varAffected = $valIfFound;
             $match       = str_replace($found[0], '', $match);
         }
     }
 
     static function checkRecurse(&$match, &$varAffected){
-        if(preg_match('/\s-r *=? *\"?([[:digit:]]*)\"?/i', $match, $found)) {
+        if(optionParser::preg_match_wrapper('r *=? *\"?([[:digit:]]*)\"?', $match, $found)) {
             if($found[1] != '') {
                 $varAffected = (int) $found[1];
             } else {
@@ -44,7 +44,7 @@ class optionParser {
     }
 
     static function checkNbColumns(&$match, &$varAffected){
-        if(preg_match("/-nb?Cols? *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
+        if(optionParser::preg_match_wrapper("nb?Cols? *=? *\"?([[:digit:]]*)\"?", $match, $found)) {
             if($found[1] != '') {
                 $varAffected = max((int) $found[1], 1);
             }
@@ -53,7 +53,7 @@ class optionParser {
     }
 
     static function checkNbItemsMax(&$match, &$varAffected){
-        if(preg_match("/-nb?Items?Max *=? *\"?([[:digit:]]*)\"?/i", $match, $found)) {
+        if(optionParser::preg_match_wrapper("nb?Items?Max *=? *\"?([[:digit:]]*)\"?", $match, $found)) {
             if($found[1] != '') {
                 $varAffected = max((int) $found[1], 1);
             }
@@ -62,14 +62,14 @@ class optionParser {
     }
 
     static function checkAnchorName(&$match, &$varAffected){
-        if(preg_match("/-anchorName *=? *\"?([[:alnum:]]+)\"?/i", $match, $found)) {
+        if(optionParser::preg_match_wrapper("anchorName *=? *\"?([[:alnum:]]+)\"?", $match, $found)) {
             $varAffected = $found[1];
             $match = str_replace($found[0], '', $match);
         }
     }
 
     static function checkTextPages(&$match, &$varAffected, $plugin){
-        if(preg_match("/-textPages? *= *\"([^\"]*)\"/i", $match, $found)) {
+        if(optionParser::preg_match_wrapper("textPages? *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
             $match       = str_replace($found[0], '', $match);
         } else {
@@ -78,7 +78,7 @@ class optionParser {
     }
 
     static function checkTextNs(&$match, &$varAffected, $plugin){
-        if(preg_match("/-textNS *= *\"([^\"]*)\"/i", $match, $found)) {
+        if(optionParser::preg_match_wrapper("textNS *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
             $match       = str_replace($found[0], '', $match);
         } else {
@@ -87,29 +87,8 @@ class optionParser {
     }
 
     static function checkExclude(&$match, &$excludedPages, &$excludedNs){
-        //--Checking if specified subnamespaces have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*):/", $match, $found, PREG_SET_ORDER);
-        foreach($found as $subns) {
-            $excludedNs[] = $subns[1];
-            $match        = str_replace($subns[0], '', $match);
-        }
-
-        //--Checking if specified pages have to be excluded
-        preg_match_all("/-exclude:([^[ <>]*) /", $match, $found, PREG_SET_ORDER);
-        foreach($found as $page) {
-            $excludedPages[] = $page[1];
-            $match           = str_replace($page[0], '', $match);
-        }
-
-        //--Looking if the current page has to be excluded
-        global $ID;
-        if(preg_match("/-exclude /", $match, $found)) {
-            $excludedPages[] = noNS($ID);
-            $match                     = str_replace($found[0], '', $match);
-        }
-
         //--Looking if the syntax -exclude[item1 item2] has been used
-        if(preg_match("/-exclude:\[(.*)\]/", $match, $found)) {
+        if(optionParser::preg_match_wrapper("exclude:\[(.*)\]", $match, $found)) {
             $match = str_replace($found[0], '', $match);
             $found = str_replace('@', '', $found[1]); //for retrocompatibility
             $found = explode(' ', $found);
@@ -121,14 +100,43 @@ class optionParser {
                 }
             }
         }
+
+        //--Checking if specified subnamespaces have to be excluded
+        optionParser::preg_match_all_wrapper("exclude:([^[ <>]*):", $match, $found);
+        foreach($found as $subns) {
+            $excludedNs[] = $subns[1];
+            $match        = str_replace($subns[0], '', $match);
+        }
+
+        //--Checking if specified pages have to be excluded
+        optionParser::preg_match_all_wrapper("exclude:([^[ <>]*)", $match, $found);
+        foreach($found as $page) {
+            $excludedPages[] = $page[1];
+            $match           = str_replace($page[0], '', $match);
+        }
+
+        //--Looking if the current page has to be excluded
+        global $ID;
+        if(optionParser::preg_match_wrapper("exclude", $match, $found)) {
+            $excludedPages[] = noNS($ID);
+            $match                     = str_replace($found[0], '', $match);
+        }
     }
 
     static function checkActualTitle(&$match, &$varAffected){
-        if ( preg_match("/-actualTitle *= *([[:digit:]])/i", $match, $found) ){
+        if ( optionParser::preg_match_wrapper("actualTitle *= *([[:digit:]])", $match, $found) ){
             $varAffected = $found[1];
-        } else if ( preg_match("/-actualTitle/", $match, $found) ){
+        } else if ( optionParser::preg_match_wrapper("actualTitle", $match, $found) ){
             $varAffected = 2;
         }
         $match = str_replace($found[0], '', $match);
+    }
+
+    static private function preg_match_wrapper($pattern, $subject, &$matches){
+      return preg_match('/\s-' . $pattern . '/i', $subject, $matches);
+    }
+
+    static private function preg_match_all_wrapper($pattern, $subject, &$matches){
+      return preg_match_all('/\s-' . $pattern . '/i', $subject, $matches, PREG_SET_ORDER);
     }
 }

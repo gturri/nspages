@@ -41,4 +41,13 @@ public class Test_pregPages extends Helper {
 		assertSameLinks(expectedLinks, getDriver());
 	}
 
+	@Test
+	public void withSeveralPreg(){
+		generatePage("pregpages:start", "<nspages -pregPagesOff=\"/1$/\" -pregPagesOff=\"/p$/\">");
+
+		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
+		expectedLinks.add(new InternalLink("pregpages:start", "start"));
+
+		assertSameLinks(expectedLinks, getDriver());
+	}
 }
