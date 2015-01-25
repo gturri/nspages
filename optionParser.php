@@ -133,10 +133,10 @@ class optionParser {
     }
 
     static private function preg_match_wrapper($pattern, $subject, &$matches){
-      return preg_match('/\s-' . $pattern . '/i', $subject, $matches);
+        return preg_match('/\s-' . $pattern . '/i', $subject, $matches);
     }
 
     static private function preg_match_all_wrapper($pattern, $subject, &$matches){
-      return preg_match_all('/\s-' . $pattern . '/i', $subject, $matches, PREG_SET_ORDER);
+        return preg_match_all('/\s-' . $pattern . '/i', $subject, $matches, PREG_SET_ORDER);
     }
 }
