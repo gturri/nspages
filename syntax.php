@@ -45,6 +45,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "subns", $return['subns'], true);
         optionParser::checkOption($match, "nopages", $return['nopages'], true);
         optionParser::checkOption($match, "simpleListe?", $return['simpleList'], true);
+        optionParser::checkOption($match, "numberedListe?", $return['numberedList'], true);
         optionParser::checkOption($match, "simpleLineBreak", $return['lineBreak'], true);
         optionParser::checkOption($match, "title", $return['title'], true);
         optionParser::checkOption($match, "idAndTitle", $return['idAndTitle'], true);
@@ -85,7 +86,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'maxDepth'      => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
-            'idAndTitle'    => false, 'nbItemsMax' => 0
+            'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false
         );
     }
 
@@ -160,6 +161,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     private function _selectPrinter($mode, &$renderer, $data){
         if($data['simpleList']) {
             return new nspages_printerSimpleList($this, $mode, $renderer, $data);
+        } else if($data['numberedList']){
+            return new nspages_printerSimpleList($this, $mode, $renderer, $data, true);
         } else if($data['simpleLine']) {
             return new nspages_printerOneLine($this, $mode, $renderer, $data);
         } else if ($data['lineBreak']){

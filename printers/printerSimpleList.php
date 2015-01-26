@@ -9,15 +9,38 @@ if(!defined('DOKU_INC')) die();
 require_once 'printer.php';
 
 class nspages_printerSimpleList extends nspages_printer {
-    function __construct($plugin, $mode, $renderer, $data){
+    private $useNumberedList;
+
+    function __construct($plugin, $mode, $renderer, $data, $useNumberedList = false){
         parent::__construct($plugin, $mode, $renderer, $data);
+        $this->useNumberedList = $useNumberedList;
     }
 
     function _print($tab, $type) {
-        $this->renderer->listu_open();
+        $this->_openList();
+        $this->_printItems($tab);
+        $this->_closeList();
+    }
+
+    private function _openList() {
+        if ( $this->useNumberedList ){
+            $this->renderer->listo_open();
+        } else {
+            $this->renderer->listu_open();
+        }
+    }
+
+    private function _printItems($tab){
         foreach($tab as $item) {
             $this->_printElement($item);
         }
-        $this->renderer->listu_close();
+    }
+
+    private function _closeList() {
+        if ( $this->useNumberedList ){
+            $this->renderer->listo_close();
+        } else {
+            $this->renderer->listu_close();
+        }
     }
 }
