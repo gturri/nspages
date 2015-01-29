@@ -74,11 +74,11 @@ abstract class nspages_printer {
     } // _sort
 
     private static function _order($p1, $p2) {
-        return strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
+        return strcasecmp($p1['sort'], $p2['sort']);
     } //_order
 
     private static function _orderReverse($p1, $p2) {
-        return -strcasecmp(utf8_strtoupper($p1['sort']), utf8_strtoupper($p2['sort']));
+        return -strcasecmp($p1['sort'], $p2['sort']);
     }
 
     /**
