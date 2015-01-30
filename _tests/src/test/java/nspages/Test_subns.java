@@ -1,5 +1,5 @@
 package nspages;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -66,6 +66,6 @@ public class Test_subns extends Helper {
 	}
 
 	private List<WebElement> getLinksBeneath(WebDriver driver, WebElement element){
-		return driver.findElements(By.xpath(getXPath(driver, element) + "//a"));
+		return element.findElements(By.tagName("a"));
 	}
 }
