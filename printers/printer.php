@@ -66,19 +66,14 @@ abstract class nspages_printer {
     }
 
     private function _sort(&$tab, $reverse) {
-        if(!$reverse) {
-            usort($tab, array("nspages_printer", "_order"));
-        } else {
-            usort($tab, array("nspages_printer", "_orderReverse"));
+        usort($tab, array("nspages_printer", "_order"));
+        if ($reverse) {
+          $tab = array_reverse($tab);
         }
-    } // _sort
+    }
 
     private static function _order($p1, $p2) {
         return strcasecmp($p1['sort'], $p2['sort']);
-    } //_order
-
-    private static function _orderReverse($p1, $p2) {
-        return -strcasecmp($p1['sort'], $p2['sort']);
     }
 
     /**
