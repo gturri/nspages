@@ -1,12 +1,12 @@
 package nspages;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -105,36 +105,10 @@ public class Helper {
 	}
 
 	public WebElement getNextSibling(WebDriver driver, WebElement current){
-		String xpath = getXPath(driver, current) + "/following::*";
-		return driver.findElement(By.xpath(xpath));
+		return current.findElement(By.xpath("following::*"));
 	}
 
     public List<WebElement> getColumns(WebDriver driver){
 		return driver.findElements(By.className("catpagecol"));
     }
-
-	public String getXPath(WebDriver driver, WebElement element){
-		String jscript = " function getElementXPath(elt) {" +
-                         "  var path = \"\";" +
-                         "  for (; elt && elt.nodeType == 1; elt = elt.parentNode){" +
-                         "    idx = getElementIdx(elt);" +
-                         "    xname = elt.tagName;" +
-                         "    xname += \"[\" + idx + \"]\";" +
-                         "    path = \"/\" + xname + path;" +
-                         "  }" +
-                         "  " +
-                         "  return path;  " +
-                         " }" +
-                         "  " +
-                         " function getElementIdx(elt){" +
-                         "   var count = 1;" +
-                         "   for (var sib = elt.previousSibling; sib ; sib = sib.previousSibling){" +
-                         "     if(sib.nodeType == 1 && sib.tagName == elt.tagName) count++" +
-                         "   }" +
-                         "  " +
-                         "   return count;" +
-                         " }" +
-                         " return getElementXPath(arguments[0]);";
-		return (String) ((JavascriptExecutor)driver).executeScript(jscript, element);
-	}
 }
