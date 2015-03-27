@@ -41,13 +41,24 @@ public class Test_recursion extends Helper {
 		generatePage("recursion:start", "<nspages -subns -r = \"2\">");
 		assertSameLinks(level2NsLinks(), level2PagesLinks(), getDriver());
 	}
+	
+	@Test
+	//Because we had conflict in option parsing. See #30
+	public void alongWithExcludeOption(){
+		generatePage("recursion:start", "<nspages -subns -r -exclude:start>");
+		assertSameLinks(allNsLinks(), allPagesLinks(true), getDriver());
+	}
 
 	private List<InternalLink> allNsLinks(){
 		return level2NsLinks();
 	}
 
 	private List<InternalLink> allPagesLinks(){
-		List<InternalLink> links = level2PagesLinks();
+		return allPagesLinks(false);
+	}
+	
+	private List<InternalLink> allPagesLinks(boolean excludeStart){
+		List<InternalLink> links = level2PagesLinks(excludeStart);
 		links.add(2, new InternalLink("recursion:lvl2:lvl3:pagelvl3", "pagelvl3"));
 		return links;
 	}
@@ -59,7 +70,11 @@ public class Test_recursion extends Helper {
 	}
 
 	private List<InternalLink> level2PagesLinks(){
-		List<InternalLink> links = level1PagesLinks();
+		return level2PagesLinks(false);
+	}
+
+	private List<InternalLink> level2PagesLinks(boolean excludeStart){
+		List<InternalLink> links = level1PagesLinks(excludeStart);
 		links.add(1, new InternalLink("recursion:lvl2:pagelvl2", "pagelvl2"));
 		return links;
 	}
@@ -71,9 +86,15 @@ public class Test_recursion extends Helper {
 	}
 
 	private List<InternalLink> level1PagesLinks(){
+		return level1PagesLinks(false);
+	}
+
+	private List<InternalLink> level1PagesLinks(boolean excludeStart){
 		List<InternalLink> links = new ArrayList<InternalLink>();
 		links.add(new InternalLink("recursion:pagelvl1", "pagelvl1"));
-		links.add(new InternalLink("recursion:start", "start"));
+		if ( ! excludeStart ){
+			links.add(new InternalLink("recursion:start", "start"));
+		}
 		return links;
 	}
 
