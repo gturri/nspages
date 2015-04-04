@@ -22,7 +22,7 @@ class fileHelper {
         $opt   = array(
             'depth'     => $this->data['maxDepth'], 'keeptxt'=> false, 'listfiles'=> !$this->data['nopages'],
             'listdirs'  => $this->data['subns'], 'pageonly'=> true, 'skipacl'=> false,
-            'sneakyacl' => true, 'hash'=> false, 'meta'=> false, 'showmsg'=> false,
+            'sneakyacl' => true, 'hash'=> false, 'meta'=> true, 'showmsg'=> false,
             'showhidden'=> false, 'firsthead'=> true
         );
         $files = array();
@@ -31,12 +31,12 @@ class fileHelper {
     }
 
     function getPages(){
-        $preparer = new pagePreparer($this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle']);
+        $preparer = new pagePreparer($this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate']);
         return $this->getFiles($preparer);
     }
 
     function getSubnamespaces(){
-        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle']);
+        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate']);
         return $this->getFiles($preparer);
     }
 

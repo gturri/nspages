@@ -50,6 +50,12 @@ function installFakeWiki {
     cp -r $item $pluginDir
   done
 
+  echo " Reseting some mtimes"
+  touch -t201504010020.00 $destDir/data/pages/ns1/a.txt
+  touch -t201504011020.00 $destDir/data/pages/ns1/b2.txt
+  touch -t201504012020.00 $destDir/data/pages/ns1/c.txt
+  touch -t201504012320.00 $destDir/data/pages/ns1/b1.txt
+
   chown -R $serverFileSystemOwner $destDir
   
   echo " Running the indexer"
