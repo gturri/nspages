@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle);
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate);
     }
 
     function isFileWanted($file){
@@ -18,7 +18,7 @@ class pagePreparer extends filePreparer {
 
     function prepareFile(&$page){
         $page['title'] = $this->buildTitle($page['title'], $page['id']);
-        $page['sort'] = $this->buildSortAttribute($page['title'], $page['id']);
+        $page['sort'] = $this->buildSortAttribute($page['title'], $page['id'], $page['mtime']);
     }
 
     private function buildTitle($currentTitle, $pageId){
@@ -32,9 +32,11 @@ class pagePreparer extends filePreparer {
         return $currentTitle;
     }
 
-    private function buildSortAttribute($pageTitle, $pageId){
+    private function buildSortAttribute($pageTitle, $pageId, $mtime){
         if($this->sortPageById) {
             return noNS($pageId);
+        } else if ( $this->sortPageByDate ){
+            return $mtime;
         } else {
             return $pageTitle;
         }

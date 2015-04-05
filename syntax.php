@@ -55,6 +55,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "reverse", $return['reverse'], true);
         optionParser::checkOption($match, "pagesinns", $return['pagesinns'], true);
         optionParser::checkOption($match, "nat(ural)?Order", $return['natOrder'], true);
+        optionParser::checkOption($match, "sort(By)?Date", $return['sortDate'], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
@@ -88,7 +89,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
-            'natOrder'      => false
+            'natOrder'      => false, 'sortDate' => false
         );
     }
 

@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle);
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate);
     }
 
     function isFileWanted($file){
@@ -28,7 +28,7 @@ class namespacePreparer extends filePreparer {
 
         $ns['title'] = $this->buildTitle($idMainPage, noNS($ns['id']));
         $ns['id'] = $this->buildIdToLinkTo($idMainPage, $ns['id']);
-        $ns['sort'] = $this->buildSortAttribute($ns['title'], $ns['id']);
+        $ns['sort'] = $this->buildSortAttribute($ns['title'], $ns['id'], $ns['mtime']);
     }
 
     private function getMainPageId($ns){
@@ -62,9 +62,11 @@ class namespacePreparer extends filePreparer {
         }
     }
 
-    private function buildSortAttribute($nsTitle, $nsId){
+    private function buildSortAttribute($nsTitle, $nsId, $mtime){
         if ( $this->sortPageById ){
             return curNS($nsId);
+        } else if ( $this->sortPageByDate ){
+            return $mtime;
         } else {
             return $nsTitle;
         }
