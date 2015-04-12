@@ -32,4 +32,16 @@ public class Test_sortDate extends Helper {
 		assertSameLinks(expectedLinks, getDriver());
 	}
 
+	@Test
+	public void withNbMaxItems(){
+		generatePage("ns1:start", "<nspages -h1 -sortDate -exclude -nbItemsMax=3>");
+
+		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
+		expectedLinks.add(new InternalLink("ns1:a", "a"));
+		expectedLinks.add(new InternalLink("ns1:b2", "b2"));
+		expectedLinks.add(new InternalLink("ns1:c", "c"));
+
+		assertSameLinks(expectedLinks, getDriver());
+	}
+
 }
