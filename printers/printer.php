@@ -14,6 +14,7 @@ abstract class nspages_printer {
     private $pos;
     private $actualTitleLevel;
     private $natOrder;
+    private $nbItemsMax;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -22,6 +23,7 @@ abstract class nspages_printer {
       $this->pos = $data['pos'];
       $this->natOrder = $data['natOrder'];
       $this->actualTitleLevel = $data['actualTitleLevel'];
+      $this->nbItemsMax = $data['nbItemsMax'];
     }
 
     function printTOC($tab, $type, $text, $reverse){
@@ -44,6 +46,7 @@ abstract class nspages_printer {
 
     private function _printHeader(&$tab, $type, $text, $reverse) {
         $this->_sort($tab, $reverse);
+        $this->_keepOnlyNMaxItems($tab);
 
         if($text != '') {
             if($this->actualTitleLevel){
@@ -84,6 +87,12 @@ abstract class nspages_printer {
 
     private static function _natOrder($p1, $p2) {
         return strnatcasecmp($p1['sort'], $p2['sort']);
+    }
+
+    private function _keepOnlyNMaxItems(&$tab){
+        if ($this->nbItemsMax){
+            $tab = array_slice($tab, 0, $this->nbItemsMax);
+        }
     }
 
     /**
