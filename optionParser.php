@@ -86,11 +86,14 @@ class optionParser {
         }
     }
 
-    static function checkExclude(&$match, &$excludedPages, &$excludedNs){
+    static function checkExclude(&$match, &$excludedPages, &$excludedNs, &$useLegacySyntax){
         //--Looking if the syntax -exclude[item1 item2] has been used
         if(optionParser::preg_match_wrapper("exclude:\[(.*)\]", $match, $found)) {
             $match = optionParser::_removeFromMatch($found[0], $match);
-            $found = str_replace('@', '', $found[1]); //for retrocompatibility
+            if ( strpos($found[1], '@') !== false ){ //for retrocompatibility
+              $useLegacySyntax = true;
+            }
+            $found = str_replace('@', '', $found[1]);
             $found = explode(' ', $found);
             foreach($found as $item) {
                 if($item[strlen($item) - 1] == ':') { //not utf8_strlen() on purpose
