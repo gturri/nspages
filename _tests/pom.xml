@@ -41,7 +41,7 @@
 
   <build>
     <plugins>
-      <plugin>
+      <!--plugin>
         <groupId>com.soebes.maven.plugins</groupId>
         <artifactId>maven-echo-plugin</artifactId>
         <version>0.1</version>
@@ -58,7 +58,7 @@
             <echo>*** If most tests fail, make sure you've installed the fake wiki. See README for more info ***</echo>
           </echos>
         </configuration>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
