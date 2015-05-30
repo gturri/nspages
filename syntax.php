@@ -65,7 +65,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "pregNSOn=\"([^\"]*)\"", $return['pregNSOn']);
         optionParser::checkRegEx($match, "pregNSOff=\"([^\"]*)\"", $return['pregNSOff']);
         optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
-        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
+        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS'], $return['useLegacySyntax']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
 
@@ -89,12 +89,16 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
-            'natOrder'      => false, 'sortDate' => false
+            'natOrder'      => false, 'sortDate' => false, 'useLegacySyntax' => false
         );
     }
 
     function render($mode, &$renderer, $data) {
         global $conf;
+
+        if ( $data['useLegacySyntax'] ){
+            action_plugin_nspages::logUseLegacySyntax();
+        }
 
         //Load lang now rather than at handle-time, otherwise it doesn't
         //behave well with the translation plugin (it seems like we cache strings
