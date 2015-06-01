@@ -21,7 +21,8 @@ class action_plugin_nspages extends DokuWiki_Action_Plugin {
     }
 
     function usage_data(&$event){
-      $event->data['nspages']['version'] = $this->getInfo()['date'];
+      $plugin_info = $this->getInfo();
+      $event->data['nspages']['version'] = $plugin_info['date'];
       $event->data['nspages']['legacySyntax'] = $this->used_legacy_syntax_not_too_long_ago() ? 'true' : 'false';
     }
 
