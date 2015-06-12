@@ -143,7 +143,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     private function _print($printer, $data, $subnamespaces, $pages){
         if($data['subns']) {
-            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
+            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse'], $data['hidenosubns']);
         }
 
         if(!$this->_shouldPrintPagesAmongNamespaces($data)) {
@@ -153,7 +153,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             }
 
             if(!$data['nopages']) {
-                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse']);
+                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse'], $data['hidenopages']);
             }
         }
     }
