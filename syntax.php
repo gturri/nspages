@@ -91,7 +91,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
-            'natOrder'      => false, 'sortDate' => false, 'useLegacySyntax' => false
+            'natOrder'      => false, 'sortDate' => false, 'useLegacySyntax' => false,
+            'hidenopages'   => false, 'hidenosubns' => false
         );
     }
 
