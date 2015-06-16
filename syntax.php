@@ -56,6 +56,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "pagesinns", $return['pagesinns'], true);
         optionParser::checkOption($match, "nat(ural)?Order", $return['natOrder'], true);
         optionParser::checkOption($match, "sort(By)?Date", $return['sortDate'], true);
+        optionParser::checkOption($match, "hidenopages", $return['hidenopages'], true);
+        optionParser::checkOption($match, "hidenosubns", $return['hidenosubns'], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
@@ -89,7 +91,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
-            'natOrder'      => false, 'sortDate' => false, 'useLegacySyntax' => false
+            'natOrder'      => false, 'sortDate' => false, 'useLegacySyntax' => false,
+            'hidenopages'   => false, 'hidenosubns' => false
         );
     }
 
@@ -141,7 +144,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
     private function _print($printer, $data, $subnamespaces, $pages){
         if($data['subns']) {
-            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse']);
+            $printer->printTOC($subnamespaces, 'subns', $data['textNS'], $data['reverse'], $data['hidenosubns']);
         }
 
         if(!$this->_shouldPrintPagesAmongNamespaces($data)) {
@@ -151,7 +154,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             }
 
             if(!$data['nopages']) {
-                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse']);
+                $printer->printTOC($pages, 'page', $data['textPages'], $data['reverse'], $data['hidenopages']);
             }
         }
     }
