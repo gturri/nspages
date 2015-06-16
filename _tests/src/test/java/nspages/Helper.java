@@ -108,7 +108,11 @@ public class Helper {
 		return current.findElement(By.xpath("following::*"));
 	}
 
-    public List<WebElement> getColumns(WebDriver driver){
+	public List<WebElement> getColumns(WebDriver driver){
 		return driver.findElements(By.className("catpagecol"));
-    }
+	}
+
+	public boolean pagesContains(WebDriver driver, String contained){
+		return driver.findElement(By.tagName("html")).getAttribute("innerHTML").contains(contained);
+	}
 }

@@ -26,8 +26,8 @@ abstract class nspages_printer {
       $this->nbItemsMax = $data['nbItemsMax'];
     }
 
-    function printTOC($tab, $type, $text, $reverse){
-        $this->_printHeader($tab, $type, $text, $reverse);
+    function printTOC($tab, $type, $text, $reverse, $hideno){
+        $this->_printHeader($tab, $type, $text, $reverse, $hideno);
 
         if(empty($tab)) {
             return;
@@ -44,7 +44,10 @@ abstract class nspages_printer {
          $this->renderer->section_close();
     }
 
-    private function _printHeader(&$tab, $type, $text, $reverse) {
+    private function _printHeader(&$tab, $type, $text, $reverse, $hideno) {
+        
+        if(empty($tab) && $hideno) return;
+        
         $this->_sort($tab, $reverse);
         $this->_keepOnlyNMaxItems($tab);
 
