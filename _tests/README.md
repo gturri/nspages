@@ -3,6 +3,8 @@ Running tests
 
 TL;DR: from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
 
+More details:
+
 Tests can be run in two different ways: locally, or in Docker images
 
 * Running locally will run the tests only once, against your local php version.
@@ -20,11 +22,11 @@ Running the tests locally
 
 ### How it works
 
-`run_fast_test.sh` will
+`run_fast_test.sh` will:
 
 * Download Dokuwiki (and cache it locally)
 * Install it on your local web server along with some test pages
-  (it will do it as `su` to ensure it can write)
+  (it will do it as root to ensure it can write)
 * Use maven to run selenium tests
 
 Optionally, you can also generate a dashboard to get more detailled results with
@@ -32,8 +34,8 @@ Optionally, you can also generate a dashboard to get more detailled results with
     mvn site
     firefox target/site/surefire-report.html
 
-Running the test on Docker
--------------------------
+Running the tests on Docker
+---------------------------
 
 ### Requirements
 
@@ -43,10 +45,10 @@ Running the test on Docker
 
 ### How it works
 
-`run-exhaustive-tests.sh` will
+`run-exhaustive-tests.sh` will:
 
 * Download Dokuwiki (and cache it locally)
-* Build several docker images with different versions of PHP
+* Build several docker images with different versions of PHP.
   Each of those images will contain a wiki with some test pages
 * Start containers with those images, and run selenium tests against them
 
