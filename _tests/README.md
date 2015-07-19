@@ -1,37 +1,63 @@
 Running tests
 =============
 
-Requirements
-------------
+TL;DR: from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
 
-To run the tests you'll need:
+More details:
+
+Tests can be run in two different ways: locally, or in Docker images
+
+* Running locally will run the tests only once, against your local php version.
+* Running in Docker images will run the tests once in each images, so it's slower.
+  But each image has a different version of php, so it can catch more regression.
+
+Running the tests locally
+-------------------------
+
+### Requirements
 
 * Java and maven
 * Firefox
-* To install a fake wiki (see below)
+* A web server with PHP
 
-### Installing the test wiki
-Tests require a particular local instance of Dokuwiki.
-To set up the test wiki, run the install script from the _tests directory:
+### How it works
 
-    cd _tests
-    sudo ./installTestEnvironment.sh
+`run_fast_test.sh` will:
 
-If you dev on the plugin, you'll need to run this script again to update it
-on the test wiki.
+* Download Dokuwiki (and cache it locally)
+* Install it on your local web server along with some test pages
+  (it will do it as root to ensure it can write)
+* Use maven to run selenium tests
 
-Running tests with Maven
-----------------------
+Optionally, you can also generate a dashboard to get more detailled results with
 
-    #install maven
-    sudo apt-get install maven
-
-    #go in test directory
-    cd _tests
-
-    #actually run the tests
-    mvn test
-
-    #optional: generate a dashboard to get more detailled results
     mvn site
     firefox target/site/surefire-report.html
+
+Running the tests on Docker
+---------------------------
+
+### Requirements
+
+* Java and maven
+* Firefox
+* Docker
+
+### How it works
+
+`run-exhaustive-tests.sh` will:
+
+* Download Dokuwiki (and cache it locally)
+* Build several docker images with different versions of PHP.
+  Each of those images will contain a wiki with some test pages
+* Start containers with those images, and run selenium tests against them
+
+### Current limitations
+
+When tests fail on a container, the script doesn't stop the container
+(hence the port remains busy, hence we can't launch the tests again)
+
+To fix it, we should stop the container manually:
+
+    docker ps
+    docker stop <container-id>

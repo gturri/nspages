@@ -1,5 +1,5 @@
 .*sw*
-tmpForInstallation
+dw_dl_cache
 bin
 build
 target
@@ -7,3 +7,4 @@ target
 .project
 hs_err_pid*.log
 nohup.out
+_tests/docker
