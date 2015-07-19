@@ -11,6 +11,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class Helper {
 	private final static String protocol = "http://";
@@ -18,6 +19,17 @@ public class Helper {
 	public  final static String wikiPath = "/dokuwikiITestsForNsPagesdokuwiki-2014-09-29a";
 	public  final static String baseUrl = protocol + server + wikiPath + "/doku.php";
 	private final static WebDriver driver = new FirefoxDriver();
+
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					driver.quit();
+				} catch (UnreachableBrowserException e) {}
+			}
+		});
+	}
 
 	public WebDriver getDriver(){
 		return driver;
