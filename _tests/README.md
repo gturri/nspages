@@ -41,7 +41,8 @@ Running the tests on Docker
 
 * Java and maven
 * Firefox
-* Docker
+* [Docker](http://docs.docker.com/linux/started/)
+* [GNU parallel](http://www.gnu.org/software/parallel/)
 
 ### How it works
 
