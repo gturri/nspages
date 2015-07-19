@@ -3,7 +3,8 @@
 ./internal/dl_dw.sh
 
 pushd .. >/dev/null
-git archive -o nspages.tgz HEAD
+STASH_NAME=$(git stash create)
+git archive -o nspages.tgz ${STASH_NAME:-HEAD}
 mv nspages.tgz _tests/docker
 popd >/dev/null
 
