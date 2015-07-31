@@ -1,3 +1,3 @@
 <?php
 
-$lang['cache'] = 'Tick to disable the cache';
+$lang['cache'] = 'Disable the cache';
