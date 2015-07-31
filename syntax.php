@@ -99,6 +99,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     function render($mode, &$renderer, $data) {
         global $conf;
 
+        $cache = $this->_cacheOption();
+        if ($cache == 1){
+            $renderer->nocache(); // disable cache
+        }
+
         if ( $data['useLegacySyntax'] ){
             action_plugin_nspages::logUseLegacySyntax();
         }
@@ -181,5 +186,10 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName'], $data);
         }
         return new nspages_printerSimpleList($this, $mode, $renderer, $data);
+    }
+
+    private function _cacheOption() {
+         $cache = $this->getConf("cache");
+         return $cache;
     }
 }
