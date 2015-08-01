@@ -60,6 +60,10 @@ public class Helper {
 		driver.get(baseUrl + "?id=" + page + "&do=edit&rev=0");
 	}
 
+	public void navigateTo(String page){
+		driver.get(baseUrl + "?id=" + page);
+	}
+
 	private WebElement getEditTextArea(){
 		return driver.findElement(By.id("wiki__text"));
 	}
