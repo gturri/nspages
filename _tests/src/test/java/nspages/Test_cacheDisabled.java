@@ -7,9 +7,13 @@ import static org.junit.Assert.assertEquals;
 
 public class Test_cacheDisabled extends Helper {
 
+	private final String childPage1 = "no_cache:some_page";
+	private final String childPage2 = "no_cache:other_page";
+
 	@Before
 	public void removeChildPage(){
-		generatePage("no_cache:some_page", "");
+		generatePage(childPage1, "");
+		generatePage(childPage2, "");
 	}
 
 	@Test
@@ -17,14 +21,17 @@ public class Test_cacheDisabled extends Helper {
 		generatePage("no_cache:start", "<nspages>");
 		assertNbNspagesLinks(1); //Only contains the start page
 
-		createChildPage();
-
+		createChildPage(childPage1);
 		navigateTo("no_cache:start");
 		assertNbNspagesLinks(2);
+
+		createChildPage(childPage2);
+		navigateTo("no_cache:start");
+		assertNbNspagesLinks(3);
 	}
 
-	public void createChildPage(){
-		generatePage("no_cache:some_page", "<nspages>");
+	public void createChildPage(String pageId){
+		generatePage(pageId, "<nspages>");
 	}
 
 	private void assertNbNspagesLinks(int expected){
