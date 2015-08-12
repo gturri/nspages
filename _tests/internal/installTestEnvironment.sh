@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 #directory where Dokuwiki should be installed in order to be reachable at http://localhost
 SERVER_FS_ROOT=${SERVER_FS_ROOT:-/var/www/html}

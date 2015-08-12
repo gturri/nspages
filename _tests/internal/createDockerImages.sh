@@ -5,10 +5,13 @@
 pushd .. >/dev/null
 STASH_NAME=$(git stash create)
 git archive -o nspages.tgz ${STASH_NAME:-HEAD}
+mkdir _tests/docker || true
 mv nspages.tgz _tests/docker
 popd >/dev/null
 
-cp -r internal/installTestEnvironment.sh testEnvironment dw_dl_cache/dokuwiki-*.tgz source.sh docker
+cp -r internal/installTestEnvironment.sh testEnvironment source.sh docker
+mkdir docker/dw_dl_cache || true
+cp dw_dl_cache/dokuwiki-*.tgz docker/dw_dl_cache
 
 while IFS='' read -r line || [[ -n $line ]]; do
   export DOCKER_DEBIAN_TAG=$(echo $line | cut -d ' ' -f 1)
