@@ -97,8 +97,6 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     }
 
     function render($mode, &$renderer, $data) {
-        global $conf;
-
         $this->_deactivateTheCacheIfNeeded($renderer);
 
         if ( $data['useLegacySyntax'] ){
