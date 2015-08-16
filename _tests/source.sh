@@ -3,3 +3,11 @@ DW_VERSION="dokuwiki-2015-08-10"
 
 # Empty = on job per core
 PARALLEL_NB_JOBS=3
+
+# Do not edit below
+if ! [ x$PARALLEL_NB_JOBS = x ]; then
+  PARALLEL_JOB_ARG="--jobs $PARALLEL_NB_JOBS"
+else
+  PARALLEL_JOB_ARG=''
+fi
+export PARALLEL_JOB_ARG

@@ -19,14 +19,8 @@ function runTests {
 
 export -f runTests
 
-if ! [ x$PARALLEL_NB_JOBS = x ]; then
-  JOB_ARG="--jobs $PARALLEL_NB_JOBS"
-  echo "Using $PARALLEL_NB_JOBS jobs"
-else
-  JOB_ARG=''
-  echo "Using default level of parallelism"
-fi
-parallel $JOB_ARG -a dockerFiles.dat runTests;
+echo Going to run tests with parallel arg: $PARALLEL_JOB_ARG
+parallel $PARALLEL_JOB_ARG -a dockerFiles.dat runTests;
 RET_CODE=$?
 
 if [ $RET_CODE -eq 0 ]; then
