@@ -9,8 +9,8 @@
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
 $lang['doesntexist']           = 'cette catégorie n\'existe pas : ';
-$lang['subcats']               = 'Sous-categories :';
-$lang['pagesinthiscat']        = 'Pages dans la categorie :';
+$lang['subcats']               = 'Sous-catégories :';
+$lang['pagesinthiscat']        = 'Pages dans la catégorie :';
 $lang['continued']             = ' (suite)';
 $lang['nopages']               = 'Pas de pages dans cette catégorie.';
-$lang['nosubns']               = 'Pas de sous-catégorie.';
+$lang['nosubns']               = 'Pas de sous-catégories.';

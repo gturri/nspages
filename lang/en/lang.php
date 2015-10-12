@@ -9,8 +9,8 @@
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
 $lang['doesntexist']           = 'this namespace doesn\'t exist: ';
-$lang['subcats']               = 'Subnamespace:';
+$lang['subcats']               = 'Subnamespaces:';
 $lang['pagesinthiscat']        = 'Pages in this namespace:';
 $lang['continued']             = ' cont.';
 $lang['nopages']               = 'No pages in this namespace.';
-$lang['nosubns']               = 'No subnamespace.';
+$lang['nosubns']               = 'No subnamespaces.';
