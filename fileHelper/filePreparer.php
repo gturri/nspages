@@ -53,6 +53,7 @@ abstract class filePreparer {
     function isFileWanted($file) {
         $wanted = true;
         $noNSId = noNS($file['id']);
+
         $wanted &= (!in_array($noNSId, $this->excludedFiles));
         foreach($this->pregOn as $preg) {
             $wanted &= preg_match($preg, $noNSId);
