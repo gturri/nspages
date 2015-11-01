@@ -11,7 +11,7 @@ public class Test_textNs extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("textns:start", "<nspages -subns -nopages>");
-		assertNsText("Subnamespace:", getDriver());
+		assertNsText("Subnamespaces:", getDriver());
 	}
 
 	@Test

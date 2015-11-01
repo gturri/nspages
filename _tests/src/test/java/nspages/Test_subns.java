@@ -36,7 +36,7 @@ public class Test_subns extends Helper {
 	}
 
 	private void assertExpectedNsSection(WebDriver driver, WebElement nsSection){
-		assertEquals("Subnamespace:", nsSection.getAttribute("innerHTML"));
+		assertEquals("Subnamespaces:", nsSection.getAttribute("innerHTML"));
 
 		WebElement column = getNextSibling(driver, nsSection);
 

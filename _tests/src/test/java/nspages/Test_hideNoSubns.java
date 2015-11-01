@@ -18,7 +18,7 @@ public class Test_hideNoSubns extends Helper {
 		List<WebElement> sections = getDriver().findElements(By.className("catpageheadline"));
 		assertEquals(1, sections.size());
 		WebElement sibling = sections.get(0).findElement(By.xpath("following::*"));
-		assertTrue(sibling.getAttribute("innerHTML").contains("No subnamespace."));
+		assertTrue(sibling.getAttribute("innerHTML").contains("No subnamespaces."));
 	}
 
 	@Test
