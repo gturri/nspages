@@ -31,7 +31,7 @@ class fileHelper {
     }
 
     function getPages(){
-        $preparer = new pagePreparer($this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate']);
+        $preparer = new pagePreparer($this->data['excludedNS'], $this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate']);
         return $this->getFiles($preparer);
     }
 
