@@ -9,7 +9,7 @@ if(!defined('DOKU_INC')) die();
 
 class optionParser {
 
-    function checkRegEx(&$match, $pattern, &$arrayAffected) {
+    static function checkRegEx(&$match, $pattern, &$arrayAffected) {
         optionParser::preg_match_all_wrapper($pattern, $match, $found);
         foreach($found as $regex) {
             $arrayAffected[] = $regex[1];
@@ -22,8 +22,8 @@ class optionParser {
      *
      * @param string $match The string match by the plugin
      * @param string $pattern The pattern which activate the option
-     * @param        $varAffected The variable which will memorise the option
-     * @param        $valIfFound the value affected to the previous variable if the option is found
+     * @param mixed  $varAffected The variable which will memorise the option
+     * @param mixed  $valIfFound the value affected to the previous variable if the option is found
      */
     static function checkOption(&$match, $pattern, &$varAffected, $valIfFound) {
         if(optionParser::preg_match_wrapper($pattern, $match, $found)) {

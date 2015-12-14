@@ -35,7 +35,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         return 'substition';
     }
 
-    function handle($match, $state, $pos, &$handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
         $return = $this->_getDefaultOptions();
         $return['pos'] = $pos;
 
@@ -96,7 +96,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         );
     }
 
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         $this->_deactivateTheCacheIfNeeded($renderer);
 
         if ( $data['useLegacySyntax'] ){
