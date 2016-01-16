@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Erial <erial2@gmail.com>
+ * @author Myeongjin <aranet100@gmail.com>
  */
-$lang['cache']                 = '캐시를 사용하지않습니다';
-$lang['toolbar_inserted_markup'] = '툴바에 기능 추가';
+$lang['cache']                 = '캐시를 비활성화';
+$lang['toolbar_inserted_markup'] = '마크업이 삽입된 툴바';
