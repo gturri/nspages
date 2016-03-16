@@ -21,7 +21,7 @@ class fileHelper {
         global $conf;
         $opt   = array(
             'depth'     => $this->data['maxDepth'], 'keeptxt'=> false, 'listfiles'=> !$this->data['nopages'],
-            'listdirs'  => $this->data['subns'], 'pageonly'=> true, 'skipacl'=> false,
+            'listdirs'  => $this->data['subns'], 'pagesonly'=> true, 'skipacl'=> false,
             'sneakyacl' => true, 'hash'=> false, 'meta'=> true, 'showmsg'=> false,
             'showhidden'=> false, 'firsthead'=> true
         );
