@@ -1,7 +1,7 @@
 base   nspages
 author Guillaume Turri
 email  guillaume.turri@gmail.com
-date   2016-01-16
+date   2016-03-20
 name   nspages plugin
 desc   Presents a toc of the selected namespace using <nspages>
 url    http://www.dokuwiki.org/plugin:nspages
