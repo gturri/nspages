@@ -37,7 +37,7 @@ class nspages_printerPictures extends nspages_printer {
       $meta = p_get_metadata($pageId);
       $picture = $meta['relation']['firstimage'];
       if ( $picture != "" ){
-          return ml($picture, $this->_dims, true);
+          return ml($picture, self::$_dims, true);
       } else {
           return "lib/tpl/dokuwiki/images/logo.png";
       }
