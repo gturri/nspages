@@ -1,0 +1,3 @@
+======With Picture======
+
+{{:pictures:img_in_page.jpg?200|}}
