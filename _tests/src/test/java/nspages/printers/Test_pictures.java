@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -38,13 +39,29 @@ public class Test_pictures extends Helper {
 		assertTrue(getBackgroundStyle(link).contains("lib/tpl/dokuwiki/images/logo.png"));
 	}
 
-	private List<WebElement> getPictureLinks(){
-		List<WebElement> wrappers = getDriver().findElements(By.className("nspagesPicturesModeMain"));
-		List<WebElement> links = new ArrayList<WebElement>();
-		for(WebElement w : wrappers){
-			links.add(w.findElement(By.tagName("a")));
+	@Test
+	public void withModificationDateOption(){
+		generatePage("pictures:start", "<nspages -exclude -usePictures -modificationDateOnPictures>");
+
+		List<WebElement> links = getPictureLinks();
+		for(WebElement link : links){
+			assertEquals(1, link.findElements(By.className("nspagesPicturesDate")).size());
 		}
-		return links;
+	}
+
+	@Test
+	public void withoutModificationDateOption(){
+		generatePage("pictures:start", "<nspages -exclude -usePictures>");
+
+		List<WebElement> links = getPictureLinks();
+		for(WebElement link : links){
+			assertEquals(0, link.findElements(By.className("nspagesPicturesDate")).size());
+		}
+	}
+
+	private List<WebElement> getPictureLinks(){
+		WebElement wrapper = getDriver().findElement(By.className("nspagesPicturesModeMain"));
+		return wrapper.findElements(By.tagName("a"));
 	}
 
 	private String getBackgroundStyle(WebElement anchorElement){
