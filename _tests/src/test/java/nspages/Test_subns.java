@@ -20,8 +20,8 @@ public class Test_subns extends Helper {
 
 		assertEquals(2, sections.size());
 
-		assertExpectedNsSection(driver, sections.get(0));
-		assertExpectedPagesSection(driver, sections.get(1));
+		assertExpectedNsSection(sections.get(0));
+		assertExpectedPagesSection(sections.get(1));
 	}
 
 	@Test
@@ -32,40 +32,40 @@ public class Test_subns extends Helper {
 
 		assertEquals(1, sections.size());
 
-		assertExpectedPagesSection(driver, sections.get(0));
+		assertExpectedPagesSection(sections.get(0));
 	}
 
-	private void assertExpectedNsSection(WebDriver driver, WebElement nsSection){
+	private void assertExpectedNsSection(WebElement nsSection){
 		assertEquals("Subnamespaces:", nsSection.getAttribute("innerHTML"));
 
-		WebElement column = getNextSibling(driver, nsSection);
+		WebElement column = getNextSibling(nsSection);
 
 		WebElement colHeader = column.findElement(By.className("catpagechars"));
 		assertEquals("S", colHeader.getAttribute("innerHTML"));
 
-		List<WebElement> links = getLinksBeneath(driver, column);
+		List<WebElement> links = getLinksBeneath(column);
 		assertEquals(1, links.size());
 		WebElement link = links.get(0);
 		assertEquals("subsubns",link.getAttribute("innerHTML"));
 		assertEquals(Helper.baseUrl + "?id=subns:subsubns:start", link.getAttribute("href"));
 	}
 
-	private void assertExpectedPagesSection(WebDriver driver, WebElement pageSection){
+	private void assertExpectedPagesSection(WebElement pageSection){
 		assertEquals("Pages in this namespace:", pageSection.getAttribute("innerHTML"));
 
-		WebElement column = getNextSibling(driver, pageSection);
+		WebElement column = getNextSibling(pageSection);
 
 		WebElement colHeader = column.findElement(By.className("catpagechars"));
 		assertEquals("S", colHeader.getAttribute("innerHTML"));
 
-		List<WebElement> links = getLinksBeneath(driver, column);
+		List<WebElement> links = getLinksBeneath(column);
 		assertEquals(1, links.size());
 		WebElement link = links.get(0);
 		assertEquals("start",link.getAttribute("innerHTML"));
 		assertEquals(Helper.baseUrl + "?id=subns:start", link.getAttribute("href"));
 	}
 
-	private List<WebElement> getLinksBeneath(WebDriver driver, WebElement element){
+	private List<WebElement> getLinksBeneath(WebElement element){
 		return element.findElements(By.tagName("a"));
 	}
 }

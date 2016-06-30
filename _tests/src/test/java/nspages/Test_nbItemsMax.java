@@ -23,7 +23,7 @@ public class Test_nbItemsMax extends Helper {
     private void assertNbItems(int expectedNbItems, WebDriver driver){
         int actualNbItems = 0;
 
-        for(WebElement column : getColumns(driver)){
+        for(WebElement column : getColumns()){
             actualNbItems += column.findElements(By.className("level1")).size();
         }
 

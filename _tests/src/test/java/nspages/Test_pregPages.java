@@ -16,7 +16,7 @@ public class Test_pregPages extends Helper {
 		expectedLinks.add(new InternalLink("pregpages:p1", "p1"));
 		expectedLinks.add(new InternalLink("pregpages:start", "start"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -27,7 +27,7 @@ public class Test_pregPages extends Helper {
 		expectedLinks.add(new InternalLink("pregpages:1p1", "1p1"));
 		expectedLinks.add(new InternalLink("pregpages:p1", "p1"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class Test_pregPages extends Helper {
 		expectedLinks.add(new InternalLink("pregpages:1p", "1p"));
 		expectedLinks.add(new InternalLink("pregpages:start", "start"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -48,6 +48,6 @@ public class Test_pregPages extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("pregpages:start", "start"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

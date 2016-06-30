@@ -10,13 +10,13 @@ public class Test_nsPath extends Helper {
 	@Test
 	public void defaultPath(){
 		generatePage("autrens:start", "<nspages>");
-		assertSameLinks(currentNsLinks(), getDriver());
+		assertSameLinks(currentNsLinks());
 	}
 
 	@Test
 	public void explicitDefaultPath(){
 		generatePage("autrens:start", "<nspages .>");
-		assertSameLinks(currentNsLinks(), getDriver());
+		assertSameLinks(currentNsLinks());
 	}
 
 	@Test
@@ -28,16 +28,16 @@ public class Test_nsPath extends Helper {
 	@Test
 	public void relativePath(){
 		generatePage("autrens:start", "<nspages ..:pregpages>");
-		assertSameLinks(pregPagesNsLinks(), getDriver());
+		assertSameLinks(pregPagesNsLinks());
 
 		generatePage("autrens:start", "<nspages .:..:pregpages>");
-		assertSameLinks(pregPagesNsLinks(), getDriver());
+		assertSameLinks(pregPagesNsLinks());
 	}
 
 	@Test
 	public void absolutePath(){
 		generatePage("autrens:start", "<nspages :pregpages>");
-		assertSameLinks(pregPagesNsLinks(), getDriver());
+		assertSameLinks(pregPagesNsLinks());
 	}
 
 	private List<InternalLink> currentNsLinks(){

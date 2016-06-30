@@ -35,6 +35,6 @@ public class Test_cacheDisabled extends Helper {
 	}
 
 	private void assertNbNspagesLinks(int expected){
-		assertEquals(expected, getNspagesLinks(getDriver()).size());
+		assertEquals(expected, getNspagesLinks().size());
 	}
 }

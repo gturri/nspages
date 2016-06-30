@@ -78,12 +78,12 @@ public class Helper {
 		saveButton.click();
 	}
 
-	public void assertSameLinks(List<InternalLink> expectedLinks, WebDriver driver){
-		List<WebElement> actualLinks = getNspagesLinks(driver);
+	public void assertSameLinks(List<InternalLink> expectedLinks){
+		List<WebElement> actualLinks = getNspagesLinks();
 		assertSameLinks(expectedLinks, actualLinks);
 	}
 
-	public List<WebElement> getNspagesLinks(WebDriver driver){
+	public List<WebElement> getNspagesLinks(){
 		List<WebElement> headers = driver.findElements(By.className("catpagecol"));
 		List<WebElement> links = new ArrayList<WebElement>();
 
@@ -94,14 +94,14 @@ public class Helper {
 		return links;
 	}
 
-	public void assertSameLinks(List<InternalLink> expectedNsLinks, List<InternalLink> expectedPagesLinks, WebDriver driver){
+	public void assertSameNsAndPagesLinks(List<InternalLink> expectedNsLinks, List<InternalLink> expectedPagesLinks){
 		List<WebElement> sections = driver.findElements(By.className("catpageheadline"));
 		assertEquals(2, sections.size());
 
-		List<WebElement> actualNsLinks = getSectionLinks(driver, sections.get(0));
+		List<WebElement> actualNsLinks = getSectionLinks(sections.get(0));
 		assertSameLinks(expectedNsLinks, actualNsLinks);
 
-		List<WebElement> actualPagesLinks = getSectionLinks(driver, sections.get(1));
+		List<WebElement> actualPagesLinks = getSectionLinks(sections.get(1));
 		assertSameLinks(expectedPagesLinks, actualPagesLinks);
 	}
 
@@ -119,26 +119,26 @@ public class Helper {
 		assertEquals(expectedLink.text(), actualLink.getAttribute("innerHTML"));
 	}
 
-	private List<WebElement> getSectionLinks(WebDriver driver, WebElement nsPagesHeader){
+	private List<WebElement> getSectionLinks(WebElement nsPagesHeader){
 		List<WebElement> links = new ArrayList<WebElement>();
-		WebElement current = getNextSibling(driver, nsPagesHeader);
+		WebElement current = getNextSibling(nsPagesHeader);
 		for(
 				; current.getAttribute("class").equals("catpagecol")
-				; current = getNextSibling(driver, current) ){
+				; current = getNextSibling(current) ){
 			links.addAll(current.findElements(By.tagName("a")));
 		}
 		return links;
 	}
 
-	public WebElement getNextSibling(WebDriver driver, WebElement current){
+	public WebElement getNextSibling(WebElement current){
 		return current.findElement(By.xpath("following::*"));
 	}
 
-	public List<WebElement> getColumns(WebDriver driver){
+	public List<WebElement> getColumns(){
 		return driver.findElements(By.className("catpagecol"));
 	}
 
-	public boolean pagesContains(WebDriver driver, String contained){
+	public boolean pagesContains(String contained){
 		return driver.findElement(By.tagName("html")).getAttribute("innerHTML").contains(contained);
 	}
 }

@@ -14,7 +14,7 @@ public class Test_sortNaturalOrder extends Helper {
 		expectedLinks.add(new InternalLink("natural_sort:10", "10"));
 		expectedLinks.add(new InternalLink("natural_sort:2a", "2a"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class Test_sortNaturalOrder extends Helper {
 		expectedLinks.add(new InternalLink("natural_sort:2a", "2a"));
 		expectedLinks.add(new InternalLink("natural_sort:10", "10"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -36,6 +36,6 @@ public class Test_sortNaturalOrder extends Helper {
 		expectedLinks.add(new InternalLink("natural_sort:2a", "2a"));
 		expectedLinks.add(new InternalLink("natural_sort:10", "10"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

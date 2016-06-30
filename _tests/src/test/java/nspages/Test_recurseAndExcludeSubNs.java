@@ -14,7 +14,7 @@ public class Test_recurseAndExcludeSubNs extends Helper {
 		expectedLinks.add(new InternalLink("recurse_and_exclude_ns:subns1:subns1", "Subns1"));
 		expectedLinks.add(new InternalLink("recurse_and_exclude_ns:subns2:subns2", "Subns2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -24,7 +24,7 @@ public class Test_recurseAndExcludeSubNs extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("recurse_and_exclude_ns:subns2:subns2", "Subns2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 
 	}
 }

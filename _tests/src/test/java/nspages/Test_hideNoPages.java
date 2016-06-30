@@ -29,6 +29,6 @@ public class Test_hideNoPages extends Helper {
 		assertEquals(0, sections.size());
 
 		//Without this assert, the test would succeed even without the implementation commit
-		assertFalse(pagesContains(getDriver(), "namespace doesn't exist:"));
+		assertFalse(pagesContains("namespace doesn't exist:"));
 	}
 }

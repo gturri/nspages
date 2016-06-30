@@ -29,6 +29,6 @@ public class Test_pagesInNs extends Helper {
 		expectedLinks.add(new InternalLink("pagesinns:start", "start"));
 		expectedLinks.add(new InternalLink("pagesinns:subns:start", "subns"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

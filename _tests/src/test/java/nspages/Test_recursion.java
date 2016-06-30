@@ -9,44 +9,44 @@ public class Test_recursion extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("recursion:start", "<nspages -subns>");
-		assertSameLinks(level1NsLinks(), level1PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level1NsLinks(), level1PagesLinks());
 	}
 
 	@Test
 	public void levelOfRecursionOf1IsSameAsDefault(){
 		generatePage("recursion:start", "<nspages -subns -r 1>");
-		assertSameLinks(level1NsLinks(), level1PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level1NsLinks(), level1PagesLinks());
 	}
 
 	@Test
 	public void levelOfRecursionLimited(){
 		generatePage("recursion:start", "<nspages -subns -r 2>");
-		assertSameLinks(level2NsLinks(), level2PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level2NsLinks(), level2PagesLinks());
 	}
 
 	@Test
 	public void unlimitedRecursion(){
 		generatePage("recursion:start", "<nspages -subns -r 0>");
-		assertSameLinks(allNsLinks(), allPagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(allNsLinks(), allPagesLinks());
 	}
 
 	@Test
 	public void alternativeSyntaxes(){
 		generatePage("recursion:start", "<nspages -subns -r=2>");
-		assertSameLinks(level2NsLinks(), level2PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level2NsLinks(), level2PagesLinks());
 
 		generatePage("recursion:start", "<nspages -subns -r \"2\">");
-		assertSameLinks(level2NsLinks(), level2PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level2NsLinks(), level2PagesLinks());
 
 		generatePage("recursion:start", "<nspages -subns -r = \"2\">");
-		assertSameLinks(level2NsLinks(), level2PagesLinks(), getDriver());
+		assertSameNsAndPagesLinks(level2NsLinks(), level2PagesLinks());
 	}
-	
+
 	@Test
 	//Because we had conflict in option parsing. See #30
 	public void alongWithExcludeOption(){
 		generatePage("recursion:start", "<nspages -subns -r -exclude:start>");
-		assertSameLinks(allNsLinks(), allPagesLinks(true), getDriver());
+		assertSameNsAndPagesLinks(allNsLinks(), allPagesLinks(true));
 	}
 
 	private List<InternalLink> allNsLinks(){
@@ -56,7 +56,7 @@ public class Test_recursion extends Helper {
 	private List<InternalLink> allPagesLinks(){
 		return allPagesLinks(false);
 	}
-	
+
 	private List<InternalLink> allPagesLinks(boolean excludeStart){
 		List<InternalLink> links = level2PagesLinks(excludeStart);
 		links.add(2, new InternalLink("recursion:lvl2:lvl3:pagelvl3", "pagelvl3"));

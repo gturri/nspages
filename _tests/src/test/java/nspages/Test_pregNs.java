@@ -14,7 +14,7 @@ public class Test_pregNs extends Helper {
 		expectedLinks.add(new InternalLink("pregns:p1:start", "p1"));
 		expectedLinks.add(new InternalLink("pregns:p2:start", "p2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -24,7 +24,7 @@ public class Test_pregNs extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("pregns:p1:start", "p1"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -34,6 +34,6 @@ public class Test_pregNs extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("pregns:p2:start", "p2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

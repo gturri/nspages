@@ -15,7 +15,7 @@ public class Test_exclude extends Helper {
 		expectedLinks.add(new InternalLink("excludepage:p2", "p2"));
 		expectedLinks.add(new InternalLink("excludepage:start", "start"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -26,7 +26,7 @@ public class Test_exclude extends Helper {
 		expectedLinks.add(new InternalLink("excludepage:p1", "p1"));
 		expectedLinks.add(new InternalLink("excludepage:p2", "p2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -36,7 +36,7 @@ public class Test_exclude extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("excludepage:start", "start"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -46,6 +46,6 @@ public class Test_exclude extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("excludepage:p2", "p2"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }
