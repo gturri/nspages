@@ -17,7 +17,7 @@ public class Test_utf8 extends Helper {
 		expectedLinks.add(new InternalLink("utf8:%E0%AC%8Beae", "ଋeae"));
 		expectedLinks.add(new InternalLink("utf8:%F0%90%A4%81eae", "𐤁eae"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 
 	}
 }

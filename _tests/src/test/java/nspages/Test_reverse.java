@@ -11,13 +11,13 @@ public class Test_reverse extends Helper {
 	@Test
 	public void withoutOption(){
 		generatePage("reverse:start", "<nspages .>");
-		assertSameLinks(currentLinks(), getDriver());
+		assertSameLinks(currentLinks());
 	}
 
 	@Test
 	public void withOption(){
 		generatePage("reverse:start", "<nspages -reverse>");
-		assertSameLinks(Lists.reverse(currentLinks()), getDriver());
+		assertSameLinks(Lists.reverse(currentLinks()));
 	}
 
 	private List<InternalLink> currentLinks(){

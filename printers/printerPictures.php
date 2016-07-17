@@ -11,8 +11,11 @@ require_once 'printer.php';
 class nspages_printerPictures extends nspages_printer {
     private static $_dims = array('w' => 350, 'h' => 220);
 
+    private $_displayModificationDate;
+
     function __construct($plugin, $mode, $renderer, $data){
         parent::__construct($plugin, $mode, $renderer, $data);
+        $this->_displayModificationDate = $data['modificationDateOnPictures'];
     }
 
     function _print($tab, $type) {
@@ -28,6 +31,9 @@ class nspages_printerPictures extends nspages_printer {
                 $this->renderer->doc .= '<a href="'. $url .'" title="'.$item['title'].'">';
                 $this->renderer->doc .= '<div class="nspagesPicturesModeImg" style="background-image:url('. $picture .')">';
                 $this->renderer->doc .= '<span class="nspagesPicturesModeTitle">'.$item['title'];
+                if ( $this->_displayModificationDate ){
+                    $this->renderer->doc .= '</span><span class="nspagesPicturesDate">' . date('d/m/Y', $this->_getModificationDate($item['id']));
+                }
                 $this->renderer->doc .= '</span></div></a>';
         }
         $this->renderer->doc .= '</div>';
@@ -41,5 +47,10 @@ class nspages_printerPictures extends nspages_printer {
       } else {
           return "lib/tpl/dokuwiki/images/logo.png";
       }
+    }
+
+    private function _getModificationDate($pageId){
+        $meta = p_get_metadata($pageId);
+        return $meta['date']['modified'];
     }
 }

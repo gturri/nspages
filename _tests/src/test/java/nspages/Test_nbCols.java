@@ -43,6 +43,6 @@ public class Test_nbCols extends Helper {
 	}
 
 	private void assertNbCols(int expectedNbCols, WebDriver driver){
-		assertEquals(expectedNbCols, getColumns(driver).size());
+		assertEquals(expectedNbCols, getColumns().size());
 	}
 }

@@ -15,7 +15,7 @@ public class Test_idAndTitleForNs extends Helper {
 		expectedLinks.add(new InternalLink("titlens:subns2_main_page:subns2_main_page", "subns2_main_page"));
 		expectedLinks.add(new InternalLink("titlens:subns_titleless:start", "subns_titleless"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -27,6 +27,6 @@ public class Test_idAndTitleForNs extends Helper {
 		expectedLinks.add(new InternalLink("titlens:subns2_main_page:subns2_main_page", "subns2_main_page - ns 'playground'-style"));
 		expectedLinks.add(new InternalLink("titlens:subns_titleless:start", "subns_titleless"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

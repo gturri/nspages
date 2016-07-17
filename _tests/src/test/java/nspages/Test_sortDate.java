@@ -16,7 +16,7 @@ public class Test_sortDate extends Helper {
 		expectedLinks.add(new InternalLink("ns1:b2", "b2"));
 		expectedLinks.add(new InternalLink("ns1:c", "c"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class Test_sortDate extends Helper {
 		expectedLinks.add(new InternalLink("ns1:c", "c"));
 		expectedLinks.add(new InternalLink("ns1:b1", "b1"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class Test_sortDate extends Helper {
 		expectedLinks.add(new InternalLink("ns1:b2", "b2"));
 		expectedLinks.add(new InternalLink("ns1:c", "c"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 }

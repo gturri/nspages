@@ -30,7 +30,7 @@ public class Test_simpleList extends Helper {
 		WebElement header = driver.findElement(By.className("catpageheadline"));
 		assertEquals("Pages in this namespace:", header.getAttribute("innerHTML"));
 
-		WebElement list = getNextSibling(driver, header);
+		WebElement list = getNextSibling(header);
 		assertEquals(openingTagName, list.getTagName());
 
 		List<WebElement> items = list.findElements(By.xpath("*"));

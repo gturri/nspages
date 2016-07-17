@@ -73,7 +73,20 @@ background-color:#f4ff4f;
     margin-left: -5px;
     margin-top: 165px;
     padding-left: 3px;
+}
 
+.nspagesPicturesDate {
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: left;
+    color: #eee;
+    font-family: 'Lato', 'Arial', sans-serif;
+    text-decoration: none;
+    background: black;
+    padding-right: 10px;
+    padding-left:5px;
+    margin-left: -5px;
 }
 
 /* ---------- RTL --------------*/
@@ -117,5 +130,18 @@ background-color:#f4ff4f;
     margin-left: -5px;
     margin-top: 165px;
     padding-left: 3px;
+}
 
+[dir=rtl] .nspagesPicturesDate {
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: left;
+    color: #eee;
+    font-family: 'Lato', 'Arial', sans-serif;
+    text-decoration: none;
+    background: black;
+    padding-right: 10px;
+    padding-left:5px;
+    margin-left: -5px;
 }

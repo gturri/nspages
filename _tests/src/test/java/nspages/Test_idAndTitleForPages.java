@@ -15,7 +15,7 @@ public class Test_idAndTitleForPages extends Helper {
 		expectedLinks.add(new InternalLink("sortid:start", "start"));
 		expectedLinks.add(new InternalLink("sortid:y", "y"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 
 	@Test
@@ -27,6 +27,6 @@ public class Test_idAndTitleForPages extends Helper {
 		expectedLinks.add(new InternalLink("sortid:start", "start"));
 		expectedLinks.add(new InternalLink("sortid:y", "y - B"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }

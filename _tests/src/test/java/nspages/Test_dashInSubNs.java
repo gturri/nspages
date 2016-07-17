@@ -13,6 +13,6 @@ public class Test_dashInSubNs extends Helper {
 		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
 		expectedLinks.add(new InternalLink("test-re:in_subns_with_carret", "in_subns_with_carret"));
 
-		assertSameLinks(expectedLinks, getDriver());
+		assertSameLinks(expectedLinks);
 	}
 }
