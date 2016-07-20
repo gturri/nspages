@@ -57,6 +57,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "pagesinns", $return['pagesinns'], true);
         optionParser::checkOption($match, "nat(ural)?Order", $return['natOrder'], true);
         optionParser::checkOption($match, "sort(By)?Date", $return['sortDate'], true);
+        optionParser::checkOption($match, "sort(By)?CreationDate", $return['sortByCreationDate'], true);
         optionParser::checkOption($match, "hidenopages", $return['hidenopages'], true);
         optionParser::checkOption($match, "hidenosubns", $return['hidenosubns'], true);
         optionParser::checkOption($match, "(use)?Pictures?", $return['usePictures'], true);
@@ -96,7 +97,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
             'natOrder'      => false, 'sortDate' => false,
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
-            'modificationDateOnPictures' => false
+            'modificationDateOnPictures' => false,
+            'sortByCreationDate' => false
         );
     }
 
