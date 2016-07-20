@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate);
+    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByData, $sortByCreationDate);
     }
 
     function isFileWanted($file){

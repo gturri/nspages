@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
-    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate);
+    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
         $this->excludedNs = $excludedNs;
     }
 
@@ -47,6 +47,9 @@ class pagePreparer extends filePreparer {
             return noNS($pageId);
         } else if ( $this->sortPageByDate ){
             return $mtime;
+        } else if ($this->sortByCreationDate ){
+            $meta = p_get_metadata($pageId);
+            return $meta['date']['created'];
         } else {
             return $pageTitle;
         }
