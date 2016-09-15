@@ -42,11 +42,13 @@ class nspages_printerNice extends nspages_printer {
 
         $helper->printHeaderChar($firstCharOfLastAddedPage);
         $helper->openListOfItems();
+        
+        $config_preventBreakCols=true; // this should be changeable via parameter within <nspage...>
 
         $idxCol = 0;
         foreach($tab as $item) {
             //change to the next column if necessary
-            if($nbItemsPrinted == $nbItemPerColumns[$idxCol]) {
+            if($nbItemsPrinted == $nbItemPerColumns[$idxCol] && ($config_preventBreakCols ? ($firstCharOfLastAddedPage != $this->_firstChar($item)):true)) {
                 $idxCol++;
                 $helper->closeListOfItems();
                 $helper->closeColumn();
