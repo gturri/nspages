@@ -18,9 +18,10 @@ public class Helper {
 	private final static String server = "localhost" + getPort();
 	public  final static String wikiPath = "/dokuwikiITestsForNsPagesdokuwiki-2016-06-26a";
 	public  final static String baseUrl = protocol + server + wikiPath + "/doku.php";
-	private final static WebDriver driver = new FirefoxDriver();
+	private final static WebDriver driver;
 
 	static {
+        driver = new RetrierWebDriverDecorator(new FirefoxDriver());
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {

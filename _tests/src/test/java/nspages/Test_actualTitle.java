@@ -6,6 +6,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+/*public class Test_actualTitle {
+	@Test
+	public void stuff(){
+		System.out.println(System.getProperty("webdriver.gecko.driver"));
+		//System.getProperties().list(System.out);
+	}
+}*/
 public class Test_actualTitle extends Helper {
 	@Test
 	public void withoutOption(){

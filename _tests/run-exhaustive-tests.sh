@@ -1,5 +1,6 @@
 #!/bin/bash
 
+./internal/dl_geckodriver.sh
 set -e
 ./internal/createDockerImages.sh
 . source.sh

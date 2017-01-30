@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 
 public class Test_nsPath extends Helper {
 	@Test
@@ -22,7 +23,7 @@ public class Test_nsPath extends Helper {
 	@Test
 	public void unsafePath(){
 		generatePage("autrens:start", "<nspages ..:..>");
-		assertTrue(getDriver().getPageSource().contains("this namespace doesn't exist:"));
+		assertThat(getDriver().getPageSource(), JUnitMatchers.containsString("this namespace doesn't exist:")); 
 	}
 
 	@Test
