@@ -8,13 +8,13 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
-    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
         $this->excludedNs = $excludedNs;
     }
 
-    function isFileWanted($file){
-        return ($file['type'] != 'd') && parent::isFileWanted($file) && $this->passSubNsfilterInRecursiveMode($file);
+    function isFileWanted($file, $useTitle){
+        return ($file['type'] != 'd') && parent::isFileWanted($file, $useTitle) && $this->passSubNsfilterInRecursiveMode($file);
     }
 
     private function passSubNsfilterInRecursiveMode($file){

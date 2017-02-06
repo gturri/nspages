@@ -68,8 +68,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkTextNs($match, $return['textNS'], $this);
         optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
         optionParser::checkRegEx($match, "pregPages?Off=\"([^\"]*)\"", $return['pregPagesOff']);
+        optionParser::checkRegEx($match, "pregPages?TitleOn=\"([^\"]*)\"", $return['pregPagesTitleOn']);
+        optionParser::checkRegEx($match, "pregPages?TitleOff=\"([^\"]*)\"", $return['pregPagesTitleOff']);
         optionParser::checkRegEx($match, "pregNSOn=\"([^\"]*)\"", $return['pregNSOn']);
         optionParser::checkRegEx($match, "pregNSOff=\"([^\"]*)\"", $return['pregNSOff']);
+        optionParser::checkRegEx($match, "pregNSTitleOn=\"([^\"]*)\"", $return['pregNSTitleOn']);
+        optionParser::checkRegEx($match, "pregNSTitleOff=\"([^\"]*)\"", $return['pregNSTitleOff']);
         optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
@@ -91,6 +95,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
+            'pregPagesTitleOn' => array(), 'pregPagesTitleOff' => array(),
+            'pregNSTitleOn' => array(), 'pregNSTitleOff' => array(),
             'maxDepth'      => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,

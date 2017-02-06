@@ -31,19 +31,19 @@ class fileHelper {
     }
 
     function getPages(){
-        $preparer = new pagePreparer($this->data['excludedNS'], $this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate'], $this->data['sortByCreationDate']);
+        $preparer = new pagePreparer($this->data['excludedNS'], $this->data['excludedPages'], $this->data['pregPagesOn'], $this->data['pregPagesOff'], $this->data['pregPagesTitleOn'], $this->data['pregPagesTitleOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate'], $this->data['sortByCreationDate']);
         return $this->getFiles($preparer);
     }
 
     function getSubnamespaces(){
-        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate'], $this->data['sortByCreationDate']);
+        $preparer = new namespacePreparer($this->data['excludedNS'], $this->data['pregNSOn'], $this->data['pregNSOff'], $this->data['pregNSTitleOn'], $this->data['pregNSTitleOff'], $this->data['title'], $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate'], $this->data['sortByCreationDate']);
         return $this->getFiles($preparer);
     }
 
     private function getFiles($preparer){
         $files = array();
         foreach($this->files as $item) {
-           if($preparer->isFileWanted($item)) {
+           if($preparer->isFileWanted($item, false) && $preparer->isFileWanted($item, true)) {
                $preparer->prepareFile($item);
                $files[] = $item;
            }

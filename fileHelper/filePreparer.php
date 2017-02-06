@@ -16,11 +16,13 @@ abstract class filePreparer {
      * Array  RegEx that a file should match to be displayed
      */
     private $pregOn;
+    private $pregTitleOn;
 
     /**
      * Array  RegEx that a file shouldn't match to be displayed
      */
     private $pregOff;
+    private $pregTitleOff;
 
     protected $useTitle;
     protected $useIdAndTitle;
@@ -32,10 +34,12 @@ abstract class filePreparer {
      */
     protected $sortPageById;
 
-    function __construct($excludedFiles, $pregOn, $pregOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+    function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
         $this->excludedFiles = $excludedFiles;
         $this->pregOn = $pregOn;
         $this->pregOff = $pregOff;
+        $this->pregTitleOn = $pregTitleOn;
+        $this->pregTitleOff = $pregTitleOff;
         $this->useTitle = $useTitle;
         $this->sortPageById = $sortPageById;
         $this->useIdAndTitle = $useIdAndTitle;
@@ -52,16 +56,18 @@ abstract class filePreparer {
      * @param string $file
      * @return bool
      */
-    function isFileWanted($file) {
+    function isFileWanted($file, $useTitle) {
         $wanted = true;
-        $noNSId = noNS($file['id']);
+        $nameToFilterOn = $useTitle ? $file['title'] : noNS($file['id']);
+        $pregOn = $useTitle ? $this->pregTitleOn : $this->pregOn;
+        $pregOff = $useTitle ? $this->pregTitleOff : $this->pregOff;
 
-        $wanted &= (!in_array($noNSId, $this->excludedFiles));
-        foreach($this->pregOn as $preg) {
-            $wanted &= preg_match($preg, $noNSId);
+        $wanted &= (!in_array($nameToFilterOn, $this->excludedFiles));
+        foreach($pregOn as $preg) {
+            $wanted &= preg_match($preg, $nameToFilterOn);
         }
-        foreach($this->pregOff as $preg) {
-            $wanted &= !preg_match($preg, $noNSId);
+        foreach($pregOff as $preg) {
+            $wanted &= !preg_match($preg, $nameToFilterOn);
         }
         return $wanted;
     }
