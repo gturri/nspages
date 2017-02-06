@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class RetrierWebDriverDecorator implements WebDriver {
-	private static final int NB_MAX_RETRY = 10;
+	private static final int NB_MAX_RETRY = 20;
 	private final WebDriver _driver;
 	
 	public RetrierWebDriverDecorator(WebDriver driver) {
@@ -34,8 +34,14 @@ public class RetrierWebDriverDecorator implements WebDriver {
 	public List<WebElement> findElements(By by) {
 		List<WebElement> result = null;
 		
-		for(int i=0 ; i < NB_MAX_RETRY && (result == null || result.size() == 0) ; i++){
+		for(int i=0 ; i < NB_MAX_RETRY ; i++){
 			result = _driver.findElements(by);
+			if ( result != null && result.size() > 0 ){
+				return result;
+			}
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {}
 		}
 		return result;
 	}
