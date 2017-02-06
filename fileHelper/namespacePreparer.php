@@ -26,9 +26,9 @@ class namespacePreparer extends filePreparer {
     function prepareFile(&$ns){
         $idMainPage = $this->getMainPageId($ns);
 
-        $ns['title'] = $this->buildTitle($idMainPage, noNS($ns['id']));
+        $ns['nameToDisplay'] = $this->buildNameToDisplay($idMainPage, noNS($ns['id']));
         $ns['id'] = $this->buildIdToLinkTo($idMainPage, $ns['id']);
-        $ns['sort'] = $this->buildSortAttribute($ns['title'], $ns['id'], $ns['mtime']);
+        $ns['sort'] = $this->buildSortAttribute($ns['nameToDisplay'], $ns['id'], $ns['mtime']);
     }
 
     private function getMainPageId($ns){
@@ -37,12 +37,12 @@ class namespacePreparer extends filePreparer {
         return $exist ? $idMainPage : null;
     }
 
-    private function buildTitle($idMainPage, $defaultTitle){
+    private function buildNameToDisplay($idMainPage, $defaultName){
         if ( ! is_null($idMainPage) ){
             $title = p_get_first_heading($idMainPage, true);
             if(!is_null($title)){
               if($this->useIdAndTitle){
-                return $defaultTitle . " - " . $title;
+                return $defaultName . " - " . $title;
               }
 
               if($this->useTitle) {
@@ -51,7 +51,7 @@ class namespacePreparer extends filePreparer {
             }
         }
 
-        return $defaultTitle;
+        return $defaultName;
     }
 
     private function buildIdToLinkTo($idMainPage, $currentNsId){
@@ -62,13 +62,13 @@ class namespacePreparer extends filePreparer {
         }
     }
 
-    private function buildSortAttribute($nsTitle, $nsId, $mtime){
+    private function buildSortAttribute($nameToDisplay, $nsId, $mtime){
         if ( $this->sortPageById ){
             return curNS($nsId);
         } else if ( $this->sortPageByDate ){
             return $mtime;
         } else {
-            return $nsTitle;
+            return $nameToDisplay;
         }
     }
 }

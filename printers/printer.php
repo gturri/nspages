@@ -105,7 +105,7 @@ abstract class nspages_printer {
         if($item['type'] !== 'd') {
             $this->renderer->listitem_open(1);
             $this->renderer->listcontent_open();
-            $this->renderer->internallink(':'.$item['id'], $item['title']);
+            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
             $this->renderer->listcontent_close();
             $this->renderer->listitem_close();
         } else { //Case of a subnamespace
@@ -115,7 +115,7 @@ abstract class nspages_printer {
                 $this->renderer->listitem_open(1);
             }
             $this->renderer->listcontent_open();
-            $this->renderer->internallink(':'.$item['id'], $item['title']);
+            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
             $this->renderer->listcontent_close();
             $this->renderer->listitem_close();
         }

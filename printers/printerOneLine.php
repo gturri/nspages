@@ -17,7 +17,7 @@ class nspages_printerOneLine extends nspages_printer {
         $sep = '';
         foreach($tab as $item) {
             $this->renderer->cdata($sep);
-            $this->renderer->internallink(':'.$item['id'], $item['title']);
+            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
             $sep = ', ';
         }
     }

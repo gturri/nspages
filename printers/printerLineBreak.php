@@ -17,7 +17,7 @@ class nspages_printerLineBreak extends nspages_printer {
             if ( ! $firstItem ){
                 $this->renderer->linebreak();
             }
-            $this->renderer->internallink(':'.$item['id'], $item['title']);
+            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
             $firstItem = false;
         }
     }
