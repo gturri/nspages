@@ -13,7 +13,16 @@ class namespacePreparer extends filePreparer {
     }
 
     function isFileWanted($file, $useTitle){
-        return ($file['type'] == 'd') && parent::isFileWanted($file, $useTitle);
+        return $file['type'] == 'd' && parent::isFileWanted($file, $useTitle);
+    }
+
+    function prepareFileTitle(&$ns){
+        $idMainPage = $this->getMainPageId($ns);
+        if ( !is_null($idMainPage) ){
+            $ns['title'] = p_get_first_heading($idMainPage, true);
+        } else {
+            $ns['title'] = null;
+        }
     }
 
     /**
@@ -24,9 +33,7 @@ class namespacePreparer extends filePreparer {
      * @param         $ns  A structure which represents a namespace
      */
     function prepareFile(&$ns){
-        $idMainPage = $this->getMainPageId($ns);
-
-        $ns['nameToDisplay'] = $this->buildNameToDisplay($idMainPage, noNS($ns['id']));
+        $ns['nameToDisplay'] = $this->buildNameToDisplay($ns['title'], noNS($ns['id']));
         $ns['id'] = $this->buildIdToLinkTo($idMainPage, $ns['id']);
         $ns['sort'] = $this->buildSortAttribute($ns['nameToDisplay'], $ns['id'], $ns['mtime']);
     }
@@ -37,17 +44,14 @@ class namespacePreparer extends filePreparer {
         return $exist ? $idMainPage : null;
     }
 
-    private function buildNameToDisplay($idMainPage, $defaultName){
-        if ( ! is_null($idMainPage) ){
-            $title = p_get_first_heading($idMainPage, true);
-            if(!is_null($title)){
-              if($this->useIdAndTitle){
+    private function buildNameToDisplay($title, $defaultName){
+        if ( ! is_null($title) ){
+            if($this->useIdAndTitle){
                 return $defaultName . " - " . $title;
-              }
+            }
 
-              if($this->useTitle) {
+            if($this->useTitle) {
                 return $title;
-              }
             }
         }
 

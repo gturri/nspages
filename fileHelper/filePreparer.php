@@ -47,15 +47,6 @@ abstract class filePreparer {
         $this->sortByCreationDate = $sortByCreationDate;
     }
 
-    /**
-     * Check if the user wants a file to be displayed.
-     * Filters consider the "id" and not the "title". Therefore, the treatment is the same for files and for subnamespace.
-     * Moreover, filters remain valid even if the title of a page is changed.
-     *
-     * @param Array  $excludedFiles  A list of files that shouldn't be displayed
-     * @param string $file
-     * @return bool
-     */
     function isFileWanted($file, $useTitle) {
         $wanted = true;
         $nameToFilterOn = $useTitle ? $file['title'] : noNS($file['id']);
@@ -73,4 +64,5 @@ abstract class filePreparer {
     }
 
     abstract function prepareFile(&$file);
+    abstract function prepareFileTitle(&$file);
 }

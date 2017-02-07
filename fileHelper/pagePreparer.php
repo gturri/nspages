@@ -17,6 +17,10 @@ class pagePreparer extends filePreparer {
         return ($file['type'] != 'd') && parent::isFileWanted($file, $useTitle) && $this->passSubNsfilterInRecursiveMode($file);
     }
 
+    function prepareFileTitle(&$file){
+        // Nothing to do: for pages the title is already set
+    }
+
     private function passSubNsfilterInRecursiveMode($file){
         $subNss = explode(':', $file['id']);
         if ( count($subNss) <= 2 ){ //It means we're not in recursive mode

@@ -43,6 +43,7 @@ class fileHelper {
     private function getFiles($preparer){
         $files = array();
         foreach($this->files as $item) {
+           $preparer->prepareFileTitle($item);
            if($preparer->isFileWanted($item, false) && $preparer->isFileWanted($item, true)) {
                $preparer->prepareFile($item);
                $files[] = $item;
