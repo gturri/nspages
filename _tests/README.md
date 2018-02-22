@@ -1,7 +1,9 @@
 Running tests
 =============
 
-TL;DR: from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
+TL;DR:
+* first install the geckodriver and tweak the code. See https://stackoverflow.com/a/43474586/1796345
+* from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
 
 More details:
 
