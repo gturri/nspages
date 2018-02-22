@@ -85,6 +85,15 @@ class optionParser {
             $varAffected = null;
         }
     }
+    
+    static function checkDefaultPicture(&$match, &$varAffected, $plugin){
+        if(optionParser::preg_match_wrapper("defaultPicture *= *\"([^\"]*)\"", $match, $found)) {
+            $varAffected = $found[1];
+            $match       = optionParser::_removeFromMatch($found[0], $match);
+        } else {
+            $varAffected = null;
+        }
+    }
 
     static function checkExclude(&$match, &$excludedPages, &$excludedNs){
         //--Looking if the syntax -exclude[item1 item2] has been used

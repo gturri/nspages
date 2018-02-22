@@ -7,6 +7,7 @@
  * @author  Daniel Schranz <xla@gmx.at>
  * @author  Ignacio Bergmann
  * @author  Andreas Gohr <gohr@cosmocode.de>
+ * @author  Ghassem Tofighi <ghassem@gmail.com>
  */
 if(!defined('DOKU_INC')) die();
 require_once 'printers/printerLineBreak.php';
@@ -78,6 +79,9 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
+        optionParser::checkDefaultPicture($match, $return['defaultPicture'], $this);
+
+        
 
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);
@@ -104,7 +108,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'natOrder'      => false, 'sortDate' => false,
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
             'modificationDateOnPictures' => false,
-            'sortByCreationDate' => false
+            'sortByCreationDate' => false, 'defaultPicture' => null,
         );
     }
 
@@ -115,6 +119,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         //behave well with the translation plugin (it seems like we cache strings
         //even if the lang doesn't match)
         $this->_denullifyLangOptions($data);
+        $this->_denullifyPictureOptions($data);
         $printer = $this->_selectPrinter($mode, $renderer, $data);
 
         if( ! $this->_isNamespaceUsable($data)){
@@ -132,7 +137,6 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $printer->printBeginning();
         $this->_print($printer, $data, $subnamespaces, $pages);
         $printer->printEnd();
-
         return TRUE;
     }
 
@@ -143,6 +147,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
 
         if ( is_null($data['textPages']) ){
             $data['textPages'] = $this->getLang('pagesinthiscat');
+        }
+    }
+    
+    function _denullifyPictureOptions(&$data){
+        if ( is_null($data['defaultPicture']) ){
+            $data['defaultPicture'] = $this->getConf('default_picture');
         }
     }
 

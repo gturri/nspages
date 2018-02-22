@@ -16,6 +16,7 @@ class nspages_printerPictures extends nspages_printer {
     function __construct($plugin, $mode, $renderer, $data){
         parent::__construct($plugin, $mode, $renderer, $data);
         $this->_displayModificationDate = $data['modificationDateOnPictures'];
+        $this->_defaultPicture = $data['defaultPicture'];
     }
 
     function _print($tab, $type) {
@@ -45,7 +46,11 @@ class nspages_printerPictures extends nspages_printer {
       if ( $picture != "" ){
           return ml($picture, self::$_dims, true);
       } else {
-          return "lib/tpl/dokuwiki/images/logo.png";
+          if ( $this->_defaultPicture == '' ){
+                return "lib/tpl/dokuwiki/images/logo.png";
+          } else {
+		        return ml($this->_defaultPicture, self::$_dims, true);
+          }
       }
     }
 
