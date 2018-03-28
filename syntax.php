@@ -61,6 +61,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "sort(By)?CreationDate", $return['sortByCreationDate'], true);
         optionParser::checkOption($match, "hidenopages", $return['hidenopages'], true);
         optionParser::checkOption($match, "hidenosubns", $return['hidenosubns'], true);
+        optionParser::checkOption($match, "showhidden", $return['showhidden'], true);
         optionParser::checkOption($match, "(use)?Pictures?", $return['usePictures'], true);
         optionParser::checkOption($match, "(modification)?Dates?OnPictures?", $return['modificationDateOnPictures'], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
@@ -107,6 +108,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
             'natOrder'      => false, 'sortDate' => false,
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
+            'showhidden'    => false,
             'modificationDateOnPictures' => false,
             'sortByCreationDate' => false, 'defaultPicture' => null,
         );

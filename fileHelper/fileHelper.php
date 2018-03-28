@@ -23,7 +23,7 @@ class fileHelper {
             'depth'     => $this->data['maxDepth'], 'keeptxt'=> false, 'listfiles'=> !$this->data['nopages'],
             'listdirs'  => $this->data['subns'], 'pagesonly'=> true, 'skipacl'=> false,
             'sneakyacl' => true, 'hash'=> false, 'meta'=> true, 'showmsg'=> false,
-            'showhidden'=> false, 'firsthead'=> true
+            'showhidden'=> $this->data['showhidden'], 'firsthead'=> true
         );
         $files = array();
         search($files, $conf['datadir'], 'search_universal', $opt, $this->data['wantedDir']);
