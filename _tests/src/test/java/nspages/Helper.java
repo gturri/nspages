@@ -21,6 +21,7 @@ public class Helper {
 	private final static WebDriver driver;
 
 	static {
+        System.setProperty("webdriver.gecko.driver", "/home/g.turri/Documents/nspages/_tests/gecko/geckodriver");
         driver = new RetrierWebDriverDecorator(new FirefoxDriver());
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
