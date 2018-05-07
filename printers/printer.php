@@ -130,7 +130,7 @@ abstract class nspages_printer {
     function printEnd(){
         //this is needed to make sure everything after the plugin is written below the output
         if($this->mode == 'xhtml') {
-            $this->renderer->doc .= '<br class="catpageeofidx">';
+            $this->renderer->doc .= '<div class="catpageeofidx"></div>';
             $this->renderer->doc .= '</div>';
         } else {
             $this->renderer->linebreak();
