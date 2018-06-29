@@ -32,7 +32,11 @@ class rendererXhtmlHelper {
 
         $this->renderer->doc .= '<div '
             . $this->fullAnchor($char, $continued)
-            . 'class="catpagechars">' . $text . "</div>\n";
+            . 'class="catpagechars';
+        if ( $continued ){
+            $this->renderer->doc .= ' continued';
+        }
+        $this->renderer->doc .= '">' . $text . "</div>\n";
     }
 
     private function fullAnchor($char, $continued){
