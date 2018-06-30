@@ -1,9 +1,7 @@
 Running tests
 =============
 
-TL;DR:
-* first install the geckodriver and tweak the code. See https://stackoverflow.com/a/43474586/1796345
-* from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
+TL;DR: from the `_test` directory, run either `./run-fast-test.sh` or `./run-exhaustive-tests.sh`
 
 More details:
 
@@ -29,7 +27,13 @@ Running the tests locally
 * Download Dokuwiki (and cache it locally)
 * Install it on your local web server along with some test pages
   (it will do it as root to ensure it can write)
+* Download the selenium driver
 * Use maven to run selenium tests
+
+(if all tests fails it's probably because the selenium maven plugin or the
+selenium driver is outdated. Updating both to the latest version will likely
+fix the issue)
+
 
 Optionally, you can also generate a dashboard to get more detailled results with
 

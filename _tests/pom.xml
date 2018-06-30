@@ -19,13 +19,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
        <groupId>org.seleniumhq.selenium</groupId>
        <artifactId>selenium-java</artifactId>
-       <version>3.9.1</version>
+       <version>3.13.0</version>
      </dependency>
   </dependencies>
 
@@ -34,7 +34,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.22.0</version>
       </plugin>
     </plugins>
   </reporting>
@@ -62,7 +62,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <version>2.22.0</version>
         <executions>
             <execution>
                 <id>skip-tests-pre-warning</id>
