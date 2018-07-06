@@ -9,3 +9,5 @@ hs_err_pid*.log
 nohup.out
 _tests/docker
 geckodriver*
+.idea
+*.iml
