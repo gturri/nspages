@@ -15,6 +15,7 @@ abstract class nspages_printer {
     private $actualTitleLevel;
     private $natOrder;
     private $nbItemsMax;
+    private $dictOrder;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -24,6 +25,7 @@ abstract class nspages_printer {
       $this->natOrder = $data['natOrder'];
       $this->actualTitleLevel = $data['actualTitleLevel'];
       $this->nbItemsMax = $data['nbItemsMax'];
+      $this->dictOrder = $data['dictOrder'];
     }
 
     function printTOC($tab, $type, $text, $reverse, $hideno){
