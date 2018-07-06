@@ -14,6 +14,7 @@ abstract class nspages_printer {
     private $pos;
     private $actualTitleLevel;
     private $natOrder;
+    private $dictOrder;
     private $nbItemsMax;
 
     function __construct($plugin, $mode, $renderer, $data){
@@ -22,6 +23,7 @@ abstract class nspages_printer {
       $this->mode = $mode;
       $this->pos = $data['pos'];
       $this->natOrder = $data['natOrder'];
+      $this->dictOrder = $data['dictOrder'];
       $this->actualTitleLevel = $data['actualTitleLevel'];
       $this->nbItemsMax = $data['nbItemsMax'];
     }
@@ -76,6 +78,11 @@ abstract class nspages_printer {
     private function _sort(&$tab, $reverse) {
         if ( $this->natOrder ){
             usort($tab, array("nspages_printer", "_natOrder"));
+         } else if ($this->dictOrder) {
+             $oldLocale=setlocale(LC_ALL, 0);
+             setlocale(LC_COLLATE, 'sk_SK.utf8');
+             usort($tab, array("nspages_printer", "_dictOrder"));
+             setlocale(LC_COLLATE, $oldLocale);            
         } else {
             usort($tab, array("nspages_printer", "_order"));
         }
@@ -91,6 +98,10 @@ abstract class nspages_printer {
     private static function _natOrder($p1, $p2) {
         return strnatcasecmp($p1['sort'], $p2['sort']);
     }
+    
+    private static function _dictOrder($p1, $p2) {
+        return strcoll($p1['sort'], $p2['sort']);
+    }     
 
     private function _keepOnlyNMaxItems(&$tab){
         if ($this->nbItemsMax){
