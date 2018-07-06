@@ -68,6 +68,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
         optionParser::checkTextNs($match, $return['textNS'], $this);
+        optionParser::checkDictOrder($match, $return['dictOrder'], $this);
         optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
         optionParser::checkRegEx($match, "pregPages?Off=\"([^\"]*)\"", $return['pregPagesOff']);
         optionParser::checkRegEx($match, "pregPages?TitleOn=\"([^\"]*)\"", $return['pregPagesTitleOn']);
@@ -108,7 +109,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
             'natOrder'      => false, 'sortDate' => false,
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
-            'showhidden'    => false,
+            'showhidden'    => false, 'dictOrder' => false,
             'modificationDateOnPictures' => false,
             'sortByCreationDate' => false, 'defaultPicture' => null,
         );
