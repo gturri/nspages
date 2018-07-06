@@ -79,10 +79,10 @@ abstract class nspages_printer {
         if ( $this->natOrder ){
             usort($tab, array("nspages_printer", "_natOrder"));
          } else if ($this->dictOrder) {
-             $oldLocale=setlocale(LC_ALL, 0);
-             setlocale(LC_COLLATE, 'sk_SK.utf8'); // This one has the most EU accents AFAIK
-             usort($tab, array("nspages_printer", "_dictOrder"));
-             setlocale(LC_COLLATE, $oldLocale);            
+            $oldLocale=setlocale(LC_ALL, 0);
+            setlocale(LC_COLLATE, $this->dictOrder);
+            usort($tab, array("nspages_printer", "_dictOrder"));
+            setlocale(LC_COLLATE, $oldLocale);
         } else {
             usort($tab, array("nspages_printer", "_order"));
         }
