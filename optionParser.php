@@ -86,6 +86,15 @@ class optionParser {
         }
     }
     
+    static function checkDictOrder(&$match, &$varAffected, $plugin){
+        if(optionParser::preg_match_wrapper("dict(?:ionary)?Order *= *\"([^\"]*)\"", $match, $found)) {
+            $varAffected = $found[1];
+            $match       = optionParser::_removeFromMatch($found[0], $match);
+        } else {
+            $varAffected = null;
+        }
+    }
+    
     static function checkDefaultPicture(&$match, &$varAffected, $plugin){
         if(optionParser::preg_match_wrapper("defaultPicture *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
