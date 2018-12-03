@@ -49,7 +49,7 @@ class nspages_printerPictures extends nspages_printer {
           if ( $this->_defaultPicture == '' ){
                 return "lib/tpl/dokuwiki/images/logo.png";
           } else {
-		        return ml($this->_defaultPicture, self::$_dims, true);
+                return ml($this->_defaultPicture, self::$_dims, true);
           }
       }
     }
