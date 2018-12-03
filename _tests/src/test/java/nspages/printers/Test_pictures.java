@@ -21,6 +21,15 @@ public class Test_pictures extends Helper {
 	}
 
 	@Test
+	public void linkHasTheTitleOfThePage(){
+		generatePage("pictures:start", "<nspages -exclude -usePictures>");
+
+		List<WebElement> links = getPictureLinks();
+		assertEquals("withnopicture", links.get(0).getAttribute("title"));
+		assertEquals("withpicture", links.get(1).getAttribute("title"));
+	}
+
+	@Test
 	public void useServerSideRedimensionedImageToLimitBandwidth(){
 		generatePage("pictures:start", "<nspages -exclude -exclude:withnopicture -usePictures>");
 
