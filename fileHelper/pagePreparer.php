@@ -8,8 +8,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
-    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $useAbstract, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $useAbstract, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
         $this->excludedNs = $excludedNs;
     }
 
@@ -36,6 +36,16 @@ class pagePreparer extends filePreparer {
     }
 
     private function buildNameToDisplay($title, $pageId){
+        if($this->useAbstract){
+            $meta = p_get_metadata($pageId);
+            if(array_key_exists('description', $meta) && array_key_exists('abstract', $meta['description'])){
+                $abstract = $meta['description']['abstract'];
+                if($abstract != ""){
+                    return $abstract;
+                }
+            }
+        }
+
         if($this->useIdAndTitle && $title !== null ){
           return noNS($pageId) . " - " . $title;
         }

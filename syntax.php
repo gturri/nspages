@@ -52,6 +52,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "title", $return['title'], true);
         optionParser::checkOption($match, "idAndTitle", $return['idAndTitle'], true);
         optionParser::checkOption($match, "h1", $return['title'], true);
+        optionParser::checkOption($match, "abstract", $return['abstract'], true);
         optionParser::checkOption($match, "simpleLine", $return['simpleLine'], true);
         optionParser::checkOption($match, "sort(By)?Id", $return['sortid'], true);
         optionParser::checkOption($match, "reverse", $return['reverse'], true);
@@ -97,7 +98,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     private function _getDefaultOptions(){
         return array(
             'subns'         => false, 'nopages' => false, 'simpleList' => false, 'lineBreak' => false,
-            'excludedPages' => array(), 'excludedNS' => array(),
+            'excludedPages' => array(), 'excludedNS' => array(), 'abstract' => false,
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),

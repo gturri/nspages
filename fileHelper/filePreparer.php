@@ -25,6 +25,7 @@ abstract class filePreparer {
     private $pregTitleOff;
 
     protected $useTitle;
+    protected $useAbstract;
     protected $useIdAndTitle;
     protected $sortPageByDate;
     protected $sortByCreationDate;
@@ -34,13 +35,14 @@ abstract class filePreparer {
      */
     protected $sortPageById;
 
-    function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+    function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $useAbstract, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
         $this->excludedFiles = $excludedFiles;
         $this->pregOn = $pregOn;
         $this->pregOff = $pregOff;
         $this->pregTitleOn = $pregTitleOn;
         $this->pregTitleOff = $pregTitleOff;
         $this->useTitle = $useTitle;
+        $this->useAbstract = $useAbstract;
         $this->sortPageById = $sortPageById;
         $this->useIdAndTitle = $useIdAndTitle;
         $this->sortPageByDate = $sortPageByDate;
