@@ -82,6 +82,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
         optionParser::checkDefaultPicture($match, $return['defaultPicture'], $this);
+        optionParser::checkPictureRatio($match, $return['picturesRatio']);
 
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);
@@ -110,6 +111,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'showhidden'    => false, 'dictOrder' => false,
             'modificationDateOnPictures' => false,
             'sortByCreationDate' => false, 'defaultPicture' => null,
+            'picturesRatio' => 1,
         );
     }
 

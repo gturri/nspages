@@ -17,6 +17,7 @@ class nspages_printerPictures extends nspages_printer {
         parent::__construct($plugin, $mode, $renderer, $data);
         $this->_displayModificationDate = $data['modificationDateOnPictures'];
         $this->_defaultPicture = $data['defaultPicture'];
+        $this->_picturesRatio  = $data['picturesRatio'];
     }
 
     function _print($tab, $type) {

@@ -52,6 +52,18 @@ class optionParser {
         }
     }
 
+    static function checkPictureRatio(&$match, &$varAffected){
+        if(optionParser::preg_match_wrapper("pictures?Ratio *=? *\"?([.[:digit:]]*)\"?", $match, $found)) {
+            if($found[1] != '') {
+                $varAffected = (double) $found[1];
+                if ($varAffected <= 0){
+                    $varAffected = 0.01;
+                }
+            }
+            $match = optionParser::_removeFromMatch($found[0], $match);
+        }
+    }
+
     static function checkNbItemsMax(&$match, &$varAffected){
         if(optionParser::preg_match_wrapper("nb?Items?Max *=? *\"?([[:digit:]]*)\"?", $match, $found)) {
             if($found[1] != '') {

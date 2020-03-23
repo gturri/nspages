@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 
 import nspages.Helper;
@@ -66,6 +67,27 @@ public class Test_pictures extends Helper {
 			assertEquals(0, link.findElements(By.className("nspagesPicturesDate")).size());
 		}
 	}
+
+	@Test
+	public void withoutRatio() {
+		generatePage("pictures:start", "<nspages -exclude -usePictures>");
+		Dimension dimension = getPictureLinks().get(0).getSize();
+		assertEquals(240.0, dimension.height, 10);
+		assertEquals(300.0, dimension.width, 10);
+	}
+
+	@Test
+    public void withRatio() {
+		generatePage("pictures:start", "<nspages -exclude -usePictures -picturesRatio = \"0.5\">");
+		Dimension dimension = getPictureLinks().get(0).getSize();
+		assertEquals(120, dimension.height, 10);
+		assertEquals(300, dimension.width, 10);
+    }
+
+    @Test
+    public void withNonIntegerRatio() {
+	    //TODO
+    }
 
 	private List<WebElement> getPictureLinks(){
 		WebElement wrapper = getDriver().findElement(By.className("nspagesPicturesModeMain"));
