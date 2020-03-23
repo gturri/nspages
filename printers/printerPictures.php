@@ -21,7 +21,6 @@ class nspages_printerPictures extends nspages_printer {
 
     function _print($tab, $type) {
         $this->renderer->doc .= '<div class="nspagesPicturesModeMain">';
-        $dim = array('w'=>350, 'h'=>220);
         foreach($tab as $item) {
                 $picture = $this->_getFirstImage($item['id']);
                 $url = wl($item['id']);

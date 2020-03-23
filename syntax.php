@@ -83,8 +83,6 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
         optionParser::checkDefaultPicture($match, $return['defaultPicture'], $this);
 
-        
-
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);
         $return['wantedNS'] = $nsFinder->getWantedNs();
@@ -152,7 +150,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             $data['textPages'] = $this->getLang('pagesinthiscat');
         }
     }
-    
+
     function _denullifyPictureOptions(&$data){
         if ( is_null($data['defaultPicture']) ){
             $data['defaultPicture'] = $this->getConf('default_picture');

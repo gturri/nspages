@@ -85,7 +85,7 @@ class optionParser {
             $varAffected = null;
         }
     }
-    
+
     static function checkDictOrder(&$match, &$varAffected, $plugin){
         if(optionParser::preg_match_wrapper("dict(?:ionary)?Order *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
@@ -94,7 +94,7 @@ class optionParser {
             $varAffected = null;
         }
     }
-    
+
     static function checkDefaultPicture(&$match, &$varAffected, $plugin){
         if(optionParser::preg_match_wrapper("defaultPicture *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
