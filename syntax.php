@@ -15,6 +15,7 @@ require_once 'printers/printerOneLine.php';
 require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
 require_once 'printers/printerPictures.php';
+require_once 'printers/printerTree.php';
 require_once 'fileHelper/fileHelper.php';
 require_once 'optionParser.php';
 require_once 'namespaceFinder.php';
@@ -47,6 +48,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "subns", $return['subns'], true);
         optionParser::checkOption($match, "nopages", $return['nopages'], true);
         optionParser::checkOption($match, "simpleListe?", $return['simpleList'], true);
+        optionParser::checkOption($match, "tree", $return['tree'], true);
         optionParser::checkOption($match, "numberedListe?", $return['numberedList'], true);
         optionParser::checkOption($match, "simpleLineBreak", $return['lineBreak'], true);
         optionParser::checkOption($match, "title", $return['title'], true);
@@ -109,7 +111,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
             'showhidden'    => false, 'dictOrder' => false,
             'modificationDateOnPictures' => false,
-            'sortByCreationDate' => false, 'defaultPicture' => null,
+            'sortByCreationDate' => false, 'defaultPicture' => null, 'tree' => false,
         );
     }
 
@@ -198,6 +200,8 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return new nspages_printerLineBreak($this, $mode, $renderer, $data);
         } else if ($data['usePictures'] && $mode == 'xhtml') { //This printer doesn't support non html mode yet
             return new nspages_printerPictures($this, $mode, $renderer, $data);
+        } else if ($data['tree']) {
+            return new nspages_printerTree($this, $mode, $renderer, $data);
         } else if($mode == 'xhtml') {
             return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName'], $data);
         }

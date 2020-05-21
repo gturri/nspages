@@ -1,0 +1,156 @@
+package nspages.printers;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.util.List;
+
+import nspages.Helper;
+import nspages.InternalLink;
+
+import org.junit.Test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
+
+public class Test_tree extends Helper {
+    /**
+     * This test should display this tree:
+     * +-+ section1
+     * | +-- subsection1
+     * | +-- subsection2
+     * | +-+ subsection3
+     * |   +-- subsubsection1
+     * +-- section2
+     * +-- section3
+     */
+    @Test
+    public void testStandardCase(){
+        generatePage("trees:start", "<nspages -tree -r -subns -nopages .:standard_tree>");
+        assertGotStandardSubnsTree();
+    }
+
+    @Test
+    public void treeIsCorrectlyRenderedEvenFromAPageNotAtTheRootLevel(){
+        generatePage("trees:standard_tree:section1:subsection1:start", "<nspages -tree -r -subns -nopages ..:..>");
+        assertGotStandardSubnsTree();
+    }
+
+    /**
+     * Check we're correctly displaying the subnamespaces of trees:standard.
+     * This checks
+     * - The html structure
+     * - The links
+     * - The html level classes ("level1", "level2", ...)
+     */
+    private void assertGotStandardSubnsTree(){
+        // Test 1st level nodes
+        List<WebElement> firstLevelNodes = getFirstLevelChildren();
+        assertEquals(3, firstLevelNodes.size());
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:start", "section1"), 1, firstLevelNodes.get(0));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section2:start", "section2"), 1, firstLevelNodes.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section3:start", "section3"), 1, firstLevelNodes.get(2));
+
+        // Test 2nd level nodes
+        //   Nodes below the 1st one
+        List<WebElement> childrenOfFirstSection = getDirectChildren(firstLevelNodes.get(0));
+        assertEquals(3, childrenOfFirstSection.size());
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:start", "subsection1"), 2, childrenOfFirstSection.get(0));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection2:start", "subsection2"), 2, childrenOfFirstSection.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:start", "subsection3"), 2, childrenOfFirstSection.get(2));
+
+        //  Other first level nodes should have no child
+        assertEquals(0, getDirectChildren(firstLevelNodes.get(1)).size());
+        assertEquals(0, getDirectChildren(firstLevelNodes.get(2)).size());
+
+        // Test 3rd level node
+        //   The first two 2nd-level nodes should have no child
+        assertEquals(0, getDirectChildren(childrenOfFirstSection.get(0)).size());
+        assertEquals(0, getDirectChildren(childrenOfFirstSection.get(1)).size());
+
+        //   The third one should have one last child
+        List<WebElement> thirdLevelNodes = getDirectChildren(childrenOfFirstSection.get(2));
+        assertEquals(1, thirdLevelNodes.size());
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:subsubsection1:start", "subsubsection1"), 3, thirdLevelNodes.get(0));
+
+        // There should be not 4th level nodes
+        assertEquals(0, getDirectChildren(thirdLevelNodes.get(0)).size());
+    }
+
+    private void assertSameLinksAndLevel(InternalLink expectedLink, int expectedLevel, WebElement actualNode) {
+        assertSameLinks(expectedLink, getSelfLink(actualNode));
+        assertEquals("level" + expectedLevel, actualNode.getAttribute("class"));
+    }
+
+    /**
+     * This should display this tree:
+     * +-+ section1
+     *   +-+ section2
+     *     +-+ section4
+     *
+     * This is a corner case on which we already had bug because the first node wasn't correctly computed
+     */
+    @Test
+    public void rootIsCorrectlyComputedEvenInLinearTreeCase(){
+        generatePage("trees:start", "<nspages -tree -r -subns -nopages .:linear_tree>");
+
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+        assertEquals(1, firstLevelChildren.size());
+        assertSameLinks(new InternalLink("trees:linear_tree:section1:start", "section1"), getSelfLink(firstLevelChildren.get(0)));
+
+        // This test is only interested in testing the root has been correctly computed. No need for further assertions
+    }
+
+    @Test
+    public void testDisplayingPages(){
+        // Exclude start pages to ensure empty subnamespaces aren't displayed
+        generatePage("trees:start", "<nspages -tree -r .:standard_tree -exclude:start>");
+
+        // Test the first level nodes
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+        assertEquals("trees:standard_tree:section1:", getNonLinkNodeInnerHTML(firstLevelChildren.get(0)));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:page_at_root_level", "page_at_root_level"), 1, firstLevelChildren.get(1));
+
+        // Test second level nodes
+        List<WebElement> section1Children = getDirectChildren(firstLevelChildren.get(0));
+        assertEquals("trees:standard_tree:section1:subsection1:", getNonLinkNodeInnerHTML(section1Children.get(0)));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:other_page_at_level2", "other_page_at_level2"), 2, section1Children.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:page_at_level2", "page_at_level2"), 2, section1Children.get(2));
+
+        // Test third level nodes
+        List<WebElement> thirdLevelNodes = getDirectChildren(section1Children.get(0));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:other_page_at_level3", "other_page_at_level3"), 3, thirdLevelNodes.get(0));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:page_at_level3", "page_at_level3"), 3, thirdLevelNodes.get(1));
+
+
+    }
+
+    private WebElement getSelfLink(WebElement node){
+        try{
+            return node.findElement(By.xpath("div/a"));
+        }catch (NoSuchElementException e){
+            // When DW renders a link to the current page it adds a <span class="curid">
+            // between the <div class="li"> and the <a> so the previous xpath resolution
+            // would fail in this case. Below is the correct one to use in this case.
+            return node.findElement(By.xpath("div/span/a"));
+        }
+    }
+
+    /**
+     * When nspages is called without the -subns flag, then it displays namespace node as text only (no link).
+     * This method retrieve the text of such nodes
+     */
+    private String getNonLinkNodeInnerHTML(WebElement node){
+        return node.findElement(By.xpath("div")).getAttribute("innerHTML");
+    }
+
+    private List<WebElement> getFirstLevelChildren(){
+        WebElement root = getDriver().findElement(By.cssSelector(".plugin_nspages"));
+        return getDirectChildren(root);
+    }
+
+    private List<WebElement> getDirectChildren(WebElement node){
+        return node.findElements(By.xpath("ul/li"));
+    }
+}

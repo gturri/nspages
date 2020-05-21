@@ -112,24 +112,33 @@ abstract class nspages_printer {
     /**
      * @param Array        $item      Represents the file
      */
-    protected function _printElement($item) {
+    protected function _printElement($item, $level=1, $node=false) {
+        $this->_printElementOpen($level, $node);
+        $this->_printElementContent($item);
+        $this->_printElementClose();
+    }
+
+    protected function _printElementOpen($level=1, $node=false) {
         if($item['type'] !== 'd') {
-            $this->renderer->listitem_open(1);
-            $this->renderer->listcontent_open();
-            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
-            $this->renderer->listcontent_close();
-            $this->renderer->listitem_close();
+            $this->renderer->listitem_open($level, $node);
         } else { //Case of a subnamespace
             if($this->mode == 'xhtml') {
                 $this->renderer->doc .= '<li class="closed">';
             } else {
-                $this->renderer->listitem_open(1);
+                $this->renderer->listitem_open($level, $node);
             }
-            $this->renderer->listcontent_open();
-            $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
-            $this->renderer->listcontent_close();
-            $this->renderer->listitem_close();
         }
+    }
+
+    protected function _printElementContent($item) {
+        $this->renderer->listcontent_open();
+        $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
+        $this->renderer->listcontent_close();
+    }
+
+
+    protected function _printElementClose() {
+        $this->renderer->listitem_close();
     }
 
     function printBeginning(){
