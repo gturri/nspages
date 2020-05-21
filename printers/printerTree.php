@@ -23,8 +23,7 @@ class nspages_printerTree extends nspages_printer {
     }
 
     private function _groupByNs($tab) {
-        $tree = new NspagesTreeNsNode();
-        $tree->id = ":";
+        $tree = new NspagesTreeNsNode(':');
         foreach($tab as $item){
             $this->_fillTree($tree, $this->_getNS($item), $item, '');
         }
@@ -86,8 +85,7 @@ class nspages_printerTree extends nspages_printer {
             $key = $keys[0];
             $currentId = $parentId . $key . ':';
             if (!array_key_exists($key, $tree->children)){
-                $node = new NspagesTreeNsNode();
-                $node->id = $currentId;
+                $node = new NspagesTreeNsNode($currentId);
                 $tree->children[$key] = $node;
             }
             array_shift($keys);
@@ -161,4 +159,8 @@ class NspagesTreeNsNode {
      * In practice it is used to represent namespace nodes when we're asked to display pages only
      */
     public $id = null;
+
+    function __construct($id){
+        $this->id = $id;
+    }
 }
