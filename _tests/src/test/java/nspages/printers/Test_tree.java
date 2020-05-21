@@ -122,8 +122,13 @@ public class Test_tree extends Helper {
         List<WebElement> thirdLevelNodes = getDirectChildren(section1Children.get(0));
         assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:other_page_at_level3", "other_page_at_level3"), 3, thirdLevelNodes.get(0));
         assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:page_at_level3", "page_at_level3"), 3, thirdLevelNodes.get(1));
+    }
 
-
+    @Test
+    public void canBeCalledAtWikiRoot(){
+        generatePage("start", "<nspages -tree -r>");
+        // No need for assertions: the generatePage method already checks that there are no php warning
+        // and no php error. This is all we need for this test
     }
 
     private WebElement getSelfLink(WebElement node){

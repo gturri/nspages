@@ -24,6 +24,7 @@ class nspages_printerTree extends nspages_printer {
 
     private function _groupByNs($tab) {
         $tree = new NspagesTreeNsNode();
+        $tree->id = ":";
         foreach($tab as $item){
             $this->_fillTree($tree, $this->_getNS($item), $item, '');
         }
