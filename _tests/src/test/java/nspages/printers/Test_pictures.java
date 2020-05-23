@@ -21,6 +21,14 @@ public class Test_pictures extends Helper {
 	}
 
 	@Test
+	public void useImageForNS(){
+		generatePage("pictures:start", "<nspages -subns -nopages -usePictures>");
+
+		WebElement link = getPictureLinks().get(0);
+		assertTrue(getBackgroundStyle(link).contains("img_in_page.jpg"));
+	}
+
+	@Test
 	public void linkHasTheTitleOfThePage(){
 		generatePage("pictures:start", "<nspages -exclude -usePictures>");
 

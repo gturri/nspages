@@ -34,14 +34,17 @@ class namespacePreparer extends filePreparer {
      */
     function prepareFile(&$ns){
         $ns['nameToDisplay'] = $this->buildNameToDisplay($ns['title'], noNS($ns['id']));
-        $ns['id'] = $this->buildIdToLinkTo($idMainPage, $ns['id']);
+        $ns['id'] = $this->buildIdToLinkTo($this->getMainPageId($ns), $ns['id']);
         $ns['sort'] = $this->buildSortAttribute($ns['nameToDisplay'], $ns['id'], $ns['mtime']);
     }
 
-    private function getMainPageId($ns){
-        $idMainPage = $ns['id'].':';
-        resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
-        return $exist ? $idMainPage : null;
+    private function getMainPageId(&$ns){
+        if (is_null($ns['idMainPage'])){
+            $idMainPage = $ns['id'].':';
+            resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
+            $ns['idMainPage'] = $exist ? $idMainPage : null;
+        }
+        return $ns['idMainPage'];
     }
 
     private function buildNameToDisplay($title, $defaultName){
