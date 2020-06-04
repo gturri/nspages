@@ -49,7 +49,7 @@ echo " Running the indexer"
 cd ../testEnvironment/data/pages
 for f in $(find . -name "*txt"); do
   f=$(echo $f | cut -d '.' -f 2 | tr / :)
-  wget -O /dev/null -q $baseUrl/$dirName/lib/exe/indexer.php?id=$f
+  wget -O /dev/null -q $baseUrl/$dirName/lib/exe/taskrunner.php?id=$f
 done
 echo " Installed $DW_VERSION"
 popd >/dev/null
