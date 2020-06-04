@@ -1,5 +1,5 @@
 DW_DL_CACHE=dw_dl_cache
-DW_VERSION="dokuwiki-2018-04-22a"
+DW_VERSION="dokuwiki-2020-07-29"
 
 # Empty = on job per core
 PARALLEL_NB_JOBS=3
