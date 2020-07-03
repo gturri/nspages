@@ -16,6 +16,7 @@ abstract class nspages_printer {
     private $natOrder;
     private $nbItemsMax;
     private $dictOrder;
+    protected $_displayModificationDate;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -26,6 +27,8 @@ abstract class nspages_printer {
       $this->actualTitleLevel = $data['actualTitleLevel'];
       $this->nbItemsMax = $data['nbItemsMax'];
       $this->dictOrder = $data['dictOrder'];
+      $this->_displayModificationDate = $data['displayModificationDate']
+        || $data['modificationDateOnPictures']; // This is a deprecated option. We should kill it after checking no users are still using it
     }
 
     function printTOC($tab, $type, $text, $reverse, $hideno){
@@ -132,10 +135,18 @@ abstract class nspages_printer {
 
     protected function _printElementContent($item) {
         $this->renderer->listcontent_open();
-        $this->renderer->internallink(':'.$item['id'], $item['nameToDisplay']);
+        $this->_printElementLink($item);
         $this->renderer->listcontent_close();
     }
 
+    protected function _printElementLink($item) {
+        $linkText = "";
+        if ($this->_displayModificationDate) {
+          $linkText = '[' . date('Y-m-d', $item["mtime"]) . '] - ';
+        }
+        $linkText .= $item['nameToDisplay'];
+        $this->renderer->internallink(':'.$item['id'], $linkText);
+    }
 
     protected function _printElementClose() {
         $this->renderer->listitem_close();

@@ -57,7 +57,7 @@ public class Test_pictures extends Helper {
 
 	@Test
 	public void withModificationDateOption(){
-		generatePage("pictures:start", "<nspages -exclude -usePictures -modificationDateOnPictures>");
+		generatePage("pictures:start", "<nspages -exclude -usePictures -displayModificationDate>");
 
 		List<WebElement> links = getPictureLinks();
 		for(WebElement link : links){

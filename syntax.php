@@ -66,6 +66,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "showhidden", $return['showhidden'], true);
         optionParser::checkOption($match, "(use)?Pictures?", $return['usePictures'], true);
         optionParser::checkOption($match, "(modification)?Dates?OnPictures?", $return['modificationDateOnPictures'], true);
+        optionParser::checkOption($match, "displayModificationDates?", $return["displayModificationDate"], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
@@ -111,12 +112,17 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
             'showhidden'    => false, 'dictOrder' => false,
             'modificationDateOnPictures' => false,
+            'displayModificationDate' => false,
             'sortByCreationDate' => false, 'defaultPicture' => null, 'tree' => false,
         );
     }
 
     function render($mode, Doku_Renderer $renderer, $data) {
         $this->_deactivateTheCacheIfNeeded($renderer);
+
+        if ($data['modificationDateOnPictures']){
+            action_plugin_nspages::logUseLegacySyntax();
+        }
 
         //Load lang now rather than at handle-time, otherwise it doesn't
         //behave well with the translation plugin (it seems like we cache strings
