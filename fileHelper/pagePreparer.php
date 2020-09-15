@@ -23,11 +23,15 @@ class pagePreparer extends filePreparer {
 
     private function passSubNsfilterInRecursiveMode($file){
         $subNss = explode(':', $file['id']);
-        if ( count($subNss) <= 2 ){ //It means we're not in recursive mode
+        if ( count($subNss) < 2 ){ //It means we're not in recursive mode
             return true;
         }
-        $firstChildSubns = $subNss[1];
-        return !in_array($firstChildSubns, $this->excludedNs);
+        for ($i = 0; $i < count($subNss) - 1; $i++) {
+            if (in_array($subNss[$i], $this->excludedNs)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function prepareFile(&$page){
