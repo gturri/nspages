@@ -111,7 +111,7 @@ class optionParser {
             $found = explode(' ', $found[1]);
             foreach($found as $item) {
                 if($item[strlen($item) - 1] == ':') { //not utf8_strlen() on purpose
-                    $excludedNS[] = utf8_substr($item, 0, -1);
+                    $excludedNs[] = utf8_substr($item, 0, -1);
                 } else {
                     $excludedPages[] = $item;
                 }
