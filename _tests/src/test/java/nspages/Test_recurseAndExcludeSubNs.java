@@ -27,4 +27,13 @@ public class Test_recurseAndExcludeSubNs extends Helper {
 		assertSameLinks(expectedLinks);
 
 	}
+
+    @Test
+    public void excludeInnerNs(){
+        generatePage("recurse_and_exclude_inner_ns:start", "<nspages -h1 -r -exclude -exclude:ns_to_exclude:>");
+
+        List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
+        expectedLinks.add(new InternalLink("recurse_and_exclude_inner_ns:ns0:ns1:ns_to_keep:page", "To Keep"));
+        assertSameLinks(expectedLinks);
+    }
 }
