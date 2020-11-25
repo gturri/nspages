@@ -18,6 +18,7 @@ abstract class nspages_printer {
     private $nbItemsMax;
     private $dictOrder;
     protected $_displayModificationDate;
+    protected $_sorter;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -30,10 +31,11 @@ abstract class nspages_printer {
       $this->dictOrder = $data['dictOrder'];
       $this->_displayModificationDate = $data['displayModificationDate']
         || $data['modificationDateOnPictures']; // This is a deprecated option. We should kill it after checking no users are still using it
+      $this->_sorter = $this->_getSorter($data['reverse']);
     }
 
-    function printTOC($tab, $type, $text, $reverse, $hideno){
-        $this->_printHeader($tab, $type, $text, $reverse, $hideno);
+    function printTOC($tab, $type, $text, $hideno){
+        $this->_printHeader($tab, $type, $text, $hideno);
 
         if(empty($tab)) {
             return;
@@ -50,11 +52,10 @@ abstract class nspages_printer {
          $this->renderer->section_close();
     }
 
-    private function _printHeader(&$tab, $type, $text, $reverse, $hideno) {
-        
+    private function _printHeader(&$tab, $type, $text, $hideno) {
         if(empty($tab) && $hideno) return;
-        
-        $this->_sort($tab, $reverse);
+
+        $this->_sorter->sort($tab);
         $this->_keepOnlyNMaxItems($tab);
 
         if($text != '') {
@@ -77,11 +78,6 @@ abstract class nspages_printer {
             $this->renderer->cdata($this->plugin->getLang(($type == 'page') ? 'nopages' : 'nosubns'));
             $this->renderer->p_close();
         }
-    }
-
-    private function _sort(&$tab, $reverse) {
-        $sorter = $this->_getSorter($reverse);
-        $sorter->sort($tab);
     }
 
     private function _getSorter($reverse) {
