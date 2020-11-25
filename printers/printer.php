@@ -88,7 +88,7 @@ abstract class nspages_printer {
         if ( $this->natOrder ){
             return new nspages_naturalOrder_sorter($reverse);
         } else if ($this->dictOrder) {
-            return new nspages_dictOrder_sorter($reverse);
+            return new nspages_dictOrder_sorter($reverse, $this->dictOrder);
         } else {
             return new nspages_default_sorter($reverse);
         }

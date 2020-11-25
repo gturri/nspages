@@ -34,7 +34,7 @@ class nspages_default_sorter extends nspages_sorter {
     }
 
     function comparator($item1, $item2){
-        return strcasecmp($p1['sort'], $p2['sort']);
+        return strcasecmp($item1['sort'], $item2['sort']);
     }
 }
 
@@ -44,24 +44,27 @@ class nspages_naturalOrder_sorter extends nspages_sorter {
     }
 
     function comparator($item1, $item2){
-        return strnatcasecmp($p1['sort'], $p2['sort']);
+        return strnatcasecmp($item1['sort'], $item2['sort']);
     }
 }
 
 class nspages_dictOrder_sorter extends nspages_sorter {
-    function __construct($reverse){
+    private $dictOrder;
+
+    function __construct($reverse, $dictOrder){
         parent::__construct($reverse);
+        $this->dictOrder = $dictOrder;
     }
 
     function actualSort(&$array){
         $oldLocale=setlocale(LC_ALL, 0);
         setlocale(LC_COLLATE, $this->dictOrder);
-        usort($tab, array($this, "comparator"));
+        usort($array, array($this, "comparator"));
         setlocale(LC_COLLATE, $oldLocale);
     }
 
     function comparator($item1, $item2){
-        return strcoll($p1['sort'], $p2['sort']);
+        return strcoll($item1['sort'], $item2['sort']);
     }
 }
 
