@@ -6,6 +6,7 @@
  */
 
 if(!defined('DOKU_INC')) die();
+require_once 'sorters.php';
 
 abstract class nspages_printer {
     protected $plugin;
@@ -79,33 +80,20 @@ abstract class nspages_printer {
     }
 
     private function _sort(&$tab, $reverse) {
+        $sorter = $this->_getSorter($reverse);
+        $sorter->sort($tab);
+    }
+
+    private function _getSorter($reverse) {
         if ( $this->natOrder ){
-            usort($tab, array("nspages_printer", "_natOrder"));
+            return new nspages_naturalOrder_sorter($reverse);
         } else if ($this->dictOrder) {
-            $oldLocale=setlocale(LC_ALL, 0);
-            setlocale(LC_COLLATE, $this->dictOrder);
-            usort($tab, array("nspages_printer", "_dictOrder"));
-            setlocale(LC_COLLATE, $oldLocale);
+            return new nspages_dictOrder_sorter($reverse);
         } else {
-            usort($tab, array("nspages_printer", "_order"));
-        }
-        if ($reverse) {
-          $tab = array_reverse($tab);
+            return new nspages_default_sorter($reverse);
         }
     }
 
-    private static function _order($p1, $p2) {
-        return strcasecmp($p1['sort'], $p2['sort']);
-    }
-
-    private static function _natOrder($p1, $p2) {
-        return strnatcasecmp($p1['sort'], $p2['sort']);
-    }
-
-    private static function _dictOrder($p1, $p2) {
-        return strcoll($p1['sort'], $p2['sort']);
-    }
-    
     private function _keepOnlyNMaxItems(&$tab){
         if ($this->nbItemsMax){
             $tab = array_slice($tab, 0, $this->nbItemsMax);

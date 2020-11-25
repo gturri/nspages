@@ -19,7 +19,18 @@ class nspages_printerTree extends nspages_printer {
     function _print($tab, $type) {
         $tree = $this->_groupByNs($tab);
         $trimmedTree = $this->_getTrimmedTree($tree);
+        $orderedTree = $this->_orderTree($trimmedTree);
         $this->_printTree($trimmedTree);
+    }
+
+    /**
+     * We received the nodes all ordered together, but building the tree has probably
+     * lost the order for namespaces, we hence need to sort again each node
+     */
+    function _orderTree($tree) {
+        var_dump($tree);
+
+        return $tree;
     }
 
     private function _groupByNs($tab) {
