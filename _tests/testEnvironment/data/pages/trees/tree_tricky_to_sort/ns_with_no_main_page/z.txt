@@ -1,0 +1,1 @@
+ensure that a ns without main page won't result in some kind of null pointer exception

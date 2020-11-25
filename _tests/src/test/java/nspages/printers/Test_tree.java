@@ -114,6 +114,7 @@ public class Test_tree extends Helper {
         List<WebElement> firstLevelNodes = getFirstLevelChildren();
         assertSameLinks(new InternalLink("trees:tree_tricky_to_sort:b:start", "b"), getSelfLink(firstLevelNodes.get(0)));
         assertSameLinks(new InternalLink("trees:tree_tricky_to_sort:d:start", "d"), getSelfLink(firstLevelNodes.get(1)));
+        assertSameLinks(new InternalLink("trees:tree_tricky_to_sort:ns_with_no_main_page:start", "ns_with_no_main_page"), getSelfLink(firstLevelNodes.get(2)));
     }
 
     @Test
