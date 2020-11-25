@@ -19,7 +19,32 @@ class nspages_printerTree extends nspages_printer {
     function _print($tab, $type) {
         $tree = $this->_groupByNs($tab);
         $trimmedTree = $this->_getTrimmedTree($tree);
-        $this->_printTree($trimmedTree);
+        $orderedTree = $this->_orderTree($trimmedTree);
+        $this->_printTree($orderedTree);
+    }
+
+    /**
+     * We received the nodes all ordered together, but building the tree has probably
+     * lost the order for namespaces, we hence need to sort again each node
+     */
+    function _orderTree($tree) {
+        // We only need to sort "children". We don't need to sort "pages" because with the current
+        // workflow of the plugin nodes are provided already sorted to _print, and the way we
+        // build the tree preserves the order of the pages.
+        // An optimization could be to disable the preliminary sort and to instead sort pages here.
+        // That could save some CPU cycles because instead of sorting a big list we would sort
+        // several smaller ones. However it would require
+        // - a regression test which assert on the order of the pages when a flag is passed to
+        //   have a custom sort (eg: "-h1") to ensure we don't have the correct order just because
+        //   the DW search API returned sorted results based on the id of the pages
+        // - benchmarking (because it could be detrimental if usort has a constant overhead which
+        //   would make several small sort more costly than a single one bigger)
+        $this->_sorter->sort($tree->children);
+
+        foreach($tree->children as $subTree){
+            $this->_orderTree($subTree);
+        }
+        return $tree;
     }
 
     private function _groupByNs($tab) {
@@ -135,7 +160,7 @@ class nspages_printerTree extends nspages_printer {
 /**
  * Represent a namespace and its inner content
  */
-class NspagesTreeNsNode {
+class NspagesTreeNsNode implements ArrayAccess {
     /**
      * The list of pages directly in the namespace (does not include pages in subnamespaces)
      */
@@ -162,5 +187,22 @@ class NspagesTreeNsNode {
 
     function __construct($id){
         $this->id = $id;
+    }
+
+    /**
+     * Implement ArrayAccess because instances of this class should be sortable with nspages_sorter
+     * implementations and that those implementation are performing sorts based on $item["sort"].
+     */
+    public function offsetSet($offset, $value) {
+        throw new BadMethodCallException("Not implemented by design");
+    }
+    public function offsetExists($offset) {
+        return $offset == "sort";
+    }
+    public function offsetUnset($offset) {
+        unset($this->container[$offset]);
+    }
+    public function offsetGet($offset) {
+        return $this->offsetExists($offset) ? $this->self["sort"] : null;
     }
 }

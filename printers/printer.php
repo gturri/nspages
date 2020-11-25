@@ -6,6 +6,7 @@
  */
 
 if(!defined('DOKU_INC')) die();
+require_once 'sorters.php';
 
 abstract class nspages_printer {
     protected $plugin;
@@ -17,6 +18,7 @@ abstract class nspages_printer {
     private $nbItemsMax;
     private $dictOrder;
     protected $_displayModificationDate;
+    protected $_sorter;
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -29,10 +31,11 @@ abstract class nspages_printer {
       $this->dictOrder = $data['dictOrder'];
       $this->_displayModificationDate = $data['displayModificationDate']
         || $data['modificationDateOnPictures']; // This is a deprecated option. We should kill it after checking no users are still using it
+      $this->_sorter = $this->_getSorter($data['reverse']);
     }
 
-    function printTOC($tab, $type, $text, $reverse, $hideno){
-        $this->_printHeader($tab, $type, $text, $reverse, $hideno);
+    function printTOC($tab, $type, $text, $hideno){
+        $this->_printHeader($tab, $type, $text, $hideno);
 
         if(empty($tab)) {
             return;
@@ -49,11 +52,10 @@ abstract class nspages_printer {
          $this->renderer->section_close();
     }
 
-    private function _printHeader(&$tab, $type, $text, $reverse, $hideno) {
-        
+    private function _printHeader(&$tab, $type, $text, $hideno) {
         if(empty($tab) && $hideno) return;
-        
-        $this->_sort($tab, $reverse);
+
+        $this->_sorter->sort($tab);
         $this->_keepOnlyNMaxItems($tab);
 
         if($text != '') {
@@ -78,34 +80,16 @@ abstract class nspages_printer {
         }
     }
 
-    private function _sort(&$tab, $reverse) {
+    private function _getSorter($reverse) {
         if ( $this->natOrder ){
-            usort($tab, array("nspages_printer", "_natOrder"));
+            return new nspages_naturalOrder_sorter($reverse);
         } else if ($this->dictOrder) {
-            $oldLocale=setlocale(LC_ALL, 0);
-            setlocale(LC_COLLATE, $this->dictOrder);
-            usort($tab, array("nspages_printer", "_dictOrder"));
-            setlocale(LC_COLLATE, $oldLocale);
+            return new nspages_dictOrder_sorter($reverse, $this->dictOrder);
         } else {
-            usort($tab, array("nspages_printer", "_order"));
-        }
-        if ($reverse) {
-          $tab = array_reverse($tab);
+            return new nspages_default_sorter($reverse);
         }
     }
 
-    private static function _order($p1, $p2) {
-        return strcasecmp($p1['sort'], $p2['sort']);
-    }
-
-    private static function _natOrder($p1, $p2) {
-        return strnatcasecmp($p1['sort'], $p2['sort']);
-    }
-
-    private static function _dictOrder($p1, $p2) {
-        return strcoll($p1['sort'], $p2['sort']);
-    }
-    
     private function _keepOnlyNMaxItems(&$tab){
         if ($this->nbItemsMax){
             $tab = array_slice($tab, 0, $this->nbItemsMax);
