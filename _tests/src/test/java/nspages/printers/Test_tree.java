@@ -102,6 +102,20 @@ public class Test_tree extends Helper {
         // This test is only interested in testing the root has been correctly computed. No need for further assertions
     }
 
+    /**
+     * Building the tree will likely not preserve ordering.
+     * This tests that we still correctly render a tree with every level sorted
+     * (see issue #109)
+     */
+    @Test
+    public void treeIsCorrectlySorted(){
+        generatePage("trees:start", "<nspages -tree -r -subns -pagesInNs .:tree_tricky_to_sort -exclude>");
+
+        List<WebElement> firstLevelNodes = getFirstLevelChildren();
+        assertSameLinks(new InternalLink("trees:tree_tricky_to_sort:b:start", "b"), getSelfLink(firstLevelNodes.get(0)));
+        assertSameLinks(new InternalLink("trees:tree_tricky_to_sort:d:start", "d"), getSelfLink(firstLevelNodes.get(1)));
+    }
+
     @Test
     public void testDisplayingPages(){
         // Exclude start pages to ensure empty subnamespaces aren't displayed
