@@ -28,8 +28,12 @@ class nspages_printerTree extends nspages_printer {
      * lost the order for namespaces, we hence need to sort again each node
      */
     function _orderTree($tree) {
-        var_dump($tree);
+        $this->_sorter->sort($tree->pages);
+        $this->_sorter->sort($tree->children);
 
+        foreach($tree->children as $subTree){
+            $this->_orderTree($subTree);
+        }
         return $tree;
     }
 
@@ -146,7 +150,8 @@ class nspages_printerTree extends nspages_printer {
 /**
  * Represent a namespace and its inner content
  */
-class NspagesTreeNsNode {
+//TODO: implement bracket operator
+class NspagesTreeNsNode implements ArrayAccess {
     /**
      * The list of pages directly in the namespace (does not include pages in subnamespaces)
      */
@@ -173,5 +178,22 @@ class NspagesTreeNsNode {
 
     function __construct($id){
         $this->id = $id;
+    }
+
+    /**
+     * Implement ArrayAccess because instances of this class should be sortable with nspages_sorter
+     * implementations and that those implementation are performing sorts based on $item["sort"].
+     */
+    public function offsetSet($offset, $value) {
+        throw new BadMethodCallException("Not implemented by design");
+    }
+    public function offsetExists($offset) {
+        return $offset == "sort";
+    }
+    public function offsetUnset($offset) {
+        unset($this->container[$offset]);
+    }
+    public function offsetGet($offset) {
+        return $this->offsetExists($offset) ? $this->self["sort"] : null;
     }
 }
