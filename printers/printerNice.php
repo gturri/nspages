@@ -78,7 +78,34 @@ class nspages_printerNice extends nspages_printer {
     }
 
     private function _firstChar($item) {
-        return utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
+        $return_char = utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
+        $uniord_char = $this->_uniord($return_char);
+        if ($uniord_char > 44031 && $uniord_char < 55204) {
+            $return_char = ['ㄱ','ㄱ','ㄴ','ㄷ','ㄷ','ㄹ','ㅁ','ㅂ','ㅂ','ㅅ','ㅅ','ㅇ','ㅈ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'][($uniord_char-44032)/588];
+        }
+        return $return_char;
+    }
+    
+    /**
+     * This code is from:
+     *   https://stackoverflow.com/questions/9361303/
+     */
+    private function _uniord($c) {
+        if (ord($c{0}) >=0 && ord($c{0}) <= 127)
+            return ord($c{0});
+        if (ord($c{0}) >= 192 && ord($c{0}) <= 223)
+            return (ord($c{0})-192)*64 + (ord($c{1})-128);
+        if (ord($c{0}) >= 224 && ord($c{0}) <= 239)
+            return (ord($c{0})-224)*4096 + (ord($c{1})-128)*64 + (ord($c{2})-128);
+        if (ord($c{0}) >= 240 && ord($c{0}) <= 247)
+            return (ord($c{0})-240)*262144 + (ord($c{1})-128)*4096 + (ord($c{2})-128)*64 + (ord($c{3})-128);
+        if (ord($c{0}) >= 248 && ord($c{0}) <= 251)
+            return (ord($c{0})-248)*16777216 + (ord($c{1})-128)*262144 + (ord($c{2})-128)*4096 + (ord($c{3})-128)*64 + (ord($c{4})-128);
+        if (ord($c{0}) >= 252 && ord($c{0}) <= 253)
+            return (ord($c{0})-252)*1073741824 + (ord($c{1})-128)*16777216 + (ord($c{2})-128)*262144 + (ord($c{3})-128)*4096 + (ord($c{4})-128)*64 + (ord($c{5})-128);
+        if (ord($c{0}) >= 254 && ord($c{0}) <= 255)
+            return false;
+    return false;
     }
 
     /**
