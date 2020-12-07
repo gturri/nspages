@@ -80,12 +80,15 @@ class nspages_printerNice extends nspages_printer {
     private function _firstChar($item) {
         $return_char = utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
         $uniord_char = $this->_uniord($return_char);
+
+        // korean support. See #111 for more context
         if ($uniord_char > 44031 && $uniord_char < 55204) {
             $return_char = ['ㄱ','ㄱ','ㄴ','ㄷ','ㄷ','ㄹ','ㅁ','ㅂ','ㅂ','ㅅ','ㅅ','ㅇ','ㅈ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'][($uniord_char-44032)/588];
         }
+
         return $return_char;
     }
-    
+
     /**
      * This code is from:
      *   https://stackoverflow.com/questions/9361303/
