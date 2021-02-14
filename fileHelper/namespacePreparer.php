@@ -9,7 +9,7 @@ require_once 'filePreparer.php';
 
 class namespacePreparer extends filePreparer {
     function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, null);
     }
 
     function isFileWanted($file, $useTitle){

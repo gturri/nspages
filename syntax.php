@@ -70,6 +70,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
+        optionParser::checkCustomTitle($match, $return['customTitle'], $this);
         optionParser::checkTextNs($match, $return['textNS'], $this);
         optionParser::checkDictOrder($match, $return['dictOrder'], $this);
         optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
@@ -101,6 +102,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'excludedPages' => array(), 'excludedNS' => array(),
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
+            'customTitle'   => '',
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'pregPagesTitleOn' => array(), 'pregPagesTitleOff' => array(),
             'pregNSTitleOn' => array(), 'pregNSTitleOff' => array(),

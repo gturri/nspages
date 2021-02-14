@@ -8,8 +8,9 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
-    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+
+    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle);
         $this->excludedNs = $excludedNs;
     }
 
@@ -35,11 +36,63 @@ class pagePreparer extends filePreparer {
     }
 
     function prepareFile(&$page){
-        $page['nameToDisplay'] = $this->buildNameToDisplay($page['title'], $page['id']);
+        $page['nameToDisplay'] = $this->buildNameToDisplay($page);
         $page['sort'] = $this->buildSortAttribute($page['nameToDisplay'], $page['id'], $page['mtime']);
     }
 
-    private function buildNameToDisplay($title, $pageId){
+    /**
+     * Get the a metadata value from a certain path.
+     *
+     * @param $metadata - The metadata object of a page. More details on https://www.dokuwiki.org/devel:metadata
+     * @param $path - The path.
+     *  Examples:
+     *      date.created
+     *      contributor.0
+     *
+     * @return mixed - The metadata value from a certain path.
+     */
+
+    private function getMetadataFromPath($metadata, $path) {
+        return array_reduce(
+            explode('.', $path),
+            function ($object, $property) {
+                return is_numeric($property) ? $object[$property] : $object[$property];
+            },
+            $metadata
+        );
+    }
+
+    /**
+     * Get the page custom title from a template.
+     *
+     * @param $customTitle - The custom tile template.
+     *  Examples:
+     *      {title} ({data.created} by {user})
+     * @param $metadata - The metadata object of a page. More details on https://www.dokuwiki.org/devel:metadata
+     *
+     * @return string - the custom title
+     */
+
+    private function getCustomTitleFromTemplate($customTitle, $metadata) {
+        return preg_replace_callback(
+            '/{(.*?)}/',
+            function ($matches) use($metadata) {
+                return $this->getMetadataFromPath($metadata, $matches[1]);
+            },
+            $customTitle
+        );
+    }
+
+    private function buildNameToDisplay($page){
+        $title = $page['title'];
+        $pageId = $page['id'];
+
+
+        if ($this->customTitle !== null) {
+            $meta = p_get_metadata($pageId, array(), true);
+            return $this->getCustomTitleFromTemplate($this->customTitle, $meta);
+        }
+
         if($this->useIdAndTitle && $title !== null ){
           return noNS($pageId) . " - " . $title;
         }
