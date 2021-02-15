@@ -138,7 +138,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return TRUE;
         }
 
-        $fileHelper = new fileHelper($data);
+        $fileHelper = new fileHelper($data, $this->getConf('custom_title_allow_list_metadata'));
         $pages = $fileHelper->getPages();
         $subnamespaces = $fileHelper->getSubnamespaces();
         if ( $this->_shouldPrintPagesAmongNamespaces($data) ){

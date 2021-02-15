@@ -9,8 +9,10 @@ require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
 
-    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle){
-        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle);
+    function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle,
+                         $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata){
+        parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
+            $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata);
         $this->excludedNs = $excludedNs;
     }
 
@@ -62,6 +64,11 @@ class pagePreparer extends filePreparer {
         );
     }
 
+    private function isPathInMetadataAllowList($path) {
+        $metadataAllowList = explode(',', preg_replace('/\s+/', '', $this->customTitleAllowListMetadata));
+        return in_array($path, $metadataAllowList);
+    }
+
     /**
      * Get the page custom title from a template.
      *
@@ -77,7 +84,12 @@ class pagePreparer extends filePreparer {
         return preg_replace_callback(
             '/{(.*?)}/',
             function ($matches) use($metadata) {
-                return $this->getMetadataFromPath($metadata, $matches[1]);
+                $path = $matches[1];
+                if ($this->isPathInMetadataAllowList($path)) {
+                    return $this->getMetadataFromPath($metadata, $path);
+                } else {
+                    return $path;
+                }
             },
             $customTitle
         );
