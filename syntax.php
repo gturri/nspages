@@ -70,6 +70,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkTextPages($match, $return['textPages'], $this);
+        optionParser::checkCustomTitle($match, $return['customTitle'], $this);
         optionParser::checkTextNs($match, $return['textNS'], $this);
         optionParser::checkDictOrder($match, $return['dictOrder'], $this);
         optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
@@ -101,6 +102,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'excludedPages' => array(), 'excludedNS' => array(),
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
+            'customTitle'   => null,
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'pregPagesTitleOn' => array(), 'pregPagesTitleOff' => array(),
             'pregNSTitleOn' => array(), 'pregNSTitleOff' => array(),
@@ -136,7 +138,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return TRUE;
         }
 
-        $fileHelper = new fileHelper($data);
+        $fileHelper = new fileHelper($data, $this->getConf('custom_title_allow_list_metadata'));
         $pages = $fileHelper->getPages();
         $subnamespaces = $fileHelper->getSubnamespaces();
         if ( $this->_shouldPrintPagesAmongNamespaces($data) ){

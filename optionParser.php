@@ -77,6 +77,15 @@ class optionParser {
         }
     }
 
+    static function checkCustomTitle(&$match, &$varAffected, $plugin){
+        if(optionParser::preg_match_wrapper("customTitle? *= *\"([^\"]*)\"", $match, $found)) {
+            $varAffected = $found[1];
+            $match       = optionParser::_removeFromMatch($found[0], $match);
+        } else {
+            $varAffected = null;
+        }
+    }
+
     static function checkTextNs(&$match, &$varAffected, $plugin){
         if(optionParser::preg_match_wrapper("textNS *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];

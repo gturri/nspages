@@ -34,7 +34,8 @@ abstract class filePreparer {
      */
     protected $sortPageById;
 
-    function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
+    function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
+                         $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
         $this->excludedFiles = $excludedFiles;
         $this->pregOn = $pregOn;
         $this->pregOff = $pregOff;
