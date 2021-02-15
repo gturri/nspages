@@ -29,16 +29,13 @@ abstract class filePreparer {
     protected $sortPageByDate;
     protected $sortByCreationDate;
 
-    protected $customTitle;
-    protected $customTitleAllowListMetadata;
-
     /**
      * bool
      */
     protected $sortPageById;
 
     function __construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
-                         $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata){
+                         $useIdAndTitle, $sortPageByDate, $sortByCreationDate){
         $this->excludedFiles = $excludedFiles;
         $this->pregOn = $pregOn;
         $this->pregOff = $pregOff;
@@ -49,8 +46,6 @@ abstract class filePreparer {
         $this->useIdAndTitle = $useIdAndTitle;
         $this->sortPageByDate = $sortPageByDate;
         $this->sortByCreationDate = $sortByCreationDate;
-        $this->customTitle = $customTitle;
-        $this->customTitleAllowListMetadata = $customTitleAllowListMetadata;
     }
 
     function isFileWanted($file, $useTitle) {

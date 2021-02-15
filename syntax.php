@@ -102,7 +102,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'excludedPages' => array(), 'excludedNS' => array(),
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
-            'customTitle'   => '',
+            'customTitle'   => null,
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'pregPagesTitleOn' => array(), 'pregPagesTitleOff' => array(),
             'pregNSTitleOn' => array(), 'pregNSTitleOff' => array(),

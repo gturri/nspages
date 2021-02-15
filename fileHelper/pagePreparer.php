@@ -8,12 +8,16 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
+    private $customTitle;
+    private $customTitleAllowListMetadata;
 
     function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle,
                          $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata){
         parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
             $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata);
         $this->excludedNs = $excludedNs;
+        $this->customTitle = $customTitle;
+        $this->customTitleAllowListMetadata = $customTitleAllowListMetadata;
     }
 
     function isFileWanted($file, $useTitle){
