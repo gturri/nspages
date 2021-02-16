@@ -68,26 +68,8 @@ class optionParser {
         }
     }
 
-    static function checkTextPages(&$match, &$varAffected, $plugin){
-        if(optionParser::preg_match_wrapper("textPages? *= *\"([^\"]*)\"", $match, $found)) {
-            $varAffected = $found[1];
-            $match       = optionParser::_removeFromMatch($found[0], $match);
-        } else {
-            $varAffected = null;
-        }
-    }
-
-    static function checkCustomTitle(&$match, &$varAffected, $plugin){
-        if(optionParser::preg_match_wrapper("customTitle? *= *\"([^\"]*)\"", $match, $found)) {
-            $varAffected = $found[1];
-            $match       = optionParser::_removeFromMatch($found[0], $match);
-        } else {
-            $varAffected = null;
-        }
-    }
-
-    static function checkTextNs(&$match, &$varAffected, $plugin){
-        if(optionParser::preg_match_wrapper("textNS *= *\"([^\"]*)\"", $match, $found)) {
+    static function checkSimpleStringArgument(&$match, &$varAffected, $plugin, $argumentName){
+        if(optionParser::preg_match_wrapper($argumentName . " *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
             $match       = optionParser::_removeFromMatch($found[0], $match);
         } else {
@@ -97,15 +79,6 @@ class optionParser {
 
     static function checkDictOrder(&$match, &$varAffected, $plugin){
         if(optionParser::preg_match_wrapper("dict(?:ionary)?Order *= *\"([^\"]*)\"", $match, $found)) {
-            $varAffected = $found[1];
-            $match       = optionParser::_removeFromMatch($found[0], $match);
-        } else {
-            $varAffected = null;
-        }
-    }
-
-    static function checkDefaultPicture(&$match, &$varAffected, $plugin){
-        if(optionParser::preg_match_wrapper("defaultPicture *= *\"([^\"]*)\"", $match, $found)) {
             $varAffected = $found[1];
             $match       = optionParser::_removeFromMatch($found[0], $match);
         } else {

@@ -69,9 +69,10 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "displayModificationDates?", $return["displayModificationDate"], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
-        optionParser::checkTextPages($match, $return['textPages'], $this);
-        optionParser::checkCustomTitle($match, $return['customTitle'], $this);
-        optionParser::checkTextNs($match, $return['textNS'], $this);
+        optionParser::checkSimpleStringArgument($match, $return['textPages'], $this, 'textPages');
+        optionParser::checkSimpleStringArgument($match, $return['customTitle'], $this, 'customTitle');
+        optionParser::checkSimpleStringArgument($match, $return['sortByMetadata'], $this, 'sortByMetadata');
+        optionParser::checkSimpleStringArgument($match, $return['textNS'], $this, 'textNS');
         optionParser::checkDictOrder($match, $return['dictOrder'], $this);
         optionParser::checkRegEx($match, "pregPages?On=\"([^\"]*)\"", $return['pregPagesOn']);
         optionParser::checkRegEx($match, "pregPages?Off=\"([^\"]*)\"", $return['pregPagesOff']);
@@ -85,7 +86,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
-        optionParser::checkDefaultPicture($match, $return['defaultPicture'], $this);
+        optionParser::checkSimpleStringArgument($match, $return['defaultPicture'], $this, 'defaultPicture');
 
         //Now, only the wanted namespace remains in $match
         $nsFinder = new namespaceFinder($match);

@@ -8,16 +8,21 @@ if(!defined('DOKU_INC')) die();
 require_once 'filePreparer.php';
 
 class pagePreparer extends filePreparer {
+
     private $customTitle;
     private $customTitleAllowListMetadata;
+    private $sortByMetadata;
 
     function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle,
-                         $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata){
+                         $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle,
+                         $customTitleAllowListMetadata, $sortByMetadata) {
         parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
-            $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle, $customTitleAllowListMetadata);
+            $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+
         $this->excludedNs = $excludedNs;
         $this->customTitle = $customTitle;
         $this->customTitleAllowListMetadata = $customTitleAllowListMetadata;
+        $this->sortByMetadata = $sortByMetadata;
     }
 
     function isFileWanted($file, $useTitle){
@@ -120,11 +125,14 @@ class pagePreparer extends filePreparer {
     }
 
     private function buildSortAttribute($nameToDisplay, $pageId, $mtime){
-        if($this->sortPageById) {
+        if ($this->sortByMetadata !== null) {
+            $meta = p_get_metadata($pageId);
+            return $this->getMetadataFromPath($meta, $this->sortByMetadata);
+        } else if($this->sortPageById) {
             return noNS($pageId);
-        } else if ( $this->sortPageByDate ){
+        } else if ( $this->sortPageByDate) {
             return $mtime;
-        } else if ($this->sortByCreationDate ){
+        } else if ($this->sortByCreationDate) {
             $meta = p_get_metadata($pageId);
             return $meta['date']['created'];
         } else {
