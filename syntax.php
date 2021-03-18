@@ -67,6 +67,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "(use)?Pictures?", $return['usePictures'], true);
         optionParser::checkOption($match, "(modification)?Dates?OnPictures?", $return['modificationDateOnPictures'], true);
         optionParser::checkOption($match, "displayModificationDates?", $return["displayModificationDate"], true);
+        optionParser::checkOption($match, "includeItemsInTOC", $return["includeItemsInTOC"], true);
         optionParser::checkRecurse($match, $return['maxDepth']);
         optionParser::checkNbColumns($match, $return['nbCol']);
         optionParser::checkSimpleStringArgument($match, $return['textPages'], $this, 'textPages');
@@ -117,6 +118,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'modificationDateOnPictures' => false,
             'displayModificationDate' => false,
             'sortByCreationDate' => false, 'defaultPicture' => null, 'tree' => false,
+            'includeItemsInTOC' => false
         );
     }
 

@@ -135,7 +135,7 @@ class nspages_printerTree extends nspages_printer {
     private function _printSubTree($tree, $level) {
         $this->_printElementOpen($level);
         if ( !is_null($tree->self) ){
-            $this->_printElementContent($tree->self);
+            $this->_printElementContent($tree->self, $level);
         } else {
           $this->renderer->doc .= '<div>' . $tree->id  . '</div>';
         }

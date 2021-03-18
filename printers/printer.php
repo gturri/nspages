@@ -19,6 +19,10 @@ abstract class nspages_printer {
     private $dictOrder;
     protected $_displayModificationDate;
     protected $_sorter;
+    protected $includeItemsInTOC;
+
+    // Static to prevent conflicts if there are several <nspages> tag in a same page
+    static private $builtSectionIds = array();
 
     function __construct($plugin, $mode, $renderer, $data){
       $this->plugin = $plugin;
@@ -32,6 +36,7 @@ abstract class nspages_printer {
       $this->_displayModificationDate = $data['displayModificationDate']
         || $data['modificationDateOnPictures']; // This is a deprecated option. We should kill it after checking no users are still using it
       $this->_sorter = $this->_getSorter($data['reverse']);
+      $this->includeItemsInTOC = $data['includeItemsInTOC'] && $mode === 'xhtml';
     }
 
     function printTOC($tab, $type, $text, $hideno){
@@ -101,7 +106,7 @@ abstract class nspages_printer {
      */
     protected function _printElement($item, $level=1, $node=false) {
         $this->_printElementOpen($level, $node);
-        $this->_printElementContent($item);
+        $this->_printElementContent($item, $level);
         $this->_printElementClose();
     }
 
@@ -117,19 +122,32 @@ abstract class nspages_printer {
         }
     }
 
-    protected function _printElementContent($item) {
+    protected function _printElementContent($item, $level=1) {
         $this->renderer->listcontent_open();
-        $this->_printElementLink($item);
+        $this->_printElementLink($item, $level);
         $this->renderer->listcontent_close();
     }
 
-    protected function _printElementLink($item) {
+    protected function _printElementLink($item, $level=1) {
         $linkText = "";
         if ($this->_displayModificationDate) {
           $linkText = '[' . date('Y-m-d', $item["mtime"]) . '] - ';
         }
         $linkText .= $item['nameToDisplay'];
+        if ($this->includeItemsInTOC){
+          $anchorId = $this->buildAnchorId($item);
+          $this->renderer->doc .= '<span id="' . $anchorId . '">';
+          $this->renderer->toc_additem($anchorId, $linkText, $this->renderer->getLastLevel() + $level);
+        }
         $this->renderer->internallink(':'.$item['id'], $linkText);
+        if ($this->includeItemsInTOC){
+          $this->renderer->doc .= "</span>";
+        }
+    }
+
+    protected function buildAnchorId($item){
+      // Prefix with "nspages_" to avoid collisions with headers
+      return "nspages_" . sectionID($item['id'], self::$builtSectionIds);
     }
 
     protected function _printElementClose() {

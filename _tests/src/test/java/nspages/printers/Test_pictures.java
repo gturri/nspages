@@ -75,11 +75,6 @@ public class Test_pictures extends Helper {
 		}
 	}
 
-	private List<WebElement> getPictureLinks(){
-		WebElement wrapper = getDriver().findElement(By.className("nspagesPicturesModeMain"));
-		return wrapper.findElements(By.tagName("a"));
-	}
-
 	private String getBackgroundStyle(WebElement anchorElement){
 		return anchorElement.findElement(By.tagName("div")).getCssValue("background-image");
 	}

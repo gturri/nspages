@@ -25,8 +25,15 @@ class nspages_printerPictures extends nspages_printer {
                 // TODO: implement support for non-HTML mode
                 //       Note that, wrt indexing, it's not an issue to build a <a> ourselves instead of using the api
                 //       because non xhtml mode (eg: "metadata" mode) isn't plugged on this xhtml specific code
+                $optionalId = '';
+                if ($this->includeItemsInTOC) {
+                  $anchorId = $this->buildAnchorId($item);
+                  $optionalId = 'id="' . $anchorId . '"';
+                  $this->renderer->toc_additem($anchorId, $item['nameToDisplay'], $this->renderer->getLastLevel() + 1);
+                }
+
                 $this->renderer->doc .= '<a href="'. $url .'" title="'.$item['nameToDisplay'].'">';
-                $this->renderer->doc .= '<div class="nspagesPicturesModeImg" style="background-image:url('. $picture .')">';
+                $this->renderer->doc .= '<div class="nspagesPicturesModeImg" style="background-image:url('. $picture .')" ' . $optionalId . '>';
                 $this->renderer->doc .= '<span class="nspagesPicturesModeTitle">'.$item['nameToDisplay'];
                 if ( $this->_displayModificationDate ){
                     $this->renderer->doc .= '</span><span class="nspagesPicturesDate">' . date('d/m/Y', $item['mtime']);
