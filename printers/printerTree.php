@@ -95,7 +95,12 @@ class nspages_printerTree extends nspages_printer {
             // - its 'id' will look like 'a:b:page'
             // - its 'ns' will look like 'a:b'
             // What we want is array ['a', 'b']
-            return explode(':', $item['ns']);
+            if ($item['ns'] === false) {
+              // Special case of the pages at the root of the wiki: for them "ns" is set to boolean FALSE
+              return array();
+            } else {
+              return explode(':', $item['ns']);
+            }
         }
     }
 

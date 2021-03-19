@@ -1,7 +1,6 @@
 package nspages.printers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
@@ -100,6 +99,19 @@ public class Test_tree extends Helper {
         assertSameLinks(new InternalLink("trees:linear_tree:section1:start", "section1"), getSelfLink(firstLevelChildren.get(0)));
 
         // This test is only interested in testing the root has been correctly computed. No need for further assertions
+    }
+
+    /**
+     * This test the special case which is fixed by version 2021-03-19 of nspages
+     */
+    @Test
+    public void pagesAtTheRootOfTheWikiAreCorrectlyHandled(){
+        // We only need one page for this test. More would make the test needlessly more complicated.
+        // So we put a unique title to this page and filter on it with the -pregXXX option
+        generatePage(":", "======Root======\n<nspages -tree -r -h1 -pregPagesTitleOn=\"/Root/\" >");
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+        assertEquals(1, firstLevelChildren.size());
+        assertSameLinks(new InternalLink("start", "Root"), getSelfLink(firstLevelChildren.get(0)));
     }
 
     /**
