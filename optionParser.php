@@ -122,6 +122,19 @@ class optionParser {
         }
     }
 
+    static function checkGlobalExclude($globalExclude, &$excludedPages, &$excludedNs) {
+        if(!empty($globalExclude)) {
+            $excludes = explode(',', $globalExclude);
+            foreach($excludes as $exclude) {
+                if($exclude[strlen($exclude) - 1] === ':') {
+                    $excludedNs[] = utf8_substr($exclude, 0, -1);
+                } else {
+                    $excludedPages[] = $exclude;
+                }
+            }
+        }
+    }
+
     static function checkActualTitle(&$match, &$varAffected){
         if ( optionParser::preg_match_wrapper("actualTitle *= *([[:digit:]])", $match, $found) ){
             $varAffected = $found[1];

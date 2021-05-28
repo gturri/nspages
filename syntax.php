@@ -84,6 +84,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "pregNSTitleOn=\"([^\"]*)\"", $return['pregNSTitleOn']);
         optionParser::checkRegEx($match, "pregNSTitleOff=\"([^\"]*)\"", $return['pregNSTitleOff']);
         optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
+        optionParser::checkGlobalExclude($this->getConf('global_exclude'), $return['excludedPages'], $return['excludedNS']);
         optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
