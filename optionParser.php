@@ -90,14 +90,7 @@ class optionParser {
         //--Looking if the syntax -exclude[item1 item2] has been used
         if(optionParser::preg_match_wrapper("exclude:\[(.*)\]", $match, $found)) {
             $match = optionParser::_removeFromMatch($found[0], $match);
-            $found = explode(' ', $found[1]);
-            foreach($found as $item) {
-                if($item[strlen($item) - 1] == ':') { //not utf8_strlen() on purpose
-                    $excludedNs[] = utf8_substr($item, 0, -1);
-                } else {
-                    $excludedPages[] = $item;
-                }
-            }
+            self::_addListOfItemsToExclude(explode(' ', $found[1]), $excludedPages, $excludedNs);
         }
 
         //--Checking if specified subnamespaces have to be excluded
@@ -120,6 +113,22 @@ class optionParser {
             $excludedPages[] = noNS($ID);
             $match           = optionParser::_removeFromMatch($found[0], $match);
         }
+    }
+
+    static function checkGlobalExclude($globalExclude, &$excludedPages, &$excludedNs) {
+        if(!empty($globalExclude)) {
+          self::_addListOfItemsToExclude(explode(',', $globalExclude), $excludedPages, $excludedNs);
+        }
+    }
+
+    private static function _addListOfItemsToExclude($excludeList, &$excludedPages, &$excludedNs) {
+       foreach($excludeList as $exclude) {
+           if($exclude[strlen($exclude) - 1] === ':') { //not utf8_strlen() on purpose
+               $excludedNs[] = utf8_substr($exclude, 0, -1);
+           } else {
+               $excludedPages[] = $exclude;
+           }
+       }
     }
 
     static function checkActualTitle(&$match, &$varAffected){

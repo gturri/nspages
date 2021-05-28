@@ -1,0 +1,3 @@
+======_template======
+
+This page should be excluded because of the global exclude default conf

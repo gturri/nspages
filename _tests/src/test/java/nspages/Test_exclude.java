@@ -6,6 +6,9 @@ import java.util.List;
 import org.junit.Test;
 
 public class Test_exclude extends Helper {
+	// Note that the "global_exclude" conf is implicitly tested by each of those tests
+	// since each would see the page "c_template" if this feature doesn't work
+
 	@Test
 	public void withoutOption(){
 		generatePage("excludepage:start", "<nspages>");

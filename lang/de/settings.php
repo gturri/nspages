@@ -9,3 +9,4 @@
 $lang['cache']                 = 'Cache deaktivieren';
 $lang['default_picture']       = 'Lege dein Standardbild fest';
 $lang['toolbar_inserted_markup'] = 'Toolbar eingefügtes markup';
+$lang['global_exclude'] = 'Globale Ausschließungsliste für Seiten und Namensräume';
