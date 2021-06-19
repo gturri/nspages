@@ -110,7 +110,7 @@ class pagePreparer extends filePreparer {
 
 
         if ($this->customTitle !== null) {
-            $meta = p_get_metadata($pageId, array(), true);
+            $meta = p_get_metadata($pageId);
             return $this->getCustomTitleFromTemplate($this->customTitle, $meta);
         }
 
