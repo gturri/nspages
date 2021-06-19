@@ -8,7 +8,7 @@ thisDir="$(dirname "$thisFile")"
 RESOURCE_DIR=$thisDir/../src/test/resources
 if [ ! -e $RESOURCE_DIR/geckodriver ]; then
   echo Downloading geckodriver
-  VERSION=v0.23.0
+  VERSION=v0.29.1
   ARCHIVE=geckodriver-$VERSION-linux64.tar.gz
   rm -f $ARCHIVE
   wget https://github.com/mozilla/geckodriver/releases/download/$VERSION/$ARCHIVE
