@@ -83,22 +83,12 @@ class nspages_printerTree extends nspages_printer {
     private function _getNS($item) {
         if($item['type'] === 'd'){
             // If $item is itself a namespace then:
-            // - its 'id' will look like either:
-            //   1. 'a:b:c:' if the ns has no main page
-            //   2. 'a:b:c:start' or 'a:b:c:c' (if this page exists)
-            //   3.'a:b:c' (case where there is a page a:b:c and no page a:b:c:start, see bug #120)
-            // - its 'ns' will look like 'a:b'
+            // - its 'id' will look like 'a:b:c:'
+            // - its 'ns' will look like 'a:b''
             // What we want is array ['a', 'b', 'c']
 
-            $lastChar = substr($item['id'], -1);
             $IdSplit = explode(':', $item['id']);
-
-            if ($lastChar === ':' // case 1
-                || count(explode(':', $item['ns'])) === count($IdSplit) -2){ // case 2)
-                array_pop($IdSplit);
-            } else { // case 3 (nothing to do here)
-            }
-
+            array_pop($IdSplit); // Remove the last element (which is "empty string" because of the final colon
             return $IdSplit;
         } else {
             // It $item is a page then:

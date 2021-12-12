@@ -158,17 +158,6 @@ public class Test_tree extends Helper {
         // and no php error. This is all we need for this test
     }
 
-    @Test
-    public void noRegForBug120(){
-        generatePage("trees:start", "<nspages -tree -r -subns -pagesInNs .:fix_120>");
-
-        List<WebElement> firstLevelNodes = getFirstLevelChildren();
-
-        // The important thing in bug #120 is that this is rendered as a link, we don't care about the other links
-        // (this link should point at the page which represents this ns which is one level above)
-        assertSameLinks(new InternalLink("trees:fix_120:ns", "ns"), getSelfLink(firstLevelNodes.get(0)));
-    }
-
     private WebElement getSelfLink(WebElement node){
         try{
             return node.findElement(By.xpath("div/a"));
