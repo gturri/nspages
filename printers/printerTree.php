@@ -83,12 +83,35 @@ class nspages_printerTree extends nspages_printer {
     private function _getNS($item) {
         if($item['type'] === 'd'){
             // If $item is itself a namespace then:
-            // - its 'id' will look like 'a:b:c:'
-            // - its 'ns' will look like 'a:b''
+            // - its 'id' will look like either:
+            //   1. 'a:b:c:' if the ns has no main page
+            //   2. 'a:b:c:start' or 'a:b:c:c' (if this page exists)
+            //   3. 'a:b:c' (case where there is a page a:b:c and no page a:b:c:start, see bug #120)
+            // - its 'ns' will look like 'a:b'
             // What we want is array ['a', 'b', 'c']
 
+            // For a page at the root of the repo:
+            // - the 'id' will look like either
+            //   4. 'a:start' in most cases
+            //   5. 'a' (case where the is a page 'a' and no page 'a:start', see bug #120)
+            // - the 'ns' will be FALSE
+
+            $lastChar = substr($item['id'], -1);
             $IdSplit = explode(':', $item['id']);
-            array_pop($IdSplit); // Remove the last element (which is "empty string" because of the final colon
+
+            if ($item['ns'] !== false){
+                if ($lastChar === ':' // case 1
+                  || count(explode(':', $item['ns'])) === count($IdSplit) -2){ // case 2
+                    array_pop($IdSplit);
+                } else { // case 3 (nothing to do here)
+                }
+            } else {
+                if ($this->str_contains($item['id'], ':')){ // case 4
+                    array_pop($IdSplit);
+                } else { // case 5 (nothing to do here)
+                }
+            }
+
             return $IdSplit;
         } else {
             // It $item is a page then:
@@ -102,6 +125,14 @@ class nspages_printerTree extends nspages_printer {
               return explode(':', $item['ns']);
             }
         }
+    }
+
+    /**
+     * This is similar to https://www.php.net/manual/en/function.str-contains.php, but the PHP str_contains
+     * method is available only from PHP 8 so for now we re-implement this feature
+     */
+    private function str_contains(string $haystack, string $needle){
+        return strpos($haystack, $needle) !== false;
     }
 
     private function _fillTree($tree, $keys, $item, $parentId) {

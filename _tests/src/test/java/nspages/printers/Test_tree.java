@@ -114,6 +114,14 @@ public class Test_tree extends Helper {
         assertSameLinks(new InternalLink("start", "Root"), getSelfLink(firstLevelChildren.get(0)));
     }
 
+    @Test
+    public void nsAtTheRootOfTheWikiAreCorrectlyHandled(){
+        generatePage(":", "<nspages -subns -tree -r -pregNsOn=\"/ns_at_root/\" -pregPagesOn=\"/ns_at_root/\" -pregNsOff=\"/ns_at_root_with/\" -pregPagesOff=\"/ns_at_root_with/\"  -pagesInNs>");
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+        assertEquals(1, firstLevelChildren.size()); // Ensure the -pregXX retrieve exactly what we want
+        assertSameLinks(new InternalLink("ns_at_root:start", "ns_at_root"), getSelfLink(firstLevelChildren.get(0)));
+    }
+
     /**
      * Building the tree will likely not preserve ordering.
      * This tests that we still correctly render a tree with every level sorted
@@ -156,6 +164,26 @@ public class Test_tree extends Helper {
         generatePage("start", "<nspages -tree -r>");
         // No need for assertions: the generatePage method already checks that there are no php warning
         // and no php error. This is all we need for this test
+    }
+
+    @Test
+    public void noRegForBug120(){
+        generatePage("trees:start", "<nspages -tree -r -subns -pagesInNs .:fix_120>");
+
+        List<WebElement> firstLevelNodes = getFirstLevelChildren();
+
+        // The important thing in bug #120 is that this is rendered as a link, we don't care about the other links
+        // (this link should point at the page which represents this ns which is one level above)
+        assertSameLinks(new InternalLink("trees:fix_120:ns", "ns"), getSelfLink(firstLevelNodes.get(0)));
+    }
+
+    @Test
+    public void noRegForBug120AtWikiRoot(){
+        generatePage(":", "<nspages -subns -tree -r -pregNsOn=\"/ns_at_root_with_main_page_above/\" -pregPagesOn=\"/ns_at_root_with_main_page_above/\" -pagesInNs>");
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+
+        // We only need to test the 1st one (it's the only tricky one here)
+        assertSameLinks(new InternalLink("ns_at_root_with_main_page_above", "ns_at_root_with_main_page_above"), getSelfLink(firstLevelChildren.get(0)));
     }
 
     private WebElement getSelfLink(WebElement node){
