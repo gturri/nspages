@@ -149,6 +149,6 @@ class optionParser {
     }
 
     static private function _removeFromMatch($matched, $match){
-        return str_replace($matched, ' ', $match);
+        return substr(str_replace($matched.' ', ' ', $match.' '), 0, -1);
     }
 }
