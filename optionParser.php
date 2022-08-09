@@ -86,7 +86,7 @@ class optionParser {
         }
     }
 
-    static function checkExclude(&$match, &$excludedPages, &$excludedNs){
+    static function checkExclude(&$match, &$excludedPages, &$excludedNs, &$excludeSelfPage){
         //--Looking if the syntax -exclude[item1 item2] has been used
         if(optionParser::preg_match_wrapper("exclude:\[(.*)\]", $match, $found)) {
             $match = optionParser::_removeFromMatch($found[0], $match);
@@ -108,9 +108,8 @@ class optionParser {
         }
 
         //--Looking if the current page has to be excluded
-        global $ID;
         if(optionParser::preg_match_wrapper("exclude", $match, $found)) {
-            $excludedPages[] = noNS($ID);
+            $excludeSelfPage = true;
             $match           = optionParser::_removeFromMatch($found[0], $match);
         }
     }
