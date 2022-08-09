@@ -51,4 +51,14 @@ public class Test_exclude extends Helper {
 
 		assertSameLinks(expectedLinks);
 	}
+
+	@Test
+	public void excludeSelfWithRecursion(){
+		generatePage("exclude_and_recursion:p1", "<nspages -exclude -r>");
+
+		List<InternalLink> expectedLinks = new ArrayList<InternalLink>();
+		expectedLinks.add(new InternalLink("exclude_and_recursion:sub:p1", "p1"));
+
+		assertSameLinks(expectedLinks);
+	}
 }
