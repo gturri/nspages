@@ -11,3 +11,4 @@ _tests/docker
 geckodriver*
 .idea
 *.iml
+node_modules

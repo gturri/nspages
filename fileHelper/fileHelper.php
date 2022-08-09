@@ -37,7 +37,8 @@ class fileHelper {
         $preparer = new pagePreparer($this->data['excludedNS'], $this->data['excludedPages'], $this->data['pregPagesOn'],
             $this->data['pregPagesOff'], $this->data['pregPagesTitleOn'], $this->data['pregPagesTitleOff'], $this->data['title'],
             $this->data['sortid'], $this->data['idAndTitle'], $this->data['sortDate'], $this->data['sortByCreationDate'],
-            $this->data['customTitle'], $this->customTitleAllowListMetadata, $this->data['sortByMetadata']);
+	    $this->data['customTitle'], $this->customTitleAllowListMetadata, $this->data['sortByMetadata'],
+	    $this->data['excludeSelfPage']);
         return $this->getFiles($preparer);
     }
 

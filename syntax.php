@@ -85,7 +85,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkRegEx($match, "pregNSTitleOff=\"([^\"]*)\"", $return['pregNSTitleOff']);
         optionParser::checkNbItemsMax($match, $return['nbItemsMax']);
         optionParser::checkGlobalExclude($this->getConf('global_exclude'), $return['excludedPages'], $return['excludedNS']);
-        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS']);
+        optionParser::checkExclude($match, $return['excludedPages'], $return['excludedNS'], $return['excludeSelfPage']);
         optionParser::checkAnchorName($match, $return['anchorName']);
         optionParser::checkActualTitle($match, $return['actualTitleLevel']);
         optionParser::checkSimpleStringArgument($match, $return['defaultPicture'], $this, 'defaultPicture');
@@ -102,7 +102,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
     private function _getDefaultOptions(){
         return array(
             'subns'         => false, 'nopages' => false, 'simpleList' => false, 'lineBreak' => false,
-            'excludedPages' => array(), 'excludedNS' => array(),
+            'excludedPages' => array(), 'excludedNS' => array(), 'excludeSelfPage' => false,
             'title'         => false, 'wantedNS' => '', 'wantedDir' => '', 'safe' => true,
             'textNS'        => '', 'textPages' => '', 'pregPagesOn' => array(),
             'customTitle'   => null,

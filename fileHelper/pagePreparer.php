@@ -13,20 +13,30 @@ class pagePreparer extends filePreparer {
     private $customTitleAllowListMetadata;
     private $sortByMetadata;
 
+    /**
+     * Boolean Whether the page being rendered should be exluded
+     */
+    private $excludeSelfPage;
+
     function __construct($excludedNs, $excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle,
                          $sortPageById, $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $customTitle,
-                         $customTitleAllowListMetadata, $sortByMetadata) {
+                         $customTitleAllowListMetadata, $sortByMetadata, $excludeSelfPage) {
         parent::__construct($excludedFiles, $pregOn, $pregOff, $pregTitleOn, $pregTitleOff, $useTitle, $sortPageById,
-            $useIdAndTitle, $sortPageByDate, $sortByCreationDate);
+            $useIdAndTitle, $sortPageByDate, $sortByCreationDate, $excludeSelfPage);
 
         $this->excludedNs = $excludedNs;
         $this->customTitle = $customTitle;
         $this->customTitleAllowListMetadata = $customTitleAllowListMetadata;
         $this->sortByMetadata = $sortByMetadata;
+        $this->excludeSelfPage = $excludeSelfPage;
     }
 
     function isFileWanted($file, $useTitle){
-        return ($file['type'] != 'd') && parent::isFileWanted($file, $useTitle) && $this->passSubNsfilterInRecursiveMode($file);
+        global $ID;
+        return ($file['type'] != 'd')
+          && parent::isFileWanted($file, $useTitle)
+          && $this->passSubNsfilterInRecursiveMode($file)
+          && (!$this->excludeSelfPage || $ID !== $file['id']);
     }
 
     function prepareFileTitle(&$file){
