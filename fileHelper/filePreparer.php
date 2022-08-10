@@ -49,19 +49,24 @@ abstract class filePreparer {
     }
 
     function isFileWanted($file, $useTitle) {
-        $wanted = true;
         $nameToFilterOn = $useTitle ? $file['title'] : noNS($file['id']);
         $pregOn = $useTitle ? $this->pregTitleOn : $this->pregOn;
         $pregOff = $useTitle ? $this->pregTitleOff : $this->pregOff;
 
-        $wanted &= (!in_array($nameToFilterOn, $this->excludedFiles));
+        if (in_array($nameToFilterOn, $this->excludedFiles)) {
+            return false;
+        }
         foreach($pregOn as $preg) {
-            $wanted &= preg_match($preg, $nameToFilterOn);
+            if (!preg_match($preg, $nameToFilterOn)) {
+                return false;
+            }
         }
         foreach($pregOff as $preg) {
-            $wanted &= !preg_match($preg, $nameToFilterOn);
+            if (preg_match($preg, $nameToFilterOn)) {
+                return false;
+            }
         }
-        return $wanted;
+        return true;
     }
 
     abstract function prepareFile(&$file);
