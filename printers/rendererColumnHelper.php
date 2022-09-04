@@ -15,8 +15,6 @@ class rendererColumnHelper {
     }
     
     private function _computeActualNbCols($nbCols){
-        dbg("computeActualNbCols");
-        dbg($nbCols);
         $nbCols = (int) $nbCols;
         if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
             $nbCols = 3;
