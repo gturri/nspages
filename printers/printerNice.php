@@ -8,35 +8,32 @@
 if(!defined('DOKU_INC')) die();
 require_once 'printer.php';
 require_once 'rendererXhtmlHelper.php';
+require_once 'rendererColumnHelper.php';
 
 class nspages_printerNice extends nspages_printer {
-    private $nbCols;
+    private $rendererColumnHelper;
     private $anchorName;
 
-    function __construct($plugin, $mode, $renderer, $nbCols, $anchorName, $data){
+    function __construct($plugin, $mode, $renderer, $anchorName, $data){
+        $nbCols = 3;
+        if($data['nbCol']){
+            $nbCols = $data['nbCol'];
+        }
         parent::__construct($plugin, $mode, $renderer, $data);
         if ( $this->mode !== 'xhtml' ){
           throw Exception('nspages_printerNice can only work in xhtml mode');
         }
-        $this->nbCols = $this->_computeActualNbCols($nbCols);
+        $this->rendererColumnHelper = new rendererColumnHelper($nbCols);
         $this->anchorName = $anchorName;
-    }
-
-    private function _computeActualNbCols($nbCols){
-        $nbCols = (int) $nbCols;
-        if(!isset($nbCols) || is_null($nbCols) || $nbCols < 1) {
-            $nbCols = 3;
-        }
-        return $nbCols;
     }
 
     function _print($tab, $type) {
         $nbItemsPrinted = 0;
 
-        $nbItemPerColumns = $this->_computeNbItemPerColumns(sizeof($tab));
+        $nbItemPerColumns = $this->rendererColumnHelper->_computeNbItemPerColumns(sizeof($tab));
         $actualNbCols = count($nbItemPerColumns);
         $helper = new rendererXhtmlHelper($this->renderer, $actualNbCols, $this->plugin, $this->anchorName);
-
+        
         $helper->openColumn();
         $firstCharOfLastAddedPage = $this->_firstChar($tab[0]);
 
@@ -109,39 +106,5 @@ class nspages_printerNice extends nspages_printer {
         if (ord($c[0]) >= 254 && ord($c[0]) <= 255)
             return false;
     return false;
-    }
-
-    /**
-     * Compute the number of element to display per column
-     * When $nbItems / $nbCols isn't an int, we make sure, for aesthetic reasons,
-     * that the first are the ones which have the more items
-     * Moreover, if we don't have enought items to display, we may choose to display less than the number of columns wanted
-     *
-     * @param int $nbItems The total number of items to display
-     * @return an array which contains $nbCols int.
-     */
-    private function _computeNbItemPerColumns($nbItems) {
-        $result = array();
-
-        if($nbItems < $this->nbCols) {
-            for($idx = 0; $idx < $nbItems; $idx++) {
-                $result[] = $idx + 1;
-            }
-            return $result;
-        }
-
-        $collength    = $nbItems / $this->nbCols;
-        $nbItemPerCol = array();
-        for($idx = 0; $idx < $this->nbCols; $idx++) {
-            $nbItemPerCol[] = ceil(($idx + 1) * $collength) - ceil($idx * $collength);
-        }
-        rsort($nbItemPerCol);
-
-        $result[] = $nbItemPerCol[0];
-        for($idx = 1; $idx < $this->nbCols; $idx++) {
-            $result[] = end($result) + $nbItemPerCol[$idx];
-        }
-
-        return $result;
     }
 }

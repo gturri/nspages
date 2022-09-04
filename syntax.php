@@ -16,6 +16,7 @@ require_once 'printers/printerSimpleList.php';
 require_once 'printers/printerNice.php';
 require_once 'printers/printerPictures.php';
 require_once 'printers/printerTree.php';
+require_once 'printers/printerTreeXHTML.php';
 require_once 'fileHelper/fileHelper.php';
 require_once 'optionParser.php';
 require_once 'namespaceFinder.php';
@@ -109,7 +110,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'pregPagesOff'  => array(), 'pregNSOn' => array(), 'pregNSOff' => array(),
             'pregPagesTitleOn' => array(), 'pregPagesTitleOff' => array(),
             'pregNSTitleOn' => array(), 'pregNSTitleOff' => array(),
-            'maxDepth'      => (int) 1, 'nbCol' => 3, 'simpleLine' => false,
+            'maxDepth'      => (int) 1, 'nbCol' => null, 'simpleLine' => false,
             'sortid'        => false, 'reverse' => false,
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
@@ -212,10 +213,12 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             return new nspages_printerLineBreak($this, $mode, $renderer, $data);
         } else if ($data['usePictures'] && $mode == 'xhtml') { //This printer doesn't support non html mode yet
             return new nspages_printerPictures($this, $mode, $renderer, $data);
-        } else if ($data['tree']) {
+        } else if ($data['tree'] && $mode == 'xhtml') {
+            return new nspages_printerTreeXHTML($this, $mode, $renderer, $data);
+        } else if ($data['tree'] ) {
             return new nspages_printerTree($this, $mode, $renderer, $data);
         } else if($mode == 'xhtml') {
-            return new nspages_printerNice($this, $mode, $renderer, $data['nbCol'], $data['anchorName'], $data);
+            return new nspages_printerNice($this, $mode, $renderer, $data['anchorName'], $data);
         }
         return new nspages_printerSimpleList($this, $mode, $renderer, $data);
     }
