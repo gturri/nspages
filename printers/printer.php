@@ -111,14 +111,10 @@ abstract class nspages_printer {
     }
 
     protected function _printElementOpen($level=1, $node=false) {
-        if($item['type'] !== 'd') {
+        if($this->mode == 'xhtml') {
+            $this->renderer->doc .= '<li class="closed">';
+        } else {
             $this->renderer->listitem_open($level, $node);
-        } else { //Case of a subnamespace
-            if($this->mode == 'xhtml') {
-                $this->renderer->doc .= '<li class="closed">';
-            } else {
-                $this->renderer->listitem_open($level, $node);
-            }
         }
     }
 
