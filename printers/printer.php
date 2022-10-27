@@ -105,13 +105,13 @@ abstract class nspages_printer {
      * @param Array        $item      Represents the file
      */
     protected function _printElement($item, $level=1, $node=false) {
-        $this->_printElementOpen($level, $node);
+        $this->_printElementOpen($level, $node, $item);
         $this->_printElementContent($item, $level);
         $this->_printElementClose();
     }
 
-    protected function _printElementOpen($level=1, $node=false) {
-        if($item['type'] !== 'd') {
+    protected function _printElementOpen($level=1, $node=false, $item=[]) {
+        if(empty($item) || $item['type'] !== 'd') {
             $this->renderer->listitem_open($level, $node);
         } else { //Case of a subnamespace
             if($this->mode == 'xhtml') {
