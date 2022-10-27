@@ -47,17 +47,17 @@ public class Test_tree extends Helper {
         // Test 1st level nodes
         List<WebElement> firstLevelNodes = getFirstLevelChildren();
         assertEquals(3, firstLevelNodes.size());
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:start", "section1"), 1, firstLevelNodes.get(0));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section2:start", "section2"), 1, firstLevelNodes.get(1));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section3:start", "section3"), 1, firstLevelNodes.get(2));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:start", "section1"), 1, firstLevelNodes.get(0), true);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section2:start", "section2"), 1, firstLevelNodes.get(1), true);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section3:start", "section3"), 1, firstLevelNodes.get(2), true);
 
         // Test 2nd level nodes
         //   Nodes below the 1st one
         List<WebElement> childrenOfFirstSection = getDirectChildren(firstLevelNodes.get(0));
         assertEquals(3, childrenOfFirstSection.size());
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:start", "subsection1"), 2, childrenOfFirstSection.get(0));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection2:start", "subsection2"), 2, childrenOfFirstSection.get(1));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:start", "subsection3"), 2, childrenOfFirstSection.get(2));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:start", "subsection1"), 2, childrenOfFirstSection.get(0), true);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection2:start", "subsection2"), 2, childrenOfFirstSection.get(1), true);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:start", "subsection3"), 2, childrenOfFirstSection.get(2), true);
 
         //  Other first level nodes should have no child
         assertEquals(0, getDirectChildren(firstLevelNodes.get(1)).size());
@@ -71,15 +71,15 @@ public class Test_tree extends Helper {
         //   The third one should have one last child
         List<WebElement> thirdLevelNodes = getDirectChildren(childrenOfFirstSection.get(2));
         assertEquals(1, thirdLevelNodes.size());
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:subsubsection1:start", "subsubsection1"), 3, thirdLevelNodes.get(0));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection3:subsubsection1:start", "subsubsection1"), 3, thirdLevelNodes.get(0), true);
 
         // There should be not 4th level nodes
         assertEquals(0, getDirectChildren(thirdLevelNodes.get(0)).size());
     }
 
-    private void assertSameLinksAndLevel(InternalLink expectedLink, int expectedLevel, WebElement actualNode) {
+    private void assertSameLinksAndLevel(InternalLink expectedLink, int expectedLevel, WebElement actualNode, boolean isNode) {
         assertSameLinks(expectedLink, getSelfLink(actualNode));
-        assertEquals("level" + expectedLevel, actualNode.getAttribute("class"));
+        assertEquals("level" + expectedLevel + (isNode ? " node" : ""), actualNode.getAttribute("class"));
     }
 
     /**
@@ -145,18 +145,18 @@ public class Test_tree extends Helper {
         // Test the first level nodes
         List<WebElement> firstLevelChildren = getFirstLevelChildren();
         assertEquals("trees:standard_tree:section1:", getNonLinkNodeInnerHTML(firstLevelChildren.get(0)));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:page_at_root_level", "page_at_root_level"), 1, firstLevelChildren.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:page_at_root_level", "page_at_root_level"), 1, firstLevelChildren.get(1), false);
 
         // Test second level nodes
         List<WebElement> section1Children = getDirectChildren(firstLevelChildren.get(0));
         assertEquals("trees:standard_tree:section1:subsection1:", getNonLinkNodeInnerHTML(section1Children.get(0)));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:other_page_at_level2", "other_page_at_level2"), 2, section1Children.get(1));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:page_at_level2", "page_at_level2"), 2, section1Children.get(2));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:other_page_at_level2", "other_page_at_level2"), 2, section1Children.get(1), false);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:page_at_level2", "page_at_level2"), 2, section1Children.get(2), false);
 
         // Test third level nodes
         List<WebElement> thirdLevelNodes = getDirectChildren(section1Children.get(0));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:other_page_at_level3", "other_page_at_level3"), 3, thirdLevelNodes.get(0));
-        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:page_at_level3", "page_at_level3"), 3, thirdLevelNodes.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:other_page_at_level3", "other_page_at_level3"), 3, thirdLevelNodes.get(0), false);
+        assertSameLinksAndLevel(new InternalLink("trees:standard_tree:section1:subsection1:page_at_level3", "page_at_level3"), 3, thirdLevelNodes.get(1), false);
     }
 
     @Test

@@ -103,22 +103,19 @@ abstract class nspages_printer {
 
     /**
      * @param Array        $item      Represents the file
+     * @param bool $node true when a node; false when a leaf
      */
-    protected function _printElement($item, $level=1, $node=false) {
-        $this->_printElementOpen($level, $node);
+    protected function _printElement($item, $level=1) {
+        $this->_printElementOpen($item, $level);
         $this->_printElementContent($item, $level);
         $this->_printElementClose();
     }
 
-    protected function _printElementOpen($level=1, $node=false) {
+    protected function _printElementOpen($item, $level) {
         if($item['type'] !== 'd') {
-            $this->renderer->listitem_open($level, $node);
+            $this->renderer->listitem_open($level, false);
         } else { //Case of a subnamespace
-            if($this->mode == 'xhtml') {
-                $this->renderer->doc .= '<li class="closed">';
-            } else {
-                $this->renderer->listitem_open($level, $node);
-            }
+          $this->renderer->listitem_open($level, true);
         }
     }
 
