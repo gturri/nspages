@@ -39,7 +39,7 @@ class namespacePreparer extends filePreparer {
     }
 
     private function getMainPageId(&$ns){
-        if (is_null($ns['idMainPage'])){
+        if (!array_key_exists('idMainPage', $ns)){
             $idMainPage = $ns['id'].':';
             resolve_pageid('', $idMainPage, $exist); //get the id of the main page of the ns
             $ns['idMainPage'] = $exist ? $idMainPage : null;
