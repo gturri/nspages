@@ -5,7 +5,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Daniel Dias Rodrigues <danieldiasr@gmail.com>
  */
- 
+
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
 $lang['doesntexist']           = 'este domínio não existe: ';

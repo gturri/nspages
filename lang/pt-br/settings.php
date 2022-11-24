@@ -1,4 +1,10 @@
 <?php
+/**
+ * Brazilian portuguese language file
+ *
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author     Daniel Dias Rodrigues <danieldiasr@gmail.com>
+ */
 
 $lang['cache'] = 'Desabilitar o cache';
 $lang['default_picture'] = 'Defina sua imagem padrão';

@@ -1,12 +1,12 @@
 <?php
-
 /**
  * Spanish language file
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- *
- * @author Joe Bordes <joe@tsolucio.com>
+ * @author     Domingo Redal <docxml@gmail.com>
+ * @updater    Daniel D. Rodrigues <danieldiasr@gmail.com>
  */
+
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
 $lang['doesntexist']           = 'esta sección no existe: ';
