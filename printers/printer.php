@@ -112,7 +112,7 @@ abstract class nspages_printer {
     }
 
     protected function _printElementOpen($item, $level) {
-        if($item['type'] !== 'd') {
+        if($item == null || $item['type'] !== 'd') {
             $this->renderer->listitem_open($level, false);
         } else { //Case of a subnamespace
           $this->renderer->listitem_open($level, true);

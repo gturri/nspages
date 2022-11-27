@@ -131,12 +131,18 @@ class optionParser {
     }
 
     static function checkActualTitle(&$match, &$varAffected){
+        $foundOption = false;
         if ( optionParser::preg_match_wrapper("actualTitle *= *([[:digit:]])", $match, $found) ){
             $varAffected = $found[1];
+            $foundOption = true;
         } else if ( optionParser::preg_match_wrapper("actualTitle", $match, $found) ){
             $varAffected = 2;
+            $foundOption = true;
         }
-        $match = optionParser::_removeFromMatch($found[0], $match);
+
+        if ($foundOption) {
+            $match = optionParser::_removeFromMatch($found[0], $match);
+        }
     }
 
     static private function preg_match_wrapper($pattern, $subject, &$matches){

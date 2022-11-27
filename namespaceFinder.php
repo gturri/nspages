@@ -61,7 +61,7 @@ class namespaceFinder {
             }
         }
 
-        $this->isSafe = ($ns[0] != '..');
+        $this->isSafe = (count($ns) == 0 || $ns[0] != '..');
         $this->wantedNs = implode(':', $ns);
     }
 
