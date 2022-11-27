@@ -54,7 +54,7 @@ public class Helper {
 	}
 
 	private void assertNoPhpWarning(){
-		assertFalse(driver.getPageSource().contains("Warning"));
+		assertFalse("The page should not display any warning", driver.getPageSource().contains("Warning"));
 	}
 
 	private void navigateToEditionPage(String page){
