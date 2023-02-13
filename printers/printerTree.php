@@ -239,8 +239,8 @@ class NspagesTreeNsNode implements ArrayAccess {
         throw new BadMethodCallException("Not implemented by design");
     }
     public function offsetGet($offset) {
-	return is_null($this->self) ?
+      return is_null($this->self) ?
             $this->id :
-	    $this->self["sort"];
+            $this->self["sort"];
     }
 }
