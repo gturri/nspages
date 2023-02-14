@@ -11,6 +11,11 @@ class namespaceFinder {
     private $wantedNs;
     private $isSafe;
 
+    /**
+     * Resolves the namespace on construction
+     * 
+     * @param string $path the namespace link
+     */
     function __construct($path){
         $this->wantedNs = $this->computeWantedNs($path);
         $this->sanitizeNs();
@@ -18,6 +23,12 @@ class namespaceFinder {
 
     private function computeWantedNs($path){
         global $ID;
+        global $conf;
+        
+        // Convert all other separators to colons
+        if ($conf['useslash']) $path = str_replace('/', ':', $path);
+        $path = str_replace(';', ':', $path);
+
         $result = '';
         $wantedNS = trim($path);
         if($wantedNS == '') {
@@ -25,6 +36,10 @@ class namespaceFinder {
         }
         if( $this->isRelativePath($wantedNS) ) {
             $result = getNS($ID);
+            // normalize initial dots ( ..:..abc -> ..:..:abc )
+            $wantedNS = preg_replace('/^((\.+:)*)(\.+)(?=[^:\.])/', '\1\3:', $wantedNS);
+        } elseif ( $this->isPageRelativePath($wantedNS) ) {
+            $result = $ID;
         }
         $result .= ':'.$wantedNS.':';
         return $result;
@@ -36,6 +51,10 @@ class namespaceFinder {
 
     private function isRelativePath($path){
         return $path[0] == '.';
+    }
+
+    private function isPageRelativePath($path){
+        return $path[0] == '~';
     }
 
     /**
