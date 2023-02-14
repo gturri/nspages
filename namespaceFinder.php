@@ -11,6 +11,11 @@ class namespaceFinder {
     private $wantedNs;
     private $isSafe;
 
+    /**
+     * Resolves the namespace on construction
+     * 
+     * @param string $path the namespace link
+     */
     function __construct($path){
         $this->wantedNs = $this->computeWantedNs($path);
         $this->sanitizeNs();
@@ -34,6 +39,9 @@ class namespaceFinder {
             $result = getNS($ID);
             // normalize initial dots ( ..:..abc -> ..:..:abc )
             $wantedNS = preg_replace('/^((\.+:)*)(\.+)(?=[^:\.])/', '\1\3:', $wantedNS);
+        } elseif ( $this->isPageRelativePath($wantedNS) ) {
+            $result = $ID;
+            $wantedNS = substr($wantedNS, 1);
         }
         $result .= ':'.$wantedNS.':';
         return $result;
@@ -45,6 +53,10 @@ class namespaceFinder {
 
     private function isRelativePath($path){
         return $path[0] == '.';
+    }
+
+    private function isPageRelativePath($path){
+        return $path[0] == '~';
     }
 
     /**
