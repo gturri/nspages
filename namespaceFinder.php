@@ -40,6 +40,7 @@ class namespaceFinder {
             $wantedNS = preg_replace('/^((\.+:)*)(\.+)(?=[^:\.])/', '\1\3:', $wantedNS);
         } elseif ( $this->isPageRelativePath($wantedNS) ) {
             $result = $ID;
+            $wantedNS = substr($wantedNS, 1);
         }
         $result .= ':'.$wantedNS.':';
         return $result;
