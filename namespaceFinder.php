@@ -25,6 +25,8 @@ class namespaceFinder {
         }
         if( $this->isRelativePath($wantedNS) ) {
             $result = getNS($ID);
+            // normalize initial dots ( ..:..abc -> ..:..:abc )
+            $wantedNS = preg_replace('/^((\.+:)*)(\.+)(?=[^:\.])/', '\1\3:', $wantedNS);
         }
         $result .= ':'.$wantedNS.':';
         return $result;

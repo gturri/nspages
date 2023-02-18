@@ -36,6 +36,16 @@ public class Test_nsPath extends Helper {
 	}
 
 	@Test
+	public void pathWithNoColonBeforeTheName(){
+		// This format is supported by DW according to https://www.dokuwiki.org/namespaces so nspages users may want to use this
+		generatePage("autrens:start", "<nspages ..pregpages>");
+		assertSameLinks(pregPagesNsLinks());
+
+		generatePage("autrens:start", "<nspages .:..pregpages>");
+		assertSameLinks(pregPagesNsLinks());
+	}
+
+	@Test
 	public void absolutePath(){
 		generatePage("autrens:start", "<nspages :pregpages>");
 		assertSameLinks(pregPagesNsLinks());
