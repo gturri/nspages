@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class Helper {
@@ -21,7 +23,15 @@ public class Helper {
 	private final static WebDriver driver;
 
 	static {
-        driver = new RetrierWebDriverDecorator(new FirefoxDriver());
+		//GeckoDriverService service = new GeckoDriverService.Builder()
+		//		.usingAnyFreePort()
+		//		.withEnvironment(new HashMap<String, String>(){{
+		//			put("TMPDIR", "/home/guillaume/temp-firefox-profile-for-nspages-tests");
+		//		}})
+		//		.build();
+        //driver = new RetrierWebDriverDecorator(new FirefoxDriver(service));
+		driver = new RetrierWebDriverDecorator(new FirefoxDriver());
+
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
