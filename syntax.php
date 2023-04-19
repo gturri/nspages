@@ -9,6 +9,9 @@
  * @author  Andreas Gohr <gohr@cosmocode.de>
  * @author  Ghassem Tofighi <ghassem@gmail.com>
  */
+
+use dokuwiki\Utf8\PhpString;
+
 if(!defined('DOKU_INC')) die();
 require_once 'printers/printerLineBreak.php';
 require_once 'printers/printerOneLine.php';
@@ -42,7 +45,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         $return = $this->_getDefaultOptions();
         $return['pos'] = $pos;
 
-        $match = utf8_substr($match, 8, -1); //9 = strlen("<nspages")
+        $match = PhpString::substr($match, 8, -1); //9 = strlen("<nspages")
         $match .= ' ';
 
         optionParser::checkOption($match, "subns", $return['subns'], true);
