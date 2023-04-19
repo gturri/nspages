@@ -126,12 +126,12 @@ class optionParser {
             if ($exclude === "") {
                 return;
             }
-            if($exclude[strlen($exclude) - 1] === ':') { //not utf8_strlen() on purpose
+            if($exclude[-1] === ':') {
                 $excludedNs[] = utf8_substr($exclude, 0, -1);
             } else {
                 $excludedPages[] = $exclude;
             }
-        }
+       }
     }
 
     static function checkActualTitle(&$match, &$varAffected){
