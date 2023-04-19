@@ -121,17 +121,17 @@ class optionParser {
     }
 
     private static function _addListOfItemsToExclude($excludeList, &$excludedPages, &$excludedNs) {
-       foreach($excludeList as $exclude) {
-           $exclude = trim($exclude);
-           if ($exclude === "") {
-               return;
-           }
-           if($exclude[strlen($exclude) - 1] === ':') { //not utf8_strlen() on purpose
-               $excludedNs[] = utf8_substr($exclude, 0, -1);
-           } else {
-               $excludedPages[] = $exclude;
-           }
-       }
+        foreach($excludeList as $exclude) {
+            $exclude = trim($exclude);
+            if ($exclude === "") {
+                return;
+            }
+            if($exclude[strlen($exclude) - 1] === ':') { //not utf8_strlen() on purpose
+                $excludedNs[] = utf8_substr($exclude, 0, -1);
+            } else {
+                $excludedPages[] = $exclude;
+            }
+        }
     }
 
     static function checkActualTitle(&$match, &$varAffected){
