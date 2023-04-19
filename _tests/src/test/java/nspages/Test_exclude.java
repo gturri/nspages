@@ -61,4 +61,11 @@ public class Test_exclude extends Helper {
 
 		assertSameLinks(expectedLinks);
 	}
+
+	@Test
+	public void noRegForBugReport143(){
+		// This test just ensure that we have no warning when the line is parsed.
+		// The issue comes from the trailing whitespace at the end of the "-exclude:[...]" block
+		generatePage("excludepage:start", "<nspages -exclude:[start wiki: syntax ]>");
+	}
 }
