@@ -17,7 +17,7 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class Helper {
 	private final static String protocol = "http://";
-	private final static String server = "localhost" + getPort();
+	private final static String server = "localhost";
 	public  final static String wikiPath = "/dokuwikiITestsForNsPagesdokuwiki-2023-04-04";
 	public  final static String baseUrl = protocol + server + wikiPath + "/doku.php";
 	private final static WebDriver driver;
@@ -44,15 +44,6 @@ public class Helper {
 
 	public WebDriver getDriver(){
 		return driver;
-	}
-
-	public static String getPort(){
-		final String varEnv = "NSPAGES_DOCKER_PORT";
-		Map<String, String> env = System.getenv();
-		if ( env.containsKey(varEnv) ){
-			return ":" + env.get(varEnv);
-		}
-		return "";
 	}
 
 	public void generatePage(String page, String wikiMarkup){
