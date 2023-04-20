@@ -23,13 +23,6 @@ public class Helper {
 	private final static WebDriver driver;
 
 	static {
-		//GeckoDriverService service = new GeckoDriverService.Builder()
-		//		.usingAnyFreePort()
-		//		.withEnvironment(new HashMap<String, String>(){{
-		//			put("TMPDIR", "/home/guillaume/temp-firefox-profile-for-nspages-tests");
-		//		}})
-		//		.build();
-        //driver = new RetrierWebDriverDecorator(new FirefoxDriver(service));
 		driver = new RetrierWebDriverDecorator(new FirefoxDriver());
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
