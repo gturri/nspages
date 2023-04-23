@@ -21,7 +21,7 @@ tar -xzf $DW_VERSION.tgz
 
 
 echo " Copying files to the server"
-dirName=${dirNamePrefix}${DW_VERSION}
+dirName=${dirNamePrefix}
 destDir=$SERVER_FS_ROOT/$dirName
 
 rm -rf $destDir 
