@@ -14,3 +14,4 @@ $lang['pagesinthiscat']        = 'Pages dans la catégorie :';
 $lang['continued']             = ' (suite)';
 $lang['nopages']               = 'Pas de pages dans cette catégorie.';
 $lang['nosubns']               = 'Pas de sous-catégories.';
+$lang['sidebarOrNs']           = 'Avec l\'option -sidebar il n\'est pas possible de spécifier de catégorie. Trouvé: ';

@@ -21,6 +21,22 @@ public class Test_nsPath extends Helper {
 	}
 
 	@Test
+	// This test does not really represent an actual use case since this
+	// option is meant to be used in a sidebar (where the current ns is not
+	// the same as the one of the page where the nspages plugin is used)
+	// but this still makes sure that this case is not obviously broken
+	public void sidebarOptionUsesCurrentNamespace(){
+		generatePage("autrens:start", "<nspages -sidebar>");
+		assertSameLinks(currentNsLinks());
+	}
+
+	@Test
+	public void sidebarOptionDoesNotAcceptAnExplicitNs(){
+		generatePage("autrens:start", "<nspages -sidebar some_name>");
+		assertThat(getDriver().getPageSource(), JUnitMatchers.containsString("With the -sidebar option you cannot specify a namespace"));
+	}
+
+	@Test
 	public void unsafePath(){
 		generatePage("autrens:start", "<nspages ..:..>");
 		assertThat(getDriver().getPageSource(), JUnitMatchers.containsString("this namespace doesn't exist:")); 

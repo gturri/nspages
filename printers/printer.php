@@ -52,9 +52,17 @@ abstract class nspages_printer {
     abstract function _print($tab, $type);
 
     function printUnusableNamespace($wantedNS){
-         $this->renderer->section_open(1);
-         $this->renderer->cdata($this->plugin->getLang('doesntexist').$wantedNS);
-         $this->renderer->section_close();
+        $this->printError($this->plugin->getLang('doesntexist').$wantedNS);
+    }
+
+    function printErrorSidebarDoestAcceptNamespace($wantedNS){
+        $this->printError($this->plugin->getLang('sidebarOrNs').$wantedNS);
+    }
+
+    private function printError($errorMessage){
+        $this->renderer->section_open(1);
+        $this->renderer->cdata($errorMessage);
+        $this->renderer->section_close();
     }
 
     private function _printHeader(&$tab, $type, $text, $hideno) {

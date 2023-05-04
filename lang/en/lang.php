@@ -14,3 +14,4 @@ $lang['pagesinthiscat']        = 'Pages in this namespace:';
 $lang['continued']             = ' cont.';
 $lang['nopages']               = 'No pages in this namespace.';
 $lang['nosubns']               = 'No subnamespaces.';
+$lang['sidebarOrNs']           = 'With the -sidebar option you cannot specify a namespace. Found: ';

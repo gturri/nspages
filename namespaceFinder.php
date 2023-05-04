@@ -16,10 +16,9 @@ class namespaceFinder {
         $this->sanitizeNs();
     }
 
-    private function computeWantedNs($path){
+    private function computeWantedNs($wantedNS){
         global $ID;
         $result = '';
-        $wantedNS = trim($path);
         if($wantedNS == '') {
             $wantedNS = $this->getCurrentNamespace();
         }
@@ -76,6 +75,10 @@ class namespaceFinder {
     }
 
     function getWantedDirectory(){
-        return utf8_encodeFN(str_replace(':', '/', $this->wantedNs));
+        return $this->namespaceToDirectory($this->wantedNs);
+    }
+
+    static function namespaceToDirectory($ns){
+        return utf8_encodeFN(str_replace(':', '/', $ns));
     }
 }
