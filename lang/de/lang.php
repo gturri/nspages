@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Sevynidd <sevynidd02@protonmail.com>
  * @author Sebastian Engel <mail@engel-s.de>
  * @author Daniel Schranz <xla@gmx.at>
  */
@@ -14,3 +15,5 @@ $lang['pagesinthiscat']        = 'Seiten in diesem Namensraum:';
 $lang['continued']             = ' (Fortsetzung)';
 $lang['nopages']               = 'Keine Seiten in diesem Namensraum.';
 $lang['nosubns']               = 'Keine Unternamensräume.';
+$lang['sidebarOrNs']           = 'Mit der -sidebar Option können Sie keinen namespace definieren.
+Gefunden:';
