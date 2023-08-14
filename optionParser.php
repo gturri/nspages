@@ -5,6 +5,9 @@
  * @license GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author  Guillaume Turri <guillaume.turri@gmail.com>
  */
+
+use dokuwiki\Utf8\PhpString;
+
 if(!defined('DOKU_INC')) die();
 
 class optionParser {
@@ -127,7 +130,7 @@ class optionParser {
                 return;
             }
             if($exclude[-1] === ':') {
-                $excludedNs[] = utf8_substr($exclude, 0, -1);
+                $excludedNs[] = PhpString::substr($exclude, 0, -1);
             } else {
                 $excludedPages[] = $exclude;
             }
