@@ -9,6 +9,8 @@ if(!defined('DOKU_INC')) die();
 require_once 'printer.php';
 require_once 'rendererXhtmlHelper.php';
 
+use dokuwiki\Utf8\PhpString;
+
 class nspages_printerNice extends nspages_printer {
     private $nbCols;
     private $anchorName;
@@ -78,7 +80,7 @@ class nspages_printerNice extends nspages_printer {
     }
 
     private function _firstChar($item) {
-        $return_char = utf8_strtoupper(utf8_substr($item['sort'], 0, 1));
+        $return_char = PhpString::strtoupper(PhpString::substr($item['sort'], 0, 1));
         $uniord_char = $this->_uniord($return_char);
 
         // korean support. See #111 for more context
