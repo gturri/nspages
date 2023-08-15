@@ -18,7 +18,7 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class Helper {
 	private final static String protocol = "http://";
-	private final static String server = "localhost";
+	private final static String server = "localhost:8000";
 	public  final static String wikiPath = "/dokuwikiITestsForNsPages";
 	public  final static String baseUrl = protocol + server + wikiPath + "/doku.php";
 	private final static WebDriver driver;

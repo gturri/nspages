@@ -1,9 +1,15 @@
 #!/bin/bash
+if [ -L "$0" ] && [ -x "$(which readlink)" ]; then
+	THIS_FILE="$(readlink -mn "$0")"
+else
+	THIS_FILE="$0"
+fi
+THIS_DIR="$(dirname "$THIS_FILE")"
 
-. source.sh
+. "$THIS_DIR"/../source.sh
 
-mkdir -p $DW_DL_CACHE
-cd $DW_DL_CACHE
+mkdir -p "$THIS_DIR"/../$DW_DL_CACHE
+pushd "$THIS_DIR"/../$DW_DL_CACHE
 
 echo "Going to download $DW_VERSION"
 
@@ -15,3 +21,4 @@ if [ ! -e $DW_VERSION.tgz ]; then
 else
   echo " $DW_VERSION.tgz found. No need to download it again."
 fi
+popd
