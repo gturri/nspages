@@ -82,6 +82,7 @@
           <systemPropertyVariables>
             <webdriver.gecko.driver>${project.basedir}/src/test/resources/geckodriver</webdriver.gecko.driver>
           </systemPropertyVariables>
+          <skipAfterFailureCount>1</skipAfterFailureCount>
         </configuration>
       </plugin>
     </plugins>
