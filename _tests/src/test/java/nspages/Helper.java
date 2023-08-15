@@ -3,14 +3,15 @@ package nspages;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.UnreachableBrowserException;
@@ -28,11 +29,21 @@ public class Helper {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				makeScreenshot();
 				try {
 					driver.quit();
 				} catch (UnreachableBrowserException e) {}
 			}
 		});
+	}
+
+	public static void makeScreenshot() {
+		File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(screenshot, new File("selenium_screenshot.png"));
+		} catch (IOException e) {
+			System.out.println("Failed to take a screenshot because: " + e.getMessage());
+		}
 	}
 
 	public WebDriver getDriver(){

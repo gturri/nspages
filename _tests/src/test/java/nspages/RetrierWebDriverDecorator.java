@@ -3,11 +3,9 @@ package nspages;
 import java.util.List;
 import java.util.Set;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
-public class RetrierWebDriverDecorator implements WebDriver {
+public class RetrierWebDriverDecorator implements WebDriver, TakesScreenshot {
 	private static final int NB_MAX_RETRY = 20;
 	private final WebDriver _driver;
 	
@@ -119,5 +117,10 @@ public class RetrierWebDriverDecorator implements WebDriver {
 	@Override
 	public Options manage() {
 		return _driver.manage();
+	}
+
+	@Override
+	public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+		return ((TakesScreenshot) _driver).getScreenshotAs(outputType);
 	}
 }

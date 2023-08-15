@@ -12,3 +12,4 @@ geckodriver*
 .idea
 *.iml
 node_modules
+selenium_screenshot.png
