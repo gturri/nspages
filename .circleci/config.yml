@@ -1,0 +1,33 @@
+# PHP CircleCI 2.0 configuration file
+# See: https://circleci.com/docs/2.0/language-php/
+version: 2
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  build:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      - image: cimg/php:8.2.8-browsers
+
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "_tests/source.sh" }}
+      - run: sudo apt-get update
+      - run: sudo apt install maven
+      - run:
+          command: ./_tests/run-tests.sh
+          environment:
+              MOZ_HEADLESS: 1
+      - save_cache:
+          key: v1-dependencies-{{ checksum "_tests/source.sh" }}
+          paths:
+            - ./_tests/dw_dl_cache/
+      - store_artifacts:
+          path: ./_tests/selenium_screenshot.png
