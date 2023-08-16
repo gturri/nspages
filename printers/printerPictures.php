@@ -10,6 +10,7 @@ require_once 'printer.php';
 
 class nspages_printerPictures extends nspages_printer {
     private static $_dims = array('w' => 350, 'h' => 220);
+    private $_defaultPicture;
 
     function __construct($plugin, $mode, $renderer, $data){
         parent::__construct($plugin, $mode, $renderer, $data);
