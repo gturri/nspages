@@ -58,11 +58,11 @@ public class Test_anchorName extends Helper {
 	public void dangerousText(){
 		generatePage("ns1:start", "<nspages -anchorName <test >");
 		assertNoTOC(getDriver());
-		assertTrue(getDriver().getPageSource().contains("-anchorName &lt;test"));
+		assertTrue(getDriver().getPageSource().contains("-anchorname &lt;test"));
 
 		generatePage("ns1:start", "<nspages -anchorName &test >");
 		assertNoTOC(getDriver());
-		assertTrue(getDriver().getPageSource().contains("-anchorName &amp;test"));
+		assertTrue(getDriver().getPageSource().contains("-anchorname &amp;test"));
 	}
 
 	private void assertNoTOC(WebDriver driver){

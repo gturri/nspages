@@ -95,7 +95,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkSimpleStringArgument($match, $return['defaultPicture'], $this, 'defaultPicture');
 
         //Now, only the wanted namespace remains in $match
-        $match = trim($match);
+        $match = strtolower(trim($match));
         if ($return["sidebar"]) {
             // Don't bother resolving or sanitizing now: it will be done at render-time in this mode
             $return['wantedNS'] = $match;
