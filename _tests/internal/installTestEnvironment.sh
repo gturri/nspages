@@ -5,7 +5,7 @@ if [ -L "$0" ] && [ -x "$(which readlink)" ]; then
 else
 	THIS_FILE="$0"
 fi
-THIS_DIR="$(dirname "$THIS_FILE")"
+THIS_DIR="$(readlink -f "$(dirname "$THIS_FILE")")"
 
 #directory where Dokuwiki should be installed in order to be reachable at http://localhost
 SERVER_FS_ROOT="$THIS_DIR"/temp_for_test_server_root
