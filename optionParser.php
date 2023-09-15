@@ -162,7 +162,8 @@ class optionParser {
 
     static private function _removeFromMatch($matched, $match){
         $matched = trim($matched); // to handle the case of the option "-r" which already matches an extra whitespace
-        $match = substr(str_replace($matched.' ', ' ', $match.' '), 0, -1);
-        return substr(str_replace($matched."\n", ' ', $match.' '), 0, -1);
+        // Matched option including any leading and at least one trailing whitespace
+        $regex = '/\s*' . preg_quote($matched, '/') . '\s+/';
+        return preg_replace($regex, ' ', $match);
     }
 }
