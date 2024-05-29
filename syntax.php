@@ -65,6 +65,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         optionParser::checkOption($match, "sort(By)?Date", $return['sortDate'], true);
         optionParser::checkOption($match, "sort(By)?CreationDate", $return['sortByCreationDate'], true);
         optionParser::checkOption($match, "hidenopages", $return['hidenopages'], true);
+        optionParser::checkOption($match, "hidenons", $return['hidenons'], true);
         optionParser::checkOption($match, "hidenosubns", $return['hidenosubns'], true);
         optionParser::checkOption($match, "showhidden", $return['showhidden'], true);
         optionParser::checkOption($match, "(use)?Pictures?", $return['usePictures'], true);
@@ -124,7 +125,7 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
             'pagesinns'     => false, 'anchorName' => null, 'actualTitleLevel' => false,
             'idAndTitle'    => false, 'nbItemsMax' => 0, 'numberedList' => false,
             'natOrder'      => false, 'sortDate' => false,
-            'hidenopages'   => false, 'hidenosubns' => false, 'usePictures' => false,
+            'hidenopages'   => false, 'hidenons' => false, 'hidenosubns' => false, 'usePictures' => false,
             'showhidden'    => false, 'dictOrder' => false,
             'modificationDateOnPictures' => false,
             'displayModificationDate' => false,
@@ -165,8 +166,11 @@ class syntax_plugin_nspages extends DokuWiki_Syntax_Plugin {
         }
 
 
-        if( ! $this->_isNamespaceUsable($data)){
-            $printer->printUnusableNamespace($data['wantedNS']);
+        if( ! $this->_isNamespaceUsable($data))
+        {
+            if( ! $data['hidenons']) {
+                $printer->printUnusableNamespace($data['wantedNS']);
+            }
             return TRUE;
         }
 
