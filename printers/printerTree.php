@@ -146,7 +146,12 @@ class nspages_printerTree extends nspages_printer {
                     $tree->self = $item;
                 } else {
                     if (!isset($tree->children[$item['id']])) {
-                        $tree->children[$item['id']] = $item;
+                        if ('d' !== $item['type']) {
+                            $tree->children[$item['id']] = new NspagesTreeNsNode($item['id']);
+                            $tree->children[$item['id']]->self = $item;
+                        } else {
+                            $tree->children[$item['id']] = $item;
+                        }
                     } else {
                         $tree->children[$item['id']]->self = $item;
                     }
