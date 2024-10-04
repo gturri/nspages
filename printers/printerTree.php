@@ -42,7 +42,9 @@ class nspages_printerTree extends nspages_printer {
         $this->_sorter->sort($tree->children);
 
         foreach($tree->children as $subTree){
-            $this->_orderTree($subTree);
+            if (is_object($subTree)) {
+                $this->_orderTree($subTree);
+            }
         }
         return $tree;
     }
@@ -50,7 +52,7 @@ class nspages_printerTree extends nspages_printer {
     private function _groupByNs($tab) {
         $tree = new NspagesTreeNsNode(':');
         foreach($tab as $item){
-            $this->_fillTree($tree, $this->_getNS($item), $item, '');
+            $this->_fillTree($tree, $this->_getNS($item), $item, '', ':');
         }
         return $tree;
     }
@@ -135,22 +137,31 @@ class nspages_printerTree extends nspages_printer {
         return strpos($haystack, $needle) !== false;
     }
 
-    private function _fillTree($tree, $keys, $item, $parentId) {
+    private function _fillTree($tree, $keys, $item, $parentId, $myNs) {
         if (empty($keys)){ // We've reach the end of the journey. We register the data of $item
             if($item['type'] === 'd') {
                 $tree->self = $item;
             } else {
-                $tree->pages []= $item;
+                if ($myNs == $item['id']) {
+                    $tree->self = $item;
+                } else {
+                    if (!isset($tree->children[$item['id']])) {
+                        $tree->children[$item['id']] = $item;
+                    } else {
+                        $tree->children[$item['id']]->self = $item;
+                    }
+                }
             }
         } else { // We're not at the place of $item in the tree yet, we continue to go down
             $key = $keys[0];
             $currentId = $parentId . $key . ':';
-            if (!array_key_exists($key, $tree->children)){
+            $nsKey = $parentId . $key;
+            if (!array_key_exists($nsKey, $tree->children)){
                 $node = new NspagesTreeNsNode($currentId);
-                $tree->children[$key] = $node;
+                $tree->children[$nsKey] = $node;
             }
             array_shift($keys);
-            $this->_fillTree($tree->children[$key], $keys, $item, $currentId);
+            $this->_fillTree($tree->children[$nsKey], $keys, $item, $currentId, $item['ns']);
         }
     }
 
@@ -158,12 +169,12 @@ class nspages_printerTree extends nspages_printer {
         $this->renderer->listu_open();
 
         foreach($tree->children as $subTree){
-            $this->_printSubTree($subTree, 1);
+            if (is_object($subTree)) {
+                $this->_printSubTree($subTree, 1);
+            } else {
+                $this->_printElement($subTree, 1);
+            }
         }
-
-         foreach($tree->pages as $page){
-             $this->_printElement($page, 1);
-         }
 
          $this->renderer->listu_close();
     }
@@ -176,16 +187,18 @@ class nspages_printerTree extends nspages_printer {
           $this->renderer->doc .= '<div>' . $tree->id  . '</div>';
         }
 
-        $hasInnerData = !empty($tree->children) || !empty($tree->pages);
+        $hasInnerData = !empty($tree->children);
         if($hasInnerData){
             $this->renderer->listu_open();
         }
         foreach($tree->children as $subTree){
-            $this->_printSubTree($subTree, $level+1);
+            if (is_object($subTree)) {
+                $this->_printSubTree($subTree, $level+1);
+            } else {
+                $this->_printElement($subTree, $level+1);
+            }
         }
-        foreach($tree->pages as $page){
-            $this->_printElement($page, $level+1);
-        }
+
         if($hasInnerData){
             $this->renderer->listu_close();
         }
@@ -197,13 +210,9 @@ class nspages_printerTree extends nspages_printer {
  * Represent a namespace and its inner content
  */
 class NspagesTreeNsNode implements ArrayAccess {
-    /**
-     * The list of pages directly in the namespace (does not include pages in subnamespaces)
-     */
-    public $pages = array();
 
     /**
-     * The list of subnamespaces at level n+1 (does not include their own subnamespaces)
+     * The list of pages and subnamespaces at level n+1 (does not include their own subnamespaces)
      */
     public $children = array();
 
