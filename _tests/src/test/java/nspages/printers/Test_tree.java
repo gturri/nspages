@@ -1,6 +1,7 @@
 package nspages.printers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
@@ -164,6 +165,19 @@ public class Test_tree extends Helper {
         generatePage("start", "<nspages -tree -r>");
         // No need for assertions: the generatePage method already checks that there are no php warning
         // and no php error. This is all we need for this test
+    }
+
+    @Test
+    public void nsAndItsMainPageAreDisplayedAsASingleNode() {
+        generatePage("trees:tree_with_subns_with_main_page_declare_in_ns_above:", "<nspages -tree -r -subns -pagesInNs>");
+
+        List<WebElement> firstLevelChildren = getFirstLevelChildren();
+        assertEquals(2, firstLevelChildren.size()); // That's the most important assertion of this test (before #167 it was 3 because the subns appeared both as ns and as page)
+        assertSameLinksAndLevel(new InternalLink("trees:tree_with_subns_with_main_page_declare_in_ns_above:start", "start"), 1, firstLevelChildren.get(0), false);
+        assertSameLinksAndLevel(new InternalLink("trees:tree_with_subns_with_main_page_declare_in_ns_above:subns", "subns"), 1, firstLevelChildren.get(1), false);
+
+        List<WebElement> secondLevelNodes = getDirectChildren(firstLevelChildren.get(1));
+        assertSameLinksAndLevel(new InternalLink("trees:tree_with_subns_with_main_page_declare_in_ns_above:subns:page", "page"), 2, secondLevelNodes.get(0), false);
     }
 
     @Test
