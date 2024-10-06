@@ -18,6 +18,14 @@ class namespaceFinder {
 
     private function computeWantedNs($wantedNS){
         global $ID;
+
+        // Convert all other separators to colons
+        //  Nb: slashes should be accepted as separator too as they can be a legit separator when the DW conf "useslash" is on. (and anyway slashes are not allowed in page name
+        //  (see https://www.dokuwiki.org/pagename ) so it's the only correct way to deal with it.
+        //  But we don't need to str_replace it because we don't go through "cleanID" (which would handle it when the conf is off) and because we never remove nor escape the slashes
+        //  before they are converted to a FS path
+        $wantedNS = str_replace(';', ':', $wantedNS); // accepted by DW as namespace separator according to https://www.dokuwiki.org/pagename
+
         $result = '';
         if($wantedNS == '') {
             $wantedNS = $this->getCurrentNamespace();
