@@ -243,16 +243,16 @@ class NspagesTreeNsNode implements ArrayAccess {
      * Implement ArrayAccess because instances of this class should be sortable with nspages_sorter
      * implementations and that those implementation are performing sorts based on $item["sort"].
      */
-    public function offsetSet($offset, $value) {
+    function offsetSet(mixed $offset, mixed $value): void {
         throw new BadMethodCallException("Not implemented by design");
     }
-    public function offsetExists($offset) {
+    function offsetExists(mixed $offset): bool {
         return $offset == "sort";
     }
-    public function offsetUnset($offset) {
+    function offsetUnset(mixed $offset): void {
         throw new BadMethodCallException("Not implemented by design");
     }
-    public function offsetGet($offset) {
+    function offsetGet(mixed $offset): mixed {
       return is_null($this->self) ?
             $this->id :
             $this->self["sort"];
